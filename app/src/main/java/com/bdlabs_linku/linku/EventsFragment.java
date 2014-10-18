@@ -1,6 +1,7 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -111,12 +112,15 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
+
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            int eventId = (int) id;
-            mListener.onFragmentInteraction(EventModel.EVENTS.get(eventId).toString());
-        }
+            //mListener.onFragmentInteraction(EventModel.EVENTS.get(eventId).toString());
+            Intent intent = new Intent(getActivity(), ViewEventActivity.class);
+            intent.putExtra(ViewEventFragment.EVENT_POSITION, position);
+            startActivity(intent);
+
+
     }
 
     /**
