@@ -4,5 +4,6 @@
     <string name="app_name">LinkU</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="empty_events_list">There are no events around you</string>
 
 </resources>

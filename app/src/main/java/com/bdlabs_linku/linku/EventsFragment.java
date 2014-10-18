@@ -73,7 +73,7 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
 
         // TODO: Change Adapter to display your name
         mAdapter = new ArrayAdapter<EventModel.Event>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, EventModel.EVENTS);
+                R.layout.events_list_item, R.id.event_name, EventModel.EVENTS);
     }
 
     @Override
@@ -130,6 +130,11 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
         if (emptyText instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
         }
+
+        if (mAdapter.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     /**
