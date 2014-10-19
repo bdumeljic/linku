@@ -11,5 +11,8 @@
     <string name="create_event">Create Event</string>
     <string name="title_activity_view_event">ViewEventActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_create_new_event">New event</string>
+    <string name="choose_date">Choose date:</string>
+    <string name="name_event">Name your event:</string>
 
 </resources>

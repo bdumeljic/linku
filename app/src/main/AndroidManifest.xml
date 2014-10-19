@@ -25,10 +25,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="EventsActivity" />
         </activity>
+        <activity
+            android:name=".CreateNewEventActivity"
+            android:label="@string/title_activity_create_new_event"
+            android:parentActivityName=".EventsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="EventsActivity" />
+            </activity>
     </application>
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <!--    <meta-data android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
--->
+ android:value="@integer/google_play_services_version" />
+ -->
+
 </manifest>

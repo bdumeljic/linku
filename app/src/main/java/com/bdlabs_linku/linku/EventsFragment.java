@@ -1,32 +1,23 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
-import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -56,7 +47,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
      */
     private EventsAdapter mAdapter;
 
-
     // TODO: Rename and change types of parameters
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -75,9 +65,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mAdapter = new ArrayAdapter<EventModel.Event>(getActivity(),
-          //      R.layout.events_list_item, R.id.event_name, EventModel.EVENTS);
-
         mAdapter = new EventsAdapter(EventModel.EVENTS);
     }
 
@@ -139,7 +126,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -147,7 +134,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -156,8 +142,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         menu.clear();
 
         inflater.inflate(R.menu.events, menu);
-
-
     }
 
     @Override
@@ -169,10 +153,9 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         switch(id) {
             case R.id.create_event:
-                // TODO Add startActivityForResult here ...
-
+                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
+                startActivityForResult(intent, 1);
                 return true;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -182,7 +165,9 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // TODO Catch the result from the create new event here and update adapter if necessary
+        if (requestCode == 1) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -210,15 +195,15 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     }
 
     /**
-    * This interface must be implemented by activities that contain this
-    * fragment to allow an interaction in this fragment to be communicated
-    * to the activity and potentially other fragments contained in that
-    * activity.
-    * <p>
-    * See the Android Training lesson <a href=
-    * " "
-    * >Communicating with Other Fragments</a> for more information.
-    */
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * " "
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
@@ -254,19 +239,17 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
             }
 
-           // convertView.setBackgroundResource(events.get(position).image);
-
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
             bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-
             convertView.setBackgroundDrawable(bitmapDrawable);
 
             TextView name = (TextView) convertView.findViewById(R.id.event_name);
             name.setText(events.get(position).name);
 
             TextView time = (TextView) convertView.findViewById(R.id.time);
-            time.setText("11:11");
+//            time.setText("11:11");
+            time.setText(events.get(position).time.toString());
 
             TextView distance = (TextView) convertView.findViewById(R.id.distance);
             distance.setText("1 km");
