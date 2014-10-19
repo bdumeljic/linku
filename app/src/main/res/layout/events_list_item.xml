@@ -17,7 +17,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
 
-        android:background="#99484746"
+        android:background="@color/transparent_background"
         android:layout_weight="0.25">
 
 
@@ -27,8 +27,6 @@
             android:id="@+id/event_name"
             android:text="@string/placeholder_events_item_name"
             style="@style/events_item_text_big"/>
-
-        <View style="@style/event_divider"/>
 
         <LinearLayout
             android:layout_width="match_parent"

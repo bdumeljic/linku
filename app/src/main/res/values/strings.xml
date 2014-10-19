@@ -14,5 +14,6 @@
     <string name="title_activity_create_new_event">New event</string>
     <string name="choose_date">Choose date:</string>
     <string name="name_event">Name your event:</string>
+    <string name="save_new_event_button">Save</string>
 
 </resources>

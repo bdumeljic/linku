@@ -12,32 +12,20 @@
         android:id="@+id/event_detail"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
 
-        android:background="#50134BE8"
+        android:background="@color/transparent_background"
         android:layout_weight="0.30"
         android:weightSum="1">
-
-
-        <View style="@style/event_divider"
-              android:layout_weight="0.16"/>
-
-        <ImageView
-            android:layout_width="152dp"
-            android:layout_height="151dp"
-            android:id="@+id/imageView3"
-            android:layout_gravity="center_horizontal|top"
-            android:src="@android:drawable/ic_menu_camera"
-            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/event_name"
-            style="@style/events_item_text_big"/>
+            style="@style/event_text_big"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/events_item_text"
+                style="@style/event_text"
                 android:text="00:00"
                 android:gravity="left"
                 android:layout_weight="1"
@@ -57,20 +45,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/events_item_text"
+                style="@style/event_text"
                 android:gravity="center_horizontal"
                 android:layout_weight="1"
-
                 android:text="X km"
                 android:id="@+id/distance" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/events_item_text"
+                style="@style/event_text"
                 android:gravity="right"
                 android:layout_weight="1"
-
-
                 android:text="0"
                 android:id="@+id/attendees" />
         </LinearLayout>

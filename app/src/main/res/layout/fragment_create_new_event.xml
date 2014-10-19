@@ -44,7 +44,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="@string/save_new_event_button"
             android:id="@+id/btn_save_event"
             android:layout_gravity="center_horizontal"
             android:onClick="@string/create_event" />

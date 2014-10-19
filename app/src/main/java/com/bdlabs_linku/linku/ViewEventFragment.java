@@ -1,6 +1,10 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import java.text.SimpleDateFormat;
@@ -76,6 +80,11 @@ public class ViewEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_event, container, false);
+
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), EventModel.EVENTS.get(mEventId).image);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
+        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        view.setBackgroundDrawable(bitmapDrawable);
 
         mEventName = (TextView) view.findViewById(R.id.event_name);
         mEventName.setText(EventModel.EVENTS.get(mEventId).name);
