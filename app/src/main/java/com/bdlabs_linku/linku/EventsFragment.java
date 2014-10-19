@@ -3,6 +3,10 @@ package com.bdlabs_linku.linku;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +38,9 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventsFragment extends Fragment implements ListView.OnItemClickListener {
+public class EventsFragment extends Fragment implements ListView.OnItemClickListener//, GooglePlayServicesClient.ConnectionCallbacks,
+        //GooglePlayServicesClient.OnConnectionFailedListener
+        {
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,6 +54,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
      * Views.
      */
     private EventsAdapter mAdapter;
+
 
     // TODO: Rename and change types of parameters
     public static EventsFragment newInstance() {
@@ -245,6 +253,14 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
             }
+
+           // convertView.setBackgroundResource(events.get(position).image);
+
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
+            bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+
+            convertView.setBackgroundDrawable(bitmapDrawable);
 
             TextView name = (TextView) convertView.findViewById(R.id.event_name);
             name.setText(events.get(position).name);

@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
     android:gravity="bottom"
 
@@ -17,8 +17,8 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
 
-        android:background="#50134BE8"
-        android:layout_weight="0.30">
+        android:background="#99484746"
+        android:layout_weight="0.25">
 
 
         <TextView
