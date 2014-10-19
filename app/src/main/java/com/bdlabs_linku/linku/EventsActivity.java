@@ -3,6 +3,7 @@ package com.bdlabs_linku.linku;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.AbsListView;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 
@@ -40,14 +43,21 @@ public class EventsActivity extends Activity implements EventsFragment.OnFragmen
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.create_event) {
-            Intent intent= new Intent(this,CreateNewEventActivity.class);
-            startActivity(intent);
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String result=data.getStringExtra("result");
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
 
 
     @Override
