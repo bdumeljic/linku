@@ -1,16 +1,33 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -21,36 +38,28 @@ import android.widget.TextView;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventsFragment extends Fragment implements AbsListView.OnItemClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class EventsFragment extends Fragment implements ListView.OnItemClickListener//, GooglePlayServicesClient.ConnectionCallbacks,
+        //GooglePlayServicesClient.OnConnectionFailedListener
+        {
 
     private OnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
      */
-    private AbsListView mListView;
+    private ListView mListView;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private EventsAdapter mAdapter;
+
 
     // TODO: Rename and change types of parameters
-    public static EventsFragment newInstance(String param1, String param2) {
+    public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,15 +74,10 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //mAdapter = new ArrayAdapter<EventModel.Event>(getActivity(),
+          //      R.layout.events_list_item, R.id.event_name, EventModel.EVENTS);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        // TODO: Change Adapter to display your name
-        mAdapter = new ArrayAdapter<EventModel.Event>(getActivity(),
-                R.layout.events_list_item, R.id.event_name, EventModel.EVENTS);
+        mAdapter = new EventsAdapter(EventModel.EVENTS);
     }
 
     @Override
@@ -82,11 +86,38 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+
+        // Create a ListView-specific touch listener. ListViews are given special treatment because
+        // by default they handle touches for their list items... i.e. they're in charge of drawing
+        // the pressed state (the list selector), handling list item clicks, etc.
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(
+                        mListView,
+                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    mAdapter.remove(position);
+
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+        mListView.setOnTouchListener(touchListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        mListView.setOnScrollListener(touchListener.makeScrollListener());
 
         return view;
     }
@@ -103,6 +134,48 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+
+        inflater.inflate(R.menu.events, menu);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.create_event:
+                // TODO Add startActivityForResult here ...
+
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // TODO Catch the result from the create new event here and update adapter if necessary
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -114,8 +187,7 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            int eventId = (int) id;
-            mListener.onFragmentInteraction(EventModel.EVENTS.get(eventId).toString());
+            mListener.onFragmentInteraction(EventModel.EVENTS.get(position).toString());
         }
     }
 
@@ -151,5 +223,66 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
     }
+
+    private class EventsAdapter extends BaseAdapter {
+        private List<EventModel.Event> events;
+
+        public EventsAdapter(List<EventModel.Event> events) {
+            super();
+            this.events = events;
+        }
+
+        @Override
+        public int getCount() {
+            return events.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return events.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
+            }
+
+           // convertView.setBackgroundResource(events.get(position).image);
+
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
+            bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+
+            convertView.setBackgroundDrawable(bitmapDrawable);
+
+            TextView name = (TextView) convertView.findViewById(R.id.event_name);
+            name.setText(events.get(position).name);
+
+            TextView time = (TextView) convertView.findViewById(R.id.time);
+            time.setText("11:11");
+
+            TextView distance = (TextView) convertView.findViewById(R.id.distance);
+            distance.setText("1 km");
+
+            TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
+            attendees.setText("1");
+
+            return convertView;
+        }
+
+        public void remove(int position) {
+            events.remove(position);
+            return;
+        }
+    }
+
+
 
 }

@@ -2,8 +2,12 @@
 <resources>
 
     <string name="app_name">LinkU</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="empty_events_list">There are no events around you</string>
+    <string name="placeholder_events_item_name">Event Name</string>
+    <string name="placeholder_events_item_time">00:00</string>
+    <string name="placeholder_events_item_distance">0 km</string>
+    <string name="placeholder_events_item_attendees">0</string>
+    <string name="create_event">Create Event</string>
 
 </resources>

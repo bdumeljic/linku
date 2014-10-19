@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
     android:gravity="bottom"
 
@@ -17,14 +17,15 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
 
-        android:background="#50134BE8"
-        android:layout_weight="0.30">
+        android:background="#99484746"
+        android:layout_weight="0.25">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/event_name"
+            android:text="@string/placeholder_events_item_name"
             style="@style/events_item_text_big"/>
 
         <View style="@style/event_divider"/>
@@ -39,10 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/events_item_text"
-                android:text="00:00"
+                android:text="@string/placeholder_events_item_time"
                 android:gravity="left"
                 android:layout_weight="1"
-
                 android:id="@+id/time" />
             <TextView
                 android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
                 android:gravity="center_horizontal"
                 android:layout_weight="1"
 
-                android:text="X km"
+                android:text="@string/placeholder_events_item_distance"
                 android:id="@+id/distance" />
             <TextView
                 android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                 android:layout_weight="1"
 
 
-                android:text="0"
+                android:text="@string/placeholder_events_item_attendees"
                 android:id="@+id/attendees" />
             </LinearLayout>
 
