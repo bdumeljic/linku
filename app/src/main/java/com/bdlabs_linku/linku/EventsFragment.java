@@ -1,9 +1,15 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -27,7 +33,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventsFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class EventsFragment extends Fragment implements ListView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
 
@@ -117,6 +123,48 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
             throw new ClassCastException(activity.toString()
                 + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+
+        inflater.inflate(R.menu.events, menu);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.create_event:
+                // TODO Add startActivityForResult here ...
+
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // TODO Catch the result from the create new event here and update adapter if necessary
     }
 
     @Override
@@ -218,5 +266,7 @@ public class EventsFragment extends Fragment implements AbsListView.OnItemClickL
             return;
         }
     }
+
+
 
 }

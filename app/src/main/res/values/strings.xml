@@ -8,5 +8,6 @@
     <string name="placeholder_events_item_time">00:00</string>
     <string name="placeholder_events_item_distance">0 km</string>
     <string name="placeholder_events_item_attendees">0</string>
+    <string name="create_event">Create Event</string>
 
 </resources>
