@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -90,7 +91,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing
@@ -112,14 +112,24 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                                 }
                                 mAdapter.notifyDataSetChanged();
                             }
-                        });
+                });
 
         mListView.setOnTouchListener(touchListener);
+
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
         mListView.setOnScrollListener(touchListener.makeScrollListener());
 
+        mListView.setOnItemClickListener(this);
+
         return view;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), ViewEventActivity.class);
+        intent.putExtra(ViewEventFragment.EVENT_POSITION, position);
+        startActivity(intent);
     }
 
     @Override
@@ -179,16 +189,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(EventModel.EVENTS.get(position).toString());
-        }
     }
 
     /**

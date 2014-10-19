@@ -9,5 +9,7 @@
     <string name="placeholder_events_item_distance">0 km</string>
     <string name="placeholder_events_item_attendees">0</string>
     <string name="create_event">Create Event</string>
+    <string name="title_activity_view_event">ViewEventActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

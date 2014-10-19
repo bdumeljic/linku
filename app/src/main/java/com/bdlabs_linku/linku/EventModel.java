@@ -25,6 +25,7 @@ public class EventModel {
 
         addEvent(new Event(1, "Coffee @Kozy"));
         addEvent(new Event(2, "Work in the AntiCafe"));
+        addEvent(new Event(3, "Salsa at Bario Latino"));
     }
 
     private static void addEvent(Event e) {
