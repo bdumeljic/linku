@@ -9,6 +9,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_event">Create event</string>
     <string name="choose_date">Choose date:</string>
+    <string name="name_event">Name your event:</string>
 
 
 

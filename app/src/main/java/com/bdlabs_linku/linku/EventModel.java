@@ -25,6 +25,39 @@ public class EventModel {
     public static class Event {
         public int id;
         public String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Calendar getTime() {
+            return time;
+        }
+
+        public void setTime(Calendar time) {
+            this.time = time;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
+        public int getAttendees() {
+            return attendees;
+        }
+
+        public void setAttendees(int attendees) {
+            this.attendees = attendees;
+        }
+
         public Calendar time;
         public Location location;
         public int attendees;
