@@ -1,55 +1,83 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bdlabs_linku.linku.CreateNewEventActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.bdlabs_linku.linku.CreateNewEventActivity$PlaceholderFragment">
-
+    android:layout_height="wrap_content" >
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/name_event"
-            android:text="@string/name_event"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/editText" />
+            style="@style/new_event_text"
+            android:text="@string/name_event_hint" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/event_name_input"
             android:inputType="text"
-            android:imeOptions="actionDone"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:gravity="center_horizontal"
+            android:hint="@string/placeholder_events_item_name"
+            android:imeOptions="actionDone" />
 
-        <DatePicker
-            android:layout_width="match_parent"
-            android:layout_height="197dp"
-            android:id="@+id/event_date"
-            android:inputType="date"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/time_date_event_hint"
+            style="@style/new_event_text"
+         />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TimePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_time" />
+
+            <DatePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_date"
+                android:calendarViewShown="false"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/attendees_event_hint"
+            style="@style/new_event_text"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="@string/placeholder_events_item_attendees"
+            android:ems="10"
+            android:id="@+id/attendees_event" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save_new_event_button"
             android:id="@+id/btn_save_event"
-            android:layout_gravity="center_horizontal"
-            android:onClick="@string/create_event" />
+            android:layout_gravity="right" />
 
     </LinearLayout>
 
-
-</RelativeLayout>
+</ScrollView>

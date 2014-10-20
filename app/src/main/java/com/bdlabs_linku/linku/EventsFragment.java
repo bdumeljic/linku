@@ -19,6 +19,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -98,6 +100,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
                                 }
                                 mAdapter.notifyDataSetChanged();
+                                setEmptyText();
                             }
                 });
 
@@ -167,6 +170,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         if (requestCode == 1) {
             mAdapter.notifyDataSetChanged();
+            setEmptyText();
         }
     }
 
@@ -181,17 +185,15 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
      * the list is empty. If you would like to change the text, call this method
      * to supply the text it should use.
      */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyText instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
+    public void setEmptyText() {
+        View emptyView = getView().findViewById(R.id.empty_events);
+        if(emptyView != null) {
+            if (mAdapter.isEmpty()) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.INVISIBLE);
+            }
         }
-
-        if (mAdapter.isEmpty()) {
-            emptyView.setVisibility(View.VISIBLE);
-        }
-
     }
 
     /**
@@ -248,14 +250,15 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             name.setText(events.get(position).name);
 
             TextView time = (TextView) convertView.findViewById(R.id.time);
-//            time.setText("11:11");
-            time.setText(events.get(position).time.toString());
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
+            String formattedDate = dateFormat.format(events.get(position).time.getTime());
+            time.setText(formattedDate);
 
             TextView distance = (TextView) convertView.findViewById(R.id.distance);
             distance.setText("1 km");
 
             TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
-            attendees.setText("1");
+            attendees.setText(String.valueOf(events.get(position).attendees));
 
             return convertView;
         }

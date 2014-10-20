@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -27,7 +30,10 @@ public class CreateNewEventFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     EditText mEditName;
-    Date mEventDate;
+    DatePicker mDatePicker;
+    TimePicker mTimePicker;
+    Calendar mEventDate;
+    EditText mAttendees;
 
     /**
      * Use this factory method to create a new instance of
@@ -58,17 +64,39 @@ public class CreateNewEventFragment extends Fragment {
 
         Button saveButton = (Button) view.findViewById(R.id.btn_save_event);
         mEditName = (EditText) view.findViewById(R.id.event_name_input);
-        DatePicker datepicker = (DatePicker) view.findViewById(R.id.event_date);
-        mEventDate = new Date(datepicker.getYear() - 1900, datepicker.getMonth(), datepicker.getDayOfMonth());
+
+        mTimePicker = (TimePicker) view.findViewById(R.id.event_time);
+
+        mDatePicker = (DatePicker) view.findViewById(R.id.event_date);
+
+        mAttendees = (EditText) view.findViewById(R.id.attendees_event);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                EventModel.addEvent(
-                        new EventModel.Event(
-                                EventModel.EVENTS.size(),
-                                mEditName.getText().toString(),
-                                mEventDate));
-                getActivity().finish();
+                if(mEditName.getText().toString().matches("")) {
+                    Toast.makeText(getActivity(), "Missing event name", Toast.LENGTH_SHORT).show();
+                } else if(mAttendees.getText().toString().matches("")) {
+                    Toast.makeText(getActivity(), "Missing maximum number of attendees", Toast.LENGTH_SHORT).show();
+                } else {
+                    int day = mDatePicker.getDayOfMonth();
+                    int month = mDatePicker.getMonth();
+                    int year = mDatePicker.getYear();
+                    int hour = mTimePicker.getCurrentHour();
+                    int min = mTimePicker.getCurrentMinute();
+
+                    mEventDate = Calendar.getInstance();
+                    mEventDate.set(year, month, day, hour, min);
+
+                    int maxAttendees = Integer.parseInt(mAttendees.getText().toString());
+
+                    EventModel.addEvent(
+                            new EventModel.Event(
+                                    EventModel.EVENTS.size(),
+                                    mEditName.getText().toString(),
+                                    mEventDate,
+                                    maxAttendees));
+                    getActivity().finish();
+                }
             }
         });
 
