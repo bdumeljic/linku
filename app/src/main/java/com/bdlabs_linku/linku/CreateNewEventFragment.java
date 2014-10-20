@@ -29,6 +29,7 @@ import java.util.Date;
 public class CreateNewEventFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
+    // Input values from view
     EditText mEditName;
     DatePicker mDatePicker;
     TimePicker mTimePicker;
@@ -41,7 +42,6 @@ public class CreateNewEventFragment extends Fragment {
 
      * @return A new instance of fragment CreateNewEventFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CreateNewEventFragment newInstance() {
         CreateNewEventFragment fragment = new CreateNewEventFragment();
         return fragment;
@@ -63,14 +63,14 @@ public class CreateNewEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
         Button saveButton = (Button) view.findViewById(R.id.btn_save_event);
+
+        // Connect to the view
         mEditName = (EditText) view.findViewById(R.id.event_name_input);
-
         mTimePicker = (TimePicker) view.findViewById(R.id.event_time);
-
         mDatePicker = (DatePicker) view.findViewById(R.id.event_date);
-
         mAttendees = (EditText) view.findViewById(R.id.attendees_event);
 
+        // Save the current input as an event. Check for missing values before saving.
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(mEditName.getText().toString().matches("")) {
@@ -89,6 +89,7 @@ public class CreateNewEventFragment extends Fragment {
 
                     int maxAttendees = Integer.parseInt(mAttendees.getText().toString());
 
+                    // Add event to the model
                     EventModel.addEvent(
                             new EventModel.Event(
                                     EventModel.EVENTS.size(),

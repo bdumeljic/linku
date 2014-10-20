@@ -33,6 +33,6 @@ public class EventsActivity extends Activity implements EventsFragment.OnFragmen
    
     @Override
     public void onFragmentInteraction(String name) {
-        Toast.makeText(getApplicationContext(), name + ". Great choice!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), name + ". Great choice!", Toast.LENGTH_SHORT).show();
     }
 }

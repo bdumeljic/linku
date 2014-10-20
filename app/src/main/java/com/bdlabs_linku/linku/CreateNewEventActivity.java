@@ -18,6 +18,8 @@ public class CreateNewEventActivity extends Activity implements CreateNewEventFr
                     .add(R.id.container, new CreateNewEventFragment())
                     .commit();
         }
+
+        // Show up navigation button
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

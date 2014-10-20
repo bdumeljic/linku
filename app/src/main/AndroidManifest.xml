@@ -19,7 +19,6 @@
         <activity
             android:name=".ViewEventActivity"
             android:label="@string/title_activity_view_event"
-            android:screenOrientation="portrait"
             android:parentActivityName=".EventsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

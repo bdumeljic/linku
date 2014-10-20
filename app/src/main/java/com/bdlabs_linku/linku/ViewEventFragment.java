@@ -33,10 +33,6 @@ import java.util.Calendar;
  *
  */
 public class ViewEventFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM2 = "param2";
-
 
     public final static String EVENT_POSITION = "Event_Position";
     private Image mEventImage;
@@ -45,9 +41,7 @@ public class ViewEventFragment extends Fragment {
     private TextView mEventDistance;
     private TextView mEventAttendees;
 
-    // TODO: Rename and change types of parameters
     private int mEventId;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,13 +49,14 @@ public class ViewEventFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param mEventId Parameter 1.
+     * @param mEventId Event ID for item in Events ArrayList.
      * @return A new instance of fragment ViewEventFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ViewEventFragment newInstance(int mEventId) {
         ViewEventFragment fragment = new ViewEventFragment();
         Bundle args = new Bundle();
+
+        // Get ID of event that is shown in this activity
         args.putInt(EVENT_POSITION, mEventId);
         fragment.setArguments(args);
         return fragment;
@@ -73,6 +68,8 @@ public class ViewEventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get ID of event that is shown in this activity
         if (getArguments() != null) {
             mEventId = getArguments().getInt(EVENT_POSITION);
         }
@@ -83,22 +80,28 @@ public class ViewEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_event, container, false);
 
+        // Set background image of the event item
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), EventModel.EVENTS.get(mEventId).image);
         BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
         bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         view.setBackgroundDrawable(bitmapDrawable);
 
+        // Set event name
         mEventName = (TextView) view.findViewById(R.id.event_name);
         mEventName.setText(EventModel.EVENTS.get(mEventId).name);
 
+        // Set event time
         mEventTime = (TextView) view.findViewById(R.id.time);
         DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
         String formattedDate = dateFormat.format(EventModel.EVENTS.get(mEventId).time.getTime());
         mEventTime.setText(formattedDate);
 
+        // Set event distance from user's current location
+        // TODO add location
         mEventDistance = (TextView) view.findViewById(R.id.distance);
         mEventDistance.setText("2 km away");
 
+        // Set number of people attending
         mEventAttendees = (TextView) view.findViewById(R.id.attendees);
         mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
 

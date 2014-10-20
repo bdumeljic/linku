@@ -24,11 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p />
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p />
+ * A fragment representing a list of Event Items.
+ *
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
@@ -39,17 +36,16 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     private OnFragmentInteractionListener mListener;
 
     /**
-     * The fragment's ListView/GridView.
+     * The fragment's ListView/GridView containing the events.
      */
     private ListView mListView;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
+     * Event List Item Views.
      */
     private EventsAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
         Bundle args = new Bundle();
@@ -67,6 +63,8 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // When this fragment is created the adapter is populated with events from the EventModel
         mAdapter = new EventsAdapter(EventModel.EVENTS);
     }
 
@@ -75,11 +73,9 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
-        // Set the adapter
+        // Set the list adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
-
-        // Set OnItemClickListener so we can be notified on item clicks
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing
@@ -110,6 +106,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         // we don't look for swipes.
         mListView.setOnScrollListener(touchListener.makeScrollListener());
 
+        // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
         return view;
@@ -117,6 +114,8 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        // Start the View Event Activity that show the clicked event
         Intent intent = new Intent(getActivity(), ViewEventActivity.class);
         intent.putExtra(ViewEventFragment.EVENT_POSITION, position);
         startActivity(intent);
@@ -155,6 +154,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         int id = item.getItemId();
 
         switch(id) {
+            // If the create event settings item was clicked then start the activity to create new event
             case R.id.create_event:
                 Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
                 startActivityForResult(intent, 1);
@@ -168,6 +168,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // If the event was created successfully then update the adapter
         if (requestCode == 1) {
             mAdapter.notifyDataSetChanged();
             setEmptyText();
@@ -211,6 +212,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         public void onFragmentInteraction(String name);
     }
 
+    // Adapter for events
     private class EventsAdapter extends BaseAdapter {
         private List<EventModel.Event> events;
 
@@ -241,28 +243,35 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
             }
 
+            // Set background image of the event item
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
             bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
             convertView.setBackgroundDrawable(bitmapDrawable);
 
+            // Set event name
             TextView name = (TextView) convertView.findViewById(R.id.event_name);
             name.setText(events.get(position).name);
 
+            // Set event time
             TextView time = (TextView) convertView.findViewById(R.id.time);
             DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
             String formattedDate = dateFormat.format(events.get(position).time.getTime());
             time.setText(formattedDate);
 
+            // Set event distance from user's current location
+            // TODO add location
             TextView distance = (TextView) convertView.findViewById(R.id.distance);
             distance.setText("1 km");
 
+            // Set number of people attending
             TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
             attendees.setText(String.valueOf(events.get(position).attendees));
 
             return convertView;
         }
 
+        // Remove this event from the adapter
         public void remove(int position) {
             events.remove(position);
             return;
