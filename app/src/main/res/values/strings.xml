@@ -9,10 +9,11 @@
     <string name="placeholder_events_item_distance">0 km</string>
     <string name="placeholder_events_item_attendees">0</string>
     <string name="create_event">Create Event</string>
-    <string name="title_activity_view_event">ViewEventActivity</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_view_event">Event</string>
     <string name="title_activity_create_new_event">New event</string>
-    <string name="choose_date">Choose date:</string>
-    <string name="name_event">Name your event:</string>
+    <string name="save_new_event_button">Save</string>
+    <string name="time_date_event_hint">Pick Date and Time</string>
+    <string name="name_event_hint">Name for Event</string>
+    <string name="attendees_event_hint">Maximum Number of People</string>
 
 </resources>

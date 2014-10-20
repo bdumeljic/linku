@@ -1,8 +1,14 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
+
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -77,20 +83,24 @@ public class ViewEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_event, container, false);
 
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), EventModel.EVENTS.get(mEventId).image);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
+        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        view.setBackgroundDrawable(bitmapDrawable);
+
         mEventName = (TextView) view.findViewById(R.id.event_name);
         mEventName.setText(EventModel.EVENTS.get(mEventId).name);
 
         mEventTime = (TextView) view.findViewById(R.id.time);
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-
-        String formatted = format1.format(EventModel.EVENTS.get(mEventId).time.getTime());
-        mEventTime.setText(formatted);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
+        String formattedDate = dateFormat.format(EventModel.EVENTS.get(mEventId).time.getTime());
+        mEventTime.setText(formattedDate);
 
         mEventDistance = (TextView) view.findViewById(R.id.distance);
-        mEventDistance.setText(EventModel.EVENTS.get(mEventId).location.getLatitude() + " , " + EventModel.EVENTS.get(mEventId).location.getLatitude());
+        mEventDistance.setText("2 km away");
 
         mEventAttendees = (TextView) view.findViewById(R.id.attendees);
-        mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)));
+        mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
 
 
         return view;

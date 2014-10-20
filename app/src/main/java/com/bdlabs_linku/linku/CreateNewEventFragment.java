@@ -1,15 +1,20 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -22,32 +27,23 @@ import android.widget.TextView;
  *
  */
 public class CreateNewEventFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+
+    EditText mEditName;
+    DatePicker mDatePicker;
+    TimePicker mTimePicker;
+    Calendar mEventDate;
+    EditText mAttendees;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+
      * @return A new instance of fragment CreateNewEventFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateNewEventFragment newInstance(String param1, String param2) {
+    public static CreateNewEventFragment newInstance() {
         CreateNewEventFragment fragment = new CreateNewEventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
     public CreateNewEventFragment() {
@@ -57,18 +53,54 @@ public class CreateNewEventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
+
+        View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+
+        Button saveButton = (Button) view.findViewById(R.id.btn_save_event);
+        mEditName = (EditText) view.findViewById(R.id.event_name_input);
+
+        mTimePicker = (TimePicker) view.findViewById(R.id.event_time);
+
+        mDatePicker = (DatePicker) view.findViewById(R.id.event_date);
+
+        mAttendees = (EditText) view.findViewById(R.id.attendees_event);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(mEditName.getText().toString().matches("")) {
+                    Toast.makeText(getActivity(), "Missing event name", Toast.LENGTH_SHORT).show();
+                } else if(mAttendees.getText().toString().matches("")) {
+                    Toast.makeText(getActivity(), "Missing maximum number of attendees", Toast.LENGTH_SHORT).show();
+                } else {
+                    int day = mDatePicker.getDayOfMonth();
+                    int month = mDatePicker.getMonth();
+                    int year = mDatePicker.getYear();
+                    int hour = mTimePicker.getCurrentHour();
+                    int min = mTimePicker.getCurrentMinute();
+
+                    mEventDate = Calendar.getInstance();
+                    mEventDate.set(year, month, day, hour, min);
+
+                    int maxAttendees = Integer.parseInt(mAttendees.getText().toString());
+
+                    EventModel.addEvent(
+                            new EventModel.Event(
+                                    EventModel.EVENTS.size(),
+                                    mEditName.getText().toString(),
+                                    mEventDate,
+                                    maxAttendees));
+                    getActivity().finish();
+                }
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
