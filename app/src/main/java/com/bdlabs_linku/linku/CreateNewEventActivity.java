@@ -3,11 +3,12 @@ package com.bdlabs_linku.linku;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class CreateNewEventActivity extends Activity implements CreateNewEventFragment.OnFragmentInteractionListener {
+public class CreateNewEventActivity extends ActionBarActivity implements CreateNewEventFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,7 @@ public class CreateNewEventActivity extends Activity implements CreateNewEventFr
         }
 
         // Show up navigation button
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

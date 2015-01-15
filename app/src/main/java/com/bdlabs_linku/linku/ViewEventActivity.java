@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +15,7 @@ import android.os.Build;
 import android.widget.Toast;
 
 
-public class ViewEventActivity extends Activity implements ViewEventFragment.OnFragmentInteractionListener {
+public class ViewEventActivity extends ActionBarActivity implements ViewEventFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
