@@ -29,7 +29,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventsFragment extends Fragment implements ListView.OnItemClickListener//, GooglePlayServicesClient.ConnectionCallbacks,
+public class EventsFragment extends android.support.v4.app.Fragment implements ListView.OnItemClickListener//, GooglePlayServicesClient.ConnectionCallbacks,
         //GooglePlayServicesClient.OnConnectionFailedListener
         {
 
