@@ -2,6 +2,7 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -94,7 +95,17 @@ public class MapEventsFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_holder, container, false);
+        View view = inflater.inflate(R.layout.fragment_map_holder, container, false);
+
+        view.findViewById(R.id.add_event_btn_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

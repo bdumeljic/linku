@@ -19,6 +19,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -70,6 +72,14 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
+
+        view.findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
 
         // Set the list adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -128,38 +138,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-
-        inflater.inflate(R.menu.events, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch(id) {
-            // If the create event settings item was clicked then start the activity to create new event
-            case R.id.create_event:
-                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
-                startActivityForResult(intent, 1);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
