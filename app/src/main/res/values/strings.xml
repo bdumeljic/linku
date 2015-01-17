@@ -9,9 +9,9 @@
 
     <!-- Placeholders -->
     <string name="placeholder_events_item_name">Event Name</string>
-    <string name="placeholder_events_item_time">00:00</string>
-    <string name="placeholder_events_item_distance">0 km</string>
-    <string name="placeholder_events_item_attendees">0</string>
+    <string name="placeholder_events_item_time">Time</string>
+    <string name="placeholder_events_item_location">Place and Distance</string>
+    <string name="placeholder_events_item_attendees">Participants</string>
     <string name="create_event">Create Event</string>
     <string name="title_activity_view_event">Event</string>
     <string name="title_activity_create_new_event">New event</string>

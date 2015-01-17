@@ -241,22 +241,24 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
             }
 
+            /*
             // Set background image of the event item
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
             bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
             convertView.setBackgroundDrawable(bitmapDrawable);
-
+            */
             // Set event name
             TextView name = (TextView) convertView.findViewById(R.id.event_name);
             name.setText(events.get(position).name);
 
+
             // Set event time
-            TextView time = (TextView) convertView.findViewById(R.id.time);
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
+            TextView time = (TextView) convertView.findViewById(R.id.event_time);
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
             String formattedDate = dateFormat.format(events.get(position).time.getTime());
             time.setText(formattedDate);
-
+            /*
             // Set event distance from user's current location
             // TODO add location
             TextView distance = (TextView) convertView.findViewById(R.id.distance);
@@ -265,7 +267,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             // Set number of people attending
             TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
             attendees.setText(String.valueOf(events.get(position).attendees));
-
+            */
             return convertView;
         }
 
