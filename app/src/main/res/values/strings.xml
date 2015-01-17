@@ -21,9 +21,9 @@
     <string name="name_event_hint">Name for Event</string>
     <string name="attendees_event_hint">Maximum Number of People</string>
     <string name="save_new_event_button">Save</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="title_map">Map</string>
     <string name="title_events">Events</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

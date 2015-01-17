@@ -1,13 +1,13 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,9 +29,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class EventsFragment extends android.support.v4.app.Fragment implements ListView.OnItemClickListener//, GooglePlayServicesClient.ConnectionCallbacks,
-        //GooglePlayServicesClient.OnConnectionFailedListener
-        {
+public class EventsFragment extends Fragment implements ListView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
 
