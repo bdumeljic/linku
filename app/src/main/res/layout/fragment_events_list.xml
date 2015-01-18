@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:dividerHeight="0dp"
-        android:divider="@null"/>
+        android:divider="@null"
+        android:drawSelectorOnTop="true"/>
 
     <TextView
         android:id="@+id/empty_events"
@@ -26,7 +27,7 @@
         android:id="@+id/add_event_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        fab:fab_icon="@drawable/ic_action_new"
+        fab:fab_icon="@drawable/ic_plus"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_darker"
         android:layout_alignParentBottom="true"

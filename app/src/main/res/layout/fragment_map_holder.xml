@@ -18,7 +18,7 @@
         android:id="@+id/add_event_btn_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        fab:fab_icon="@drawable/ic_action_new"
+        fab:fab_icon="@drawable/ic_plus"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_darker"
         android:layout_alignParentBottom="true"
