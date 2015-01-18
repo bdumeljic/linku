@@ -3,6 +3,7 @@
 
     <string name="app_name">LinkU</string>
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search event</string>
 
     <!-- Empty text -->
     <string name="empty_events_list">There are no events around you</string>
