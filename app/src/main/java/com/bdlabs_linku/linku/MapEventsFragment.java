@@ -102,8 +102,8 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         view.findViewById(R.id.add_event_btn_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
-                startActivityForResult(intent, 1);
+                //Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
+                //startActivityForResult(intent, 1);
             }
         });
 

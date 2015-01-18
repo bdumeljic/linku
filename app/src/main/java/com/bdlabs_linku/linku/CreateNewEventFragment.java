@@ -94,6 +94,7 @@ public class CreateNewEventFragment extends Fragment {
                             new EventModel.Event(
                                     EventModel.EVENTS.size(),
                                     mEditName.getText().toString(),
+                                    "",
                                     mEventDate,
                                     maxAttendees));
                     getActivity().finish();

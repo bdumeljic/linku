@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -236,16 +237,23 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             DateFormat dateFormat = new SimpleDateFormat("HH:mm");
             String formattedDate = dateFormat.format(events.get(position).time.getTime());
             time.setText(formattedDate);
-            /*
+
             // Set event distance from user's current location
             // TODO add location
-            TextView distance = (TextView) convertView.findViewById(R.id.distance);
-            distance.setText("1 km");
+            TextView distance = (TextView) convertView.findViewById(R.id.event_place);
+            distance.setText(events.get(position).locName + " - " + events.get(position).dist);
 
             // Set number of people attending
             TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
-            attendees.setText(String.valueOf(events.get(position).attendees));
-            */
+            if(events.get(position).attendees == 0) {
+                attendees.setText("Be the first to join!");
+            } else {
+                attendees.setText(String.valueOf(events.get(position).attendees) + "people are going");
+            }
+
+            ImageView cat = (ImageView) convertView.findViewById(R.id.event_cat);
+            cat.setImageResource(events.get(position).getCategoryIcon());
+
             return convertView;
         }
 
