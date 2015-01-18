@@ -1,0 +1,12 @@
+<android.support.v7.widget.Toolbar
+    android:layout_height="?actionBarSize"
+    android:layout_width="match_parent"
+    android:id="@+id/view_event_toolbar"
+    android:minHeight="?attr/actionBarSize"
+    android:background="@null"
+    android:contentInsetStart="0dp"
+    android:contentInsetLeft="16dp"
+    app:contentInsetLeft="16dp"
+    app:contentInsetStart="0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

@@ -3,6 +3,13 @@
     <color name="transparent_background">#99484746</color>
     <color name="primary">#00BCD4</color>
     <color name="primary_dark">#0097A7</color>
-    <color name="accent">#F44336</color>
+    <color name="accent">#536DFE</color>
+    <color name="accent_darker">#304FFE</color>
+
+    <color name="body_dark">#de000000</color>
+    <color name="body_grey">#8a000000</color>
+
+    <color name="divider_grey">#1f000000</color>
+
 
 </resources>
