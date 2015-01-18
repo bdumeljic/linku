@@ -1,12 +1,23 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- Screen margins -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="add_event_edit_horizontal_margin">56dp</dimen>
+    <dimen name="vertical_8_margin">8dp</dimen>
+    <dimen name="horizontal_36_margin">36dp</dimen>
 
-    <dimen name="keyline_16">16dp</dimen>
-
+    <!-- Text sizes -->
     <dimen name="title">20sp</dimen>
     <dimen name="body2">14sp</dimen>
+    <dimen name="add_event_title">24sp</dimen>
+    <dimen name="add_event_fields">16sp</dimen>
 
+    <!-- Line heights -->
+    <dimen name="add_event_edit_height">32dp</dimen>
+
+    <!-- Other -->
+    <dimen name="keyline_16">16dp</dimen>
+    <dimen name="edit_drawable_top">16dp</dimen>
+    <dimen name="image_icon">40dp</dimen>
 
 </resources>
