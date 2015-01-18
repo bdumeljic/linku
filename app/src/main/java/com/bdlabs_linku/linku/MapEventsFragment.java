@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -100,8 +102,8 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         view.findViewById(R.id.add_event_btn_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
-                startActivityForResult(intent, 1);
+                //Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
+                //startActivityForResult(intent, 1);
             }
         });
 
@@ -192,33 +194,43 @@ public class MapEventsFragment extends Fragment implements LocationListener {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        // mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker").snippet("Snippet"));
-
         mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.sport))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_sports))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(new LatLng(48.820054,2.338449))
-                .title("Gym"));
+                .title("Gym")
+                .snippet("Going to Cité Universitaire's gym at h13:00"));
+
         mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.sport))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_sports))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(new LatLng(48.835453, 2.382456))
-                .title("Football Match"));
+                .title("Football Match")
+                .snippet("Having a football match at h17:00"));
         mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bar_cocktail))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_nightlife))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(new LatLng(48.864267, 2.314326))
-                .title("Showcase h.23:00"));
+                .title("Showcase")
+                .snippet("Going to the club at h23:00"));
         mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.museum))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_culture))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(new LatLng(48.860745, 2.337585))
-                .title("Louvre h.12:00"));
+                .title("Louvre")
+                .snippet("Visiting Paris' biggest museum at h8:30"));
         mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_coffee))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(new LatLng(48.864798, 2.377710))
-                .title("CoffeeBreak h.16:30"));
+                .title("CoffeeBreak")
+                .snippet("Meeting to talk and drink a coffee at h16:30"));
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_study))
+                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                .position(new LatLng(48.862134, 2.354248))
+                .title("Project")
+                .snippet("Study and make the presentation for BDLabs project h13:00"));
 
         // Enable MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
@@ -305,4 +317,32 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         public void onFragmentInteraction(Uri uri);
     }
 
+    class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private final View myContentsView;
+        private View layoutInflater;
+
+        MyInfoWindowAdapter() {
+            myContentsView = getLayoutInflater(null).inflate(R.layout.custom_info_contents, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+            tvTitle.setText(marker.getTitle());
+            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
+            tvSnippet.setText(marker.getSnippet());
+
+            //   ImageView ivIcon = ((ImageView)myContentsView.findViewById(R.id.icon));
+            //   ivIcon.setImageDrawable(getResources().getDrawable(R.drawable.sports_icon));
+
+            return myContentsView;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
 }

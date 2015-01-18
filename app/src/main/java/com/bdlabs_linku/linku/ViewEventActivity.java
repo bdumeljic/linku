@@ -19,9 +19,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -65,6 +68,10 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
     private TextView mEventDistance;
     private TextView mEventAttendees;
     private ImageView mMapView;
+    private TextView mDescription;
+
+    private TextView mLocName;
+    private TextView mLocAddress;
 
     private boolean mHasPhoto = true;
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
@@ -72,6 +79,7 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
 
     private android.os.Handler mHandler = new android.os.Handler();
 
+    private boolean mGoing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +119,15 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         mHeaderBox = findViewById(R.id.header_session);
         mTitle = (TextView) findViewById(R.id.session_title);
         mSubtitle = (TextView) findViewById(R.id.session_subtitle);
+
         mPhotoViewContainer = findViewById(R.id.session_photo_container);
         mPhotoView = (ImageView) findViewById(R.id.session_photo);
+
+        mDescription = (TextView) findViewById(R.id.description);
+
         mMapView = (ImageView) findViewById(R.id.location_map);
+        mLocName = (TextView) findViewById(R.id.location_name);
+        mLocAddress = (TextView) findViewById(R.id.location_address);
 
         ViewCompat.setTransitionName(mPhotoView, TRANSITION_NAME_PHOTO);
 
@@ -128,16 +142,15 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
 
         // Set event time
         mSubtitle = (TextView) findViewById(R.id.session_subtitle);
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm, d MMM yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(EventModel.EVENTS.get(mEventId).time.getTime());
-        mSubtitle.setText(formattedDate);
+        mSubtitle.setText(EventModel.EVENTS.get(mEventId).dist + " away, starting at " + formattedDate);
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
         mHasPhoto = true;
         mPhotoView.setImageResource(R.drawable.tri_pattern);
         recomputePhotoAndScrollingMetrics();
 
-        Log.e("AAFKLAK", "STARTING");
         onScrollChanged(0, 0); // trigger scroll handling
         mScrollViewChild.setVisibility(View.VISIBLE);
 
@@ -149,6 +162,10 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         // Set number of people attending
         //mEventAttendees = (TextView) view.findViewById(R.id.attendees);
         //mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
+
+        mDescription.setText(EventModel.EVENTS.get(mEventId).description);
+        mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
+        mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
 
         STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLatitude()) + "," + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLatitude()) + "," + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLongitude()) + "";
 
@@ -178,6 +195,22 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         };
         setImageFromUrl.execute();
 
+        findViewById(R.id.join_event_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGoing) {
+                    mGoing = false;
+                    ((FloatingActionButton) v).setIcon(R.drawable.ic_plus);
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
+                } else {
+                    mGoing = true;
+                    ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary_dark));
+                }
+            }
+        });
     }
 
     @Override
@@ -189,7 +222,6 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
             = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
-            Log.d("SCROLL", "scrolling!");
             recomputePhotoAndScrollingMetrics();
         }
     };
@@ -203,9 +235,6 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
             mPhotoHeightPixels = (int) (mPhotoView.getWidth() / PHOTO_ASPECT_RATIO);
             mPhotoHeightPixels = Math.min(mPhotoHeightPixels, mScrollView.getHeight() * 2 / 3);
         }
-
-        Log.e("SCROLL", "header height " + mHeaderHeightPixels);
-        Log.e("SCROLL", "image height " + mPhotoHeightPixels);
 
         ViewGroup.LayoutParams lp;
         lp = mPhotoViewContainer.getLayoutParams();
