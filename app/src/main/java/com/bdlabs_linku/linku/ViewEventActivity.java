@@ -201,13 +201,13 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
                 if (mGoing) {
                     mGoing = false;
                     ((FloatingActionButton) v).setIcon(R.drawable.ic_plus);
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
                 } else {
                     mGoing = true;
                     ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary));
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary_dark));
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
                 }
             }
         });
