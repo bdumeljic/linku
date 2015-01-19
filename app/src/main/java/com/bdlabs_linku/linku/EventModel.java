@@ -66,9 +66,13 @@ public class EventModel {
 
         Calendar time = Calendar.getInstance();
 
-        addEvent(new Event(1, "Coffee @Kozy", "", time, 2));
+        Event e = new Event(1, "Coffee @Kozy", "", time, 2);
+        e.setAttendees(2);
+        addEvent(e);
         addEvent(new Event(2, "Work in the AntiCafe", "", time, 8));
-        addEvent(new Event(3, "Salsa at Bario Latino", "", time, 4));
+        Event e3 = new Event(3, "Salsa at Bario Latino", "", time, 4);
+        e3.setAttendees(4);
+        addEvent(e3);
     }
 
     public static void addEvent(Event e) {

@@ -248,7 +248,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             if(events.get(position).attendees == 0) {
                 attendees.setText("Be the first to join!");
             } else {
-                attendees.setText(String.valueOf(events.get(position).attendees) + "people are going");
+                attendees.setText(String.valueOf(events.get(position).attendees) + " people are going");
             }
 
             ImageView cat = (ImageView) convertView.findViewById(R.id.event_cat);
