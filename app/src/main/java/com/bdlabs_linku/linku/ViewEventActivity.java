@@ -216,8 +216,6 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
     @Override
     public void onFragmentInteraction(int mEventId) {}
 
-
-
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener
             = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override

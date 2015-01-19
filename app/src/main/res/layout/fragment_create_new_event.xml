@@ -14,69 +14,160 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            style="@style/new_event_text"
-            android:text="@string/name_event_hint" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/event_name_input"
-            android:inputType="text"
-            android:gravity="center_horizontal"
-            android:hint="@string/placeholder_events_item_name"
-            android:imeOptions="actionDone" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/time_date_event_hint"
-            style="@style/new_event_text"
-         />
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/add_event_edit_horizontal_margin"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+        >
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/add_event_edit_height"
+                android:layout_marginBottom="@dimen/vertical_8_margin"
+                android:id="@+id/event_title_input"
+                android:inputType="text"
+                android:textColor="@color/black_87"
+                android:textSize="@dimen/add_event_title"
+                android:gravity="bottom|left"
+                android:hint="@string/placeholder_events_item_title"
+                android:textColorHint="@color/edit_hint"
+                android:background="#00000000"
+                android:imeOptions="actionDone" />
 
-            <TimePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_time" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_grey"
+                android:layout_marginBottom="@dimen/vertical_8_margin" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/add_event_edit_horizontal_margin"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/add_event_edit_height"
+                android:layout_marginBottom="@dimen/vertical_8_margin"
+                android:id="@+id/event_description_input"
+                android:inputType="text"
+                android:textColor="@color/black_87"
+                android:textSize="@dimen/add_event_fields"
+                android:gravity="bottom|left"
+                android:hint="@string/placeholder_events_item_description"
+                android:textColorHint="@color/edit_hint"
+                android:background="#00000000"
+                android:imeOptions="actionDone" />
 
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_date"
-                android:calendarViewShown="false"/>
-
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_grey"
+                android:layout_marginBottom="@dimen/vertical_8_margin" />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- pick day and time -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/attendees_event_hint"
-            style="@style/new_event_text"/>
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/vertical_8_margin" >
+            <ImageView
+                android:layout_width="@dimen/image_icon"
+                android:layout_height="@dimen/image_icon"
+                android:src="@drawable/ic_time"/>
+            <!-- pick day -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:orientation="vertical"
+                >
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/add_event_edit_height"
+                    android:layout_marginBottom="@dimen/vertical_8_margin"
+                    android:id="@+id/event_day_input"
+                    android:textColor="@color/edit_hint"
+                    android:textSize="@dimen/add_event_fields"
+                    android:textAllCaps="false"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/placeholder_events_item_day"
+                    android:drawableRight="@drawable/ic_down"
+                    android:background="#00000000"
+                    android:onClick="dayPicker"
+                    />
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_grey"/>
+            </LinearLayout>
+            <!-- pick time -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:orientation="vertical"
+                >
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/add_event_edit_height"
+                    android:layout_marginBottom="@dimen/vertical_8_margin"
+                    android:id="@+id/event_time_input"
+                    android:textColor="@color/edit_hint"
+                    android:textSize="@dimen/add_event_fields"
+                    android:text="@string/placeholder_events_item_time"
+                    android:textAllCaps="false"
+                    android:gravity="left|center_vertical"
+                    android:drawableRight="@drawable/ic_down"
+                    android:background="#00000000"
+                    android:onClick="timePicker"
+                    />
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_grey"
+                    />
+            </LinearLayout>
+        </LinearLayout>
 
-        <EditText
-            android:layout_width="wrap_content"
+        <!-- pick location -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="@string/placeholder_events_item_attendees"
-            android:ems="10"
-            android:id="@+id/attendees_event" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/save_new_event_button"
-            android:id="@+id/btn_save_event"
-            android:layout_gravity="right" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/vertical_8_margin" >
+            <ImageView
+                android:layout_width="@dimen/image_icon"
+                android:layout_height="@dimen/image_icon"
+                android:src="@drawable/ic_position"/>
+            <!-- pick location -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:orientation="vertical"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/add_event_edit_height"
+                    android:layout_marginBottom="@dimen/vertical_8_margin"
+                    android:id="@+id/event_location_input"
+                    android:inputType="text"
+                    android:textColor="@color/black_87"
+                    android:textSize="@dimen/add_event_fields"
+                    android:gravity="bottom|left"
+                    android:hint="@string/placeholder_events_item_location"
+                    android:textColorHint="@color/edit_hint"
+                    android:background="#00000000"
+                    android:imeOptions="actionDone" />
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_grey"/>
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
