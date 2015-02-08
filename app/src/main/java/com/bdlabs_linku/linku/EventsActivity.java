@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Network;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import java.security.Provider;
 import java.util.Locale;
 
 //ProviderLocationTracker
@@ -47,11 +49,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     FragmentViewPager mViewPager;
 
     Location mLastLocation;
+    ProviderLocationTracker mLocationTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
+
+        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
