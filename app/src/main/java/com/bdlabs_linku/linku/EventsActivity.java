@@ -2,6 +2,8 @@ package com.bdlabs_linku.linku;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,7 +25,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.util.Locale;
 
-
+//ProviderLocationTracker
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
@@ -43,6 +45,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      * The {@link android.support.v4.view.ViewPager} that will host the section contents.
      */
     FragmentViewPager mViewPager;
+
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        //mLastLocation = new ProviderLocationTracker(getApplicationContext(), LocationManager.GPS_PROVIDER);
     }
 
     @Override
