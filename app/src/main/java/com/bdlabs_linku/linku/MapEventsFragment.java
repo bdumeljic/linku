@@ -34,14 +34,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapEventsFragment extends Fragment implements LocationListener {
+public class MapEventsFragment extends Fragment {
 
     EventsActivity mActivity;
     MapFragment mMapFragment;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    LocationManager locationManager;
-    String provider;
+    //LocationManager locationManager;
+    //String provider;
 
     double latitude;
     double longitude;
@@ -146,7 +146,7 @@ public class MapEventsFragment extends Fragment implements LocationListener {
 
     public void onPause(){
         super.onPause();
-        locationManager.removeUpdates(this);
+      //  locationManager.removeUpdates(this);
     }
 
     /**
@@ -236,19 +236,19 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         mMap.setMyLocationEnabled(true);
 
         // Get LocationManager object from System Service LOCATION_SERVICE
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+     //   locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         // Create a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
+       // Criteria criteria = new Criteria();
 
         // Get the name of the best provider
-        provider = locationManager.getBestProvider(criteria, true);
+        //provider = locationManager.getBestProvider(criteria, true);
 
         // Get Current Location
-        Location myLocation = locationManager.getLastKnownLocation(provider);
+       // Location myLocation = locationManager.getLastKnownLocation(provider);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-
+        Location myLocation = mActivity.mLastLocation;
 
         if(myLocation != null) {
             // set map type
@@ -270,8 +270,7 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         }
     }
 
-    @Override
-    public void onLocationChanged(Location loc) {
+    public void newLocation(Location loc) {
         latitude = loc.getLatitude();
         // Get longitude of the current location
         longitude = loc.getLongitude();
@@ -287,20 +286,7 @@ public class MapEventsFragment extends Fragment implements LocationListener {
 
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this
