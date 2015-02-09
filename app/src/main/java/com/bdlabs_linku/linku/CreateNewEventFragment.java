@@ -149,13 +149,13 @@ public class CreateNewEventFragment extends Fragment {
             int maxAttendees = 10;
 
             // Add event to the model
-            EventModel.addEvent(
+            /*EventModel.addEvent(
                     new EventModel.Event(
                             EventModel.EVENTS.size(),
                             mEditName.getText().toString(),
                             "",
                             mEventDate,
-                            maxAttendees));
+                            maxAttendees));*/
             getActivity().finish();
         }
     }

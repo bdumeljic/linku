@@ -2,29 +2,17 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 
 /**
  * A fragment representing a list of Event Items.
@@ -45,7 +33,10 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
      * The Adapter which will be used to populate the ListView/GridView with
      * Event List Item Views.
      */
-    private EventsAdapter mAdapter;
+    //private EventsAdapter mAdapter;
+
+    // Adapter for the Parse query
+    private ParseQueryAdapter<Event> postsQueryAdapter;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -66,7 +57,47 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         super.onCreate(savedInstanceState);
 
         // When this fragment is created the adapter is populated with events from the EventModel
-        mAdapter = new EventsAdapter(EventModel.EVENTS);
+        //mAdapter = new EventsAdapter(EventModel.EVENTS);
+
+        // Set up a customized query
+        ParseQueryAdapter.QueryFactory<Event> factory =
+                new ParseQueryAdapter.QueryFactory<Event>() {
+                    public ParseQuery<Event> create() {
+                        ParseQuery<Event> query = Event.getQuery();
+                        //query.include("user");
+                        query.orderByDescending("createdAt");
+                        //query.whereWithinKilometers("location", geoPointFromLocation(myLoc), radius
+                         //       * METERS_PER_FEET / METERS_PER_KILOMETER);
+                        query.setLimit(20);
+                        return query;
+                    }
+                };
+
+        // Set up the query adapter
+        postsQueryAdapter = new ParseQueryAdapter<Event>(getActivity(), factory) {
+            @Override
+            public View getItemView(Event event, View view, ViewGroup parent) {
+                if (view == null) {
+                    view = View.inflate(getContext(), R.layout.events_list_item, null);
+                }
+
+                TextView name = (TextView) view.findViewById(R.id.event_name);
+                name.setText(event.getTitle());
+
+                // Set number of people attending
+                TextView attendees = (TextView) view.findViewById(R.id.attendees);
+                int attend = event.getAttending();
+                if(attend < 1) {
+                    attendees.setText("Be the first to join!");
+                } else if(attend == 1) {
+                    attendees.setText("One person is going");
+                } else {
+                    attendees.setText(String.valueOf(event.getAttending()) + " people are going");
+                }
+
+                return view;
+            }
+        };
     }
 
     @Override
@@ -84,7 +115,9 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         // Set the list adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(mAdapter);
+        //mListView.setAdapter(mAdapter);
+        mListView.setAdapter(postsQueryAdapter);
+
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing
@@ -101,10 +134,10 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    mAdapter.remove(position);
+                                    //mAdapter.remove(position);
 
                                 }
-                                mAdapter.notifyDataSetChanged();
+                                //mAdapter.notifyDataSetChanged();
                                 setEmptyText();
                             }
                 });
@@ -126,7 +159,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         // Start the View Event Activity that show the clicked event
         Intent intent = new Intent(getActivity(), ViewEventActivity.class);
-        intent.putExtra(ViewEventFragment.EVENT_POSITION, position);
+        intent.putExtra(ViewEventActivity.EVENT_ID, postsQueryAdapter.getItem(position).getObjectId());
         startActivity(intent);
     }
 
@@ -147,7 +180,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         // If the event was created successfully then update the adapter
         if (requestCode == 1) {
-            mAdapter.notifyDataSetChanged();
+            //mAdapter.notifyDataSetChanged();
             setEmptyText();
         }
     }
@@ -166,11 +199,11 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void setEmptyText() {
         View emptyView = getView().findViewById(R.id.empty_events);
         if(emptyView != null) {
-            if (mAdapter.isEmpty()) {
+            /*if (mAdapter.isEmpty()) {
                 emptyView.setVisibility(View.VISIBLE);
             } else {
                 emptyView.setVisibility(View.INVISIBLE);
-            }
+            }*/
         }
     }
 
@@ -190,7 +223,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     }
 
     // Adapter for events
-    private class EventsAdapter extends BaseAdapter {
+    /*private class EventsAdapter extends BaseAdapter {
         private List<EventModel.Event> events;
 
         public EventsAdapter(List<EventModel.Event> events) {
@@ -226,7 +259,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
             bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
             convertView.setBackgroundDrawable(bitmapDrawable);
-            */
+            /
             // Set event name
             TextView name = (TextView) convertView.findViewById(R.id.event_name);
             name.setText(events.get(position).name);
@@ -262,7 +295,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             events.remove(position);
             return;
         }
-    }
+    }*/
 
 
 
