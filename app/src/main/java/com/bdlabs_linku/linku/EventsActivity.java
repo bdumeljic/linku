@@ -49,7 +49,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+        setContentView(R.layout.activity_welcome);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
