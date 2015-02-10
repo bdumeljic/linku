@@ -11,10 +11,6 @@
         <activity
             android:name=".EventsActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ViewEventActivity"
@@ -33,6 +29,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="EventsActivity" />
         </activity>
+        <activity
+                android:name=".LoginActivity"
+                android:label="@string/title_activity_login"
+                android:screenOrientation="portrait" />
+
+        <activity
+                android:name=".SignUpActivity"
+                android:label="@string/title_activity_signup"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".DispatchActivity"
                 android:noHistory="true" >
