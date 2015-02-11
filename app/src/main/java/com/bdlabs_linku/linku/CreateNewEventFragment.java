@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -41,10 +44,8 @@ public class CreateNewEventFragment extends Fragment {
     EditText mEditLocation;
     Button mEditDay;
     Button mEditTime;
-    DatePicker mDatePicker;
-    TimePicker mTimePicker;
     Date mEventDate;
-    EditText mAttendees;
+    Spinner mCategorySpinner;
 
     int day = -1;
     int month = -1;
@@ -84,6 +85,11 @@ public class CreateNewEventFragment extends Fragment {
         mEditLocation = (EditText) view.findViewById(R.id.event_location_input);
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
+
+        mCategorySpinner = (Spinner) view.findViewById(R.id.category);
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCategorySpinner.setAdapter(categoryAdapter);
 
         return view;
     }
@@ -137,7 +143,7 @@ public class CreateNewEventFragment extends Fragment {
             event.setDescription(mEditDescription.getText().toString().trim());
             event.setTime(mEventDate);
             event.setAttending(0);
-            event.setCategory(0);
+            event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
             // TODO Set the location to the location the user picked
             event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
