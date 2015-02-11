@@ -30,5 +30,6 @@
     <string name="title_map">Map</string>
     <string name="title_events">Events</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="progress_create_event">Creating event ...</string>
 
 </resources>

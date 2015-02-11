@@ -161,7 +161,8 @@
                     android:hint="@string/placeholder_events_item_location"
                     android:textColorHint="@color/edit_hint"
                     android:background="#00000000"
-                    android:imeOptions="actionDone" />
+                    android:imeOptions="actionDone"
+                    android:focusable="false" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
