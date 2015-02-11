@@ -11,3 +11,5 @@ app/src/release/res/values/key.xml
 app/app-release.apk
 
 app/manifest-merger-release-report.txt
+
+linku.iml
