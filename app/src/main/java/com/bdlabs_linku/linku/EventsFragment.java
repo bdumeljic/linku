@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+
+import java.text.SimpleDateFormat;
 
 /**
  * A fragment representing a list of Event Items.
@@ -81,8 +85,13 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                     view = View.inflate(getContext(), R.layout.events_list_item, null);
                 }
 
-                TextView name = (TextView) view.findViewById(R.id.event_name);
-                name.setText(event.getTitle());
+                TextView title = (TextView) view.findViewById(R.id.event_name);
+                title.setText(event.getTitle());
+
+                TextView time = (TextView) view.findViewById(R.id.event_time);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                String formattedDate = dateFormat.format(event.getTime().getTime());
+                time.setText(formattedDate);
 
                 // Set number of people attending
                 TextView attendees = (TextView) view.findViewById(R.id.attendees);
@@ -94,6 +103,10 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 } else {
                     attendees.setText(String.valueOf(event.getAttending()) + " people are going");
                 }
+
+                ImageView cat = (ImageView) view.findViewById(R.id.event_cat);
+                cat.setImageResource(event.getCategoryIcon());
+
 
                 return view;
             }

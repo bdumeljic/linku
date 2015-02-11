@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ParseClassName("Event")
@@ -72,24 +73,29 @@ public class Event extends ParseObject {
         put("title", value);
     }
 
-    /*public Calendar getTime() {
-        return time;
+    public String getDescription() {
+        return getString("description");
     }
 
-    public void setTime(Calendar time) {
-        this.time = time;
+    public void setDescription(String value) {
+        put("description", value);
     }
 
+    public Date getTime() {
+        return getDate("time");
+    }
 
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }*/
+    public void setTime(Date time) {
+        put("time", time);
+    }
 
     public ParseGeoPoint getLocation() {
         return getParseGeoPoint("location");
     }
 
+    public void setLocation(ParseGeoPoint location) {
+        put("location", location);
+    }
     public int getAttending() {
         return getInt("attending");
     }
@@ -102,20 +108,20 @@ public class Event extends ParseObject {
         put("attending", getInt("attending") + 1);
     }
 
-    public int getCategoryIcon() {
-        return CATEGORIES_ICONS.get(getCategory());
-    }
-
-    public int getCategoryMap() {
-        return CATEGORIES_MAP.get(getCategory());
+    public int getCategory() {
+        return getInt("category");
     }
 
     public void setCategory(int category) {
         put("category", category);
     }
 
-    public int getCategory() {
-        return getInt("category");
+    public int getCategoryIcon() {
+        return CATEGORIES_ICONS.get(getCategory());
+    }
+
+    public int getCategoryMap() {
+        return CATEGORIES_MAP.get(getCategory());
     }
 
     @Override

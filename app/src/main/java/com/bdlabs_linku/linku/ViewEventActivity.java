@@ -28,6 +28,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
@@ -195,14 +197,14 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mTitle.setText(mEvent.getTitle());
 
-        //DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        //String formattedDate = dateFormat.format(EventModel.EVENTS.get(mEventId).time.getTime());
-        //mSubtitle.setText(EventModel.EVENTS.get(mEventId).dist + " away, starting at " + formattedDate);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String formattedDate = dateFormat.format(mEvent.getTime().getTime());
+        mSubtitle.setText("700m away, starting at " + formattedDate);
 
         //mEventDistance.setText("2 km away");
         //mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
 
-        //mDescription.setText(EventModel.EVENTS.get(mEventId).description);
+        mDescription.setText(mEvent.getDescription());
         //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
         //mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
 
