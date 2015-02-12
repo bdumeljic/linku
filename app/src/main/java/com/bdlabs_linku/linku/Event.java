@@ -4,8 +4,10 @@ import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -65,6 +67,14 @@ public class Event extends ParseObject {
         return ParseQuery.getQuery(Event.class);
     }
 
+    public void setCreator(ParseUser user) {
+        put("creator", user);
+    }
+
+    public ParseUser getCreator() {
+        return getParseUser("creator");
+    }
+
     public String getTitle() {
         return getString("title");
     }
@@ -105,7 +115,8 @@ public class Event extends ParseObject {
     }
 
     public void addAttendee() {
-        put("attending", getInt("attending") + 1);
+        increment("attending");
+        add("attendingList", Arrays.asList(ParseUser.getCurrentUser()   ));
     }
 
     public int getCategory() {

@@ -138,7 +138,7 @@ public class CreateNewEventFragment extends Fragment {
 
             // Create a post.
             Event event = new Event();
-            //event.setCreator(ParseUser.getCurrentUser());
+            event.setCreator(ParseUser.getCurrentUser());
             event.setTitle(title);
             event.setDescription(mEditDescription.getText().toString().trim());
             event.setTime(mEventDate);

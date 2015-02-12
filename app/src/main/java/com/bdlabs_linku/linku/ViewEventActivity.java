@@ -173,6 +173,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
+                    mEvent.addAttendee();
                 }
             }
         });
