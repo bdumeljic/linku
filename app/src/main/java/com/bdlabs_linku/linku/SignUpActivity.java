@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,9 +18,9 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 /**
- * Activity which displays a login screen to the user.
+ * Activity which displays a signup screen to the user.
  */
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends ActionBarActivity {
   // UI references.
   private EditText usernameEditText;
   private EditText passwordEditText;
@@ -109,7 +110,10 @@ public class SignUpActivity extends Activity {
         dialog.dismiss();
         if (e != null) {
           // Show the error message
-          Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            if(e.getCode() == ParseException.USERNAME_TAKEN) {
+                Toast.makeText(SignUpActivity.this, "This username is already taken.", Toast.LENGTH_LONG).show();
+            }
+
         } else {
           // Start an intent for the dispatch activity
           Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);

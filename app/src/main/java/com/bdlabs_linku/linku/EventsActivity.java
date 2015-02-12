@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.Locale;
 
@@ -102,6 +104,22 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.events, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                // Call the Parse log out method
+                ParseUser.logOut();
+                // Start and intent for the dispatch activity
+                Intent intent = new Intent(EventsActivity.this, DispatchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
