@@ -2,7 +2,6 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,6 +23,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 /**
@@ -46,6 +51,8 @@ public class MapEventsFragment extends Fragment implements LocationListener {
     double latitude;
     double longitude;
 
+    private List<Event> mEvents;
+    private boolean mEventsOnMap = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,6 +98,18 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         //setUpMapIfNeeded();
         //locationManager.requestLocationUpdates(provider, 500, 1, this);
 
+        ParseQuery<Event> query = ParseQuery.getQuery("Event");
+        query.findInBackground(new FindCallback<Event>() {
+            public void done(List<Event> objects, ParseException e) {
+                if (e == null) {
+                    Log.d("map", "retreived the follwing events: " + objects.toString());
+                    mEvents = objects;
+                    putEventsOnMap();
+                } else {
+                    // TODO event retrieval failure
+                }
+            }
+        });
     }
 
     @Override
@@ -142,6 +161,7 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         super.onResume();
         Log.d("MAP", "Resuming map");
         setUpMapIfNeeded();
+        putEventsOnMap();
     }
 
     public void onPause(){
@@ -194,43 +214,7 @@ public class MapEventsFragment extends Fragment implements LocationListener {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_sports))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.820054,2.338449))
-                .title("Gym")
-                .snippet("Going to Cité Universitaire's gym at h13:00"));
-
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_sports))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.835453, 2.382456))
-                .title("Football Match")
-                .snippet("Having a football match at h17:00"));
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_nightlife))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.864267, 2.314326))
-                .title("Showcase")
-                .snippet("Going to the club at h23:00"));
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_culture))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.860745, 2.337585))
-                .title("Louvre")
-                .snippet("Visiting Paris' biggest museum at h8:30"));
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_coffee))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.864798, 2.377710))
-                .title("CoffeeBreak")
-                .snippet("Meeting to talk and drink a coffee at h16:30"));
-        mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_study))
-                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(48.862134, 2.354248))
-                .title("Project")
-                .snippet("Study and make the presentation for BDLabs project h13:00"));
+        putEventsOnMap();
 
         // Enable MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
@@ -247,8 +231,6 @@ public class MapEventsFragment extends Fragment implements LocationListener {
         // Get Current Location
         Location myLocation = locationManager.getLastKnownLocation(provider);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-
 
         if(myLocation != null) {
             // set map type
@@ -267,6 +249,24 @@ public class MapEventsFragment extends Fragment implements LocationListener {
 
             // Zoom in the Google Map
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+        }
+    }
+
+    public void putEventsOnMap() {
+        if(mMap != null && mEvents != null) {
+            for(Event event : mEvents) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                String formattedDate = dateFormat.format(event.getTime().getTime());
+
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(event.getCategoryMap()))
+                        .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                        .position(new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude()))
+                        .title(event.getTitle())
+                        .snippet("at " + formattedDate));
+            }
+
+            mEventsOnMap = true;
         }
     }
 
