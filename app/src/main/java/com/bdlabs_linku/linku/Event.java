@@ -1,9 +1,12 @@
 package com.bdlabs_linku.linku;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -114,9 +117,15 @@ public class Event extends ParseObject {
         put("attending", attendees);
     }
 
+    public ParseRelation<ParseUser> getAttendingList() {
+        return getRelation("attendingList");
+    }
+
     public void addAttendee() {
         increment("attending");
-        add("attendingList", Arrays.asList(ParseUser.getCurrentUser()   ));
+        getAttendingList().add(ParseUser.getCurrentUser());
+        saveInBackground();
+        Log.d("EVENT", "attending: " + getAttendingList().toString());
     }
 
     public int getCategory() {
