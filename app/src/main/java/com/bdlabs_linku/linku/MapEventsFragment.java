@@ -88,9 +88,6 @@ public class MapEventsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        //setUpMapIfNeeded();
-        //locationManager.requestLocationUpdates(provider, 500, 1, this);
-
     }
 
     @Override
@@ -146,7 +143,6 @@ public class MapEventsFragment extends Fragment {
 
     public void onPause(){
         super.onPause();
-      //  locationManager.removeUpdates(this);
     }
 
     /**
@@ -235,17 +231,6 @@ public class MapEventsFragment extends Fragment {
         // Enable MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
 
-        // Get LocationManager object from System Service LOCATION_SERVICE
-     //   locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        // Create a criteria object to retrieve provider
-       // Criteria criteria = new Criteria();
-
-        // Get the name of the best provider
-        //provider = locationManager.getBestProvider(criteria, true);
-
-        // Get Current Location
-       // Location myLocation = locationManager.getLastKnownLocation(provider);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         Location myLocation = mActivity.mLastLocation;
@@ -282,7 +267,6 @@ public class MapEventsFragment extends Fragment {
 
         // Zoom in the Google Map
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
-        // mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!").snippet("Consider yourself located"));
 
     }
 
