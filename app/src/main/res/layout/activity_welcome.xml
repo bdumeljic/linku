@@ -76,12 +76,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/login"
-            style="?android:attr/borderlessButtonStyle"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
-            android:textColor="@color/accent"
+            android:textColor="@android:color/white"
             android:layout_marginBottom="16dp"
             android:layout_gravity="right"
-            android:gravity="center_vertical|right" />
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:elevation="2dp"
+            android:background="@color/accent" />
 
         <LinearLayout
             android:orientation="horizontal"
