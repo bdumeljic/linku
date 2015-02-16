@@ -30,7 +30,16 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
 
-    private static final String API_KEY = "My Browser Key";
+    private static  String API_KEY;
+
+    Context mContext;
+
+    public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
+        this.mContext = context;
+        API_KEY = mContext.getString(R.string.google_maps_browser_keys);
+    }
+
 
     private ArrayList<String> autocomplete(String input) {
         ArrayList<String> resultList = null;
@@ -85,9 +94,6 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
         return resultList;
     }
 
-        public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
-        }
 
         @Override
         public int getCount() {
