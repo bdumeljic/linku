@@ -68,6 +68,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private Image mEventImage;
     private TextView mEventName;
+    private ImageView mCategory;
     private TextView mEventTime;
     private TextView mEventDistance;
     private TextView mEventAttendees;
@@ -122,6 +123,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         mTitle = (TextView) findViewById(R.id.session_title);
         mSubtitle = (TextView) findViewById(R.id.session_subtitle);
 
+        mCategory = (ImageView) findViewById(R.id.cat);
+
         mPhotoViewContainer = findViewById(R.id.session_photo_container);
         mPhotoView = (ImageView) findViewById(R.id.session_photo);
 
@@ -165,12 +168,10 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             public void onClick(View v) {
                 if (mGoing) {
                     mGoing = false;
-                    ((FloatingActionButton) v).setIcon(R.drawable.ic_plus);
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
                 } else {
                     mGoing = true;
-                    ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
                     mEvent.addAttendee();
@@ -197,6 +198,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         Log.d("VIEW", mEvent.toString());
 
         mTitle.setText(mEvent.getTitle());
+        mCategory.setImageResource(mEvent.getCategoryIcon());
 
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(mEvent.getTime().getTime());
