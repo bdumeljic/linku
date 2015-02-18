@@ -49,19 +49,20 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
         try {
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + API_KEY);
-            sb.append("&components;=country:uk");
-            sb.append("&input;=" + URLEncoder.encode(input, "utf8"));
+            sb.append("&components=country:fr&type=geocode");
+            sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
+            Log.d(LOG_TAG,"URL:   "+url);
 
             // Load the results into a StringBuilder
             int read;
             char[] buff = new char[1024];
             while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
-                Log.d(LOG_TAG,"load the results   "+jsonResults);
+                //Log.d(LOG_TAG,"load the results   "+jsonResults);
             }
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Error processing Places API URL", e);

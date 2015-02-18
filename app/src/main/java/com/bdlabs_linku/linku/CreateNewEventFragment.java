@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -102,8 +103,12 @@ public class CreateNewEventFragment extends Fragment {
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(),R.layout.location_list));
 
 
+
+
         return view;
     }
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -159,6 +164,8 @@ public class CreateNewEventFragment extends Fragment {
 
             // we don't need this , put a random 10 people just for debugging
             int maxAttendees = 10;
+
+            
 
             // Add event to the model
             EventModel.addEvent(
