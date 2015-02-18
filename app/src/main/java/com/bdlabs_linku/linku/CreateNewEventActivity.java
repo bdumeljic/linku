@@ -26,8 +26,6 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
                     .commit();
         }
 
-
-
         // Show up navigation button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

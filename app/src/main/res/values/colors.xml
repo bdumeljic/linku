@@ -11,6 +11,8 @@
 
     <color name="divider_grey">#1f000000</color>
 
+    <color name="hint">#4bffffff</color>
+
     <!-- Text colors -->
     <color name="black_87">#DB000000</color>
 

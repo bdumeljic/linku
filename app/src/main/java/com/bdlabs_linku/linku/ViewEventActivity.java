@@ -11,7 +11,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,19 +19,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.logging.Handler;
 
 
-public class ViewEventActivity extends ActionBarActivity implements ViewEventFragment.OnFragmentInteractionListener, ObservableScrollView.Callbacks {
+public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
+
+    public static final String EVENT_ID = "event";
+
 
     public static final String TRANSITION_NAME_PHOTO = "photo";
     public static final float SESSION_BG_COLOR_SCALE_FACTOR = 0.75f;
@@ -58,12 +61,14 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
     private int mPhotoHeightPixels;
     private int mHeaderHeightPixels;
 
-    private int mEventId;
+    private Event mEvent;
+    private String mEventId;
 
     private int mSessionColor;
 
     private Image mEventImage;
     private TextView mEventName;
+    private ImageView mCategory;
     private TextView mEventTime;
     private TextView mEventDistance;
     private TextView mEventAttendees;
@@ -97,10 +102,8 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         });
         toolbar.setTitle("");
 
-        mEventId = getIntent().getIntExtra(ViewEventFragment.EVENT_POSITION, 0);
         mMaxHeaderElevation = getResources().getDimensionPixelSize(
                 R.dimen.headerbar_elevation);
-
 
         // Get views by ids
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
@@ -120,6 +123,8 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         mTitle = (TextView) findViewById(R.id.session_title);
         mSubtitle = (TextView) findViewById(R.id.session_subtitle);
 
+        mCategory = (ImageView) findViewById(R.id.cat);
+
         mPhotoViewContainer = findViewById(R.id.session_photo_container);
         mPhotoView = (ImageView) findViewById(R.id.session_photo);
 
@@ -133,7 +138,6 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
 
         // Set event name
         mTitle = (TextView) findViewById(R.id.session_title);
-        mTitle.setText(EventModel.EVENTS.get(mEventId).name);
 
         mHeaderBox.setBackgroundColor(mSessionColor);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -142,9 +146,6 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
 
         // Set event time
         mSubtitle = (TextView) findViewById(R.id.session_subtitle);
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        String formattedDate = dateFormat.format(EventModel.EVENTS.get(mEventId).time.getTime());
-        mSubtitle.setText(EventModel.EVENTS.get(mEventId).dist + " away, starting at " + formattedDate);
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
         mHasPhoto = true;
@@ -157,17 +158,60 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
         // Set event distance from user's current location
         // TODO add location
         //mEventDistance = (TextView) view.findViewById(R.id.distance);
-        //mEventDistance.setText("2 km away");
+
 
         // Set number of people attending
         //mEventAttendees = (TextView) view.findViewById(R.id.attendees);
+
+        findViewById(R.id.join_event_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGoing) {
+                    mGoing = false;
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
+                } else {
+                    mGoing = true;
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
+                    mEvent.addAttendee();
+                }
+            }
+        });
+
+        mEventId = getIntent().getStringExtra(EVENT_ID);
+        ParseQuery<Event> query = Event.getQuery();
+        query.getInBackground(mEventId, new GetCallback<Event>() {
+            public void done(Event object, ParseException e) {
+                if (e == null) {
+                    mEvent = object;
+                    setInfo();
+                } else {
+                    // something went wrong
+                    finish();
+                }
+            }
+        });
+    }
+
+    public void setInfo() {
+        Log.d("VIEW", mEvent.toString());
+
+        mTitle.setText(mEvent.getTitle());
+        mCategory.setImageResource(mEvent.getCategoryIcon());
+
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String formattedDate = dateFormat.format(mEvent.getTime().getTime());
+        mSubtitle.setText("700m away, starting at " + formattedDate);
+
+        //mEventDistance.setText("2 km away");
         //mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
 
-        mDescription.setText(EventModel.EVENTS.get(mEventId).description);
-        mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
-        mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
+        mDescription.setText(mEvent.getDescription());
+        //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
+        //mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
 
-        STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLatitude()) + "," + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLatitude()) + "," + Double.toString(EventModel.EVENTS.get(mEventId).getLocation().getLongitude()) + "";
+        STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "";
 
         AsyncTask<Void, Void, Bitmap> setImageFromUrl = new AsyncTask<Void, Void, Bitmap>(){
             @Override
@@ -194,27 +238,7 @@ public class ViewEventActivity extends ActionBarActivity implements ViewEventFra
             }
         };
         setImageFromUrl.execute();
-
-        findViewById(R.id.join_event_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mGoing) {
-                    mGoing = false;
-                    ((FloatingActionButton) v).setIcon(R.drawable.ic_plus);
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
-                } else {
-                    mGoing = true;
-                    ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
-                }
-            }
-        });
     }
-
-    @Override
-    public void onFragmentInteraction(int mEventId) {}
 
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener
             = new ViewTreeObserver.OnGlobalLayoutListener() {

@@ -30,5 +30,16 @@
     <string name="title_map">Map</string>
     <string name="title_events">Events</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="progress_create_event">Creating event ...</string>
+    <string name="placeholder_category">Event type</string>
+
+    <!-- Login / SignUp -->
+    <string name="login">Log in</string>
+    <string name="signup">Sign up</string>
+    <string name="powered_by">Powered by</string>
+    <string name="parse">Parse</string>
+    <string name="slogan">Because moments are around you</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="action_logout">Log Out</string>
 
 </resources>

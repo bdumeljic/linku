@@ -161,12 +161,38 @@
                     android:hint="@string/placeholder_events_item_location"
                     android:textColorHint="@color/edit_hint"
                     android:background="#00000000"
-                    android:imeOptions="actionDone" />
+                    android:imeOptions="actionDone"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:focusableInTouchMode="true" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
                     android:background="@color/divider_grey"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/add_event_edit_horizontal_margin"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/category"
+                android:prompt="@string/placeholder_category"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"/>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_grey"
+                android:layout_marginBottom="@dimen/vertical_8_margin" />
         </LinearLayout>
 
     </LinearLayout>

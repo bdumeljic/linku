@@ -1,32 +1,27 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.Calendar;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -42,15 +37,13 @@ public class CreateNewEventFragment extends Fragment {
     private OnFragmentInteractionListener mListener ;
 
     // Input values from view
-    EditText mEditName;
+    EditText mEditTitle;
     EditText mEditDescription;
     AutoCompleteTextView mEditLocation;
     Button mEditDay;
     Button mEditTime;
-    DatePicker mDatePicker;
-    TimePicker mTimePicker;
-    Calendar mEventDate;
-    EditText mAttendees;
+    Date mEventDate;
+    Spinner mCategorySpinner;
 
     int day = -1;
     int month = -1;
@@ -59,7 +52,6 @@ public class CreateNewEventFragment extends Fragment {
     int minute = -1;
 
     public ArrayAdapter<String> adapter;
-   // public AutoCompleteTextView textview;
 
     /**
      * Use this factory method to create a new instance of
@@ -90,21 +82,18 @@ public class CreateNewEventFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
         // Connect to the view
-        mEditName = (EditText) view.findViewById(R.id.event_title_input);
+        mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
         mEditDescription = (EditText) view.findViewById(R.id.event_description_input);
         mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
 
-        mTimePicker = (TimePicker) view.findViewById(R.id.event_time);
-        mDatePicker = (DatePicker) view.findViewById(R.id.event_date);
-        mAttendees = (EditText) view.findViewById(R.id.attendees_event);
+        mCategorySpinner = (Spinner) view.findViewById(R.id.category);
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCategorySpinner.setAdapter(categoryAdapter);
 
-        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(),R.layout.location_list));
-
-
-
-
+        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
         return view;
     }
 
@@ -127,7 +116,6 @@ public class CreateNewEventFragment extends Fragment {
         mListener = null;
     }
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -144,38 +132,61 @@ public class CreateNewEventFragment extends Fragment {
     }
 
     public void saveEvent() {
-        if(mEditName.getText().toString().matches("")) {
-            Toast.makeText(getActivity(), "Missing event title", Toast.LENGTH_SHORT).show();
+        if(validateEvent()) {
+
+            String title = mEditTitle.getText().toString().trim();
+
+            // Set up a progress dialog
+            final ProgressDialog dialog = new ProgressDialog(getActivity());
+            dialog.setMessage(getString(R.string.progress_create_event));
+            dialog.show();
+
+            // Create a post.
+            Event event = new Event();
+            event.setCreator(ParseUser.getCurrentUser());
+            event.setTitle(title);
+            event.setDescription(mEditDescription.getText().toString().trim());
+            event.setTime(mEventDate);
+            event.setAttending(0);
+            event.setCategory(mCategorySpinner.getSelectedItemPosition());
+
+            //mEditLocation.
+            // TODO Set the location to the location the user picked
+            event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
+
+            // Save the post
+            event.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    dialog.dismiss();
+                    getActivity().finish();
+                }
+            });
+        }
+    }
+
+    public boolean validateEvent() {
+        if(mEditTitle.getText().toString().matches("")) {
+            Toast.makeText(getActivity(), "Event doesn't have a name.", Toast.LENGTH_SHORT).show();
+            return false;
         }
         else if (day == -1 || hour == -1) {
-            Toast.makeText(getActivity(), "Missing event date and time", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Event date or time are not set.", Toast.LENGTH_SHORT).show();
+            return false;
         }
         // add description to model
         else if (mEditDescription.getText().toString().matches("")) {
-            Toast.makeText(getActivity(), "Missing event description", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "There is no event description.", Toast.LENGTH_SHORT).show();
+            return false;
         }
         // add place to model
-        else if (mEditLocation.getText().toString().matches("")) {
-            Toast.makeText(getActivity(), "Missing event location", Toast.LENGTH_SHORT).show();
+        else if (!mEditLocation.getText().toString().matches("")) {
+            Toast.makeText(getActivity(), "Location is not provided.", Toast.LENGTH_SHORT).show();
+            return false;
         }
         else {
-            mEventDate = Calendar.getInstance();
-            mEventDate.set(year, month, day, hour, minute);
-
-            // we don't need this , put a random 10 people just for debugging
-            int maxAttendees = 10;
-
-            
-
-            // Add event to the model
-            EventModel.addEvent(
-                    new EventModel.Event(
-                            EventModel.EVENTS.size(),
-                            mEditName.getText().toString(),
-                            "",
-                            mEventDate,
-                            maxAttendees));
-            getActivity().finish();
+            mEventDate = new Date(year, month, day, hour, minute);
+            return true;
         }
     }
 
@@ -193,9 +204,4 @@ public class CreateNewEventFragment extends Fragment {
         mEditTime.setText(hour + ":" + minute);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
-
-
-
-
-
 }
