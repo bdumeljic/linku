@@ -1,7 +1,7 @@
 package com.bdlabs_linku.linku;
 
-import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +11,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,12 +20,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.Locale;
 
-
+//ProviderLocationTracker
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
@@ -48,10 +45,15 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      */
     FragmentViewPager mViewPager;
 
+    Location mLastLocation;
+    ProviderLocationTracker mLocationTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
+
+        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -96,6 +98,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        //mLastLocation = new ProviderLocationTracker(getApplicationContext(), LocationManager.GPS_PROVIDER);
     }
 
     @Override

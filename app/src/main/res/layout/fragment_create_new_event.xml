@@ -149,7 +149,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
                 >
-                <EditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/add_event_edit_height"
                     android:layout_marginBottom="@dimen/vertical_8_margin"
@@ -162,7 +162,11 @@
                     android:textColorHint="@color/edit_hint"
                     android:background="#00000000"
                     android:imeOptions="actionDone"
-                    android:focusable="false" />
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:focusableInTouchMode="true" />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"

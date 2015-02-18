@@ -1,7 +1,11 @@
+.idea/
 .gradle
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.iml
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 
@@ -13,3 +17,4 @@ app/app-release.apk
 app/manifest-merger-release-report.txt
 
 linku.iml
+

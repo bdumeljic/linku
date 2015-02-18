@@ -9,14 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
@@ -41,7 +39,7 @@ public class CreateNewEventFragment extends Fragment {
     // Input values from view
     EditText mEditTitle;
     EditText mEditDescription;
-    EditText mEditLocation;
+    AutoCompleteTextView mEditLocation;
     Button mEditDay;
     Button mEditTime;
     Date mEventDate;
@@ -52,6 +50,8 @@ public class CreateNewEventFragment extends Fragment {
     int year = -1;
     int hour = -1;
     int minute = -1;
+
+    public ArrayAdapter<String> adapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -71,18 +71,20 @@ public class CreateNewEventFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+        final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
         // Connect to the view
         mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
         mEditDescription = (EditText) view.findViewById(R.id.event_description_input);
-        mEditLocation = (EditText) view.findViewById(R.id.event_location_input);
+        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
 
@@ -91,8 +93,11 @@ public class CreateNewEventFragment extends Fragment {
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
 
+        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
         return view;
     }
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -145,6 +150,7 @@ public class CreateNewEventFragment extends Fragment {
             event.setAttending(0);
             event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
+            //mEditLocation.
             // TODO Set the location to the location the user picked
             event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
 
@@ -198,5 +204,4 @@ public class CreateNewEventFragment extends Fragment {
         mEditTime.setText(hour + ":" + minute);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
-
 }

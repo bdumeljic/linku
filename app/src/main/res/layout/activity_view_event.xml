@@ -95,18 +95,36 @@
                     android:textColor="@color/body_dark"
                     android:layout_marginBottom="24dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="INVITE A FRIEND"
-                    android:layout_marginLeft="@dimen/keyline_2"
-                    android:layout_marginRight="@dimen/keyline_1"
-                    android:textSize="14sp"
-                    android:textColor="@color/accent"
-                    android:layout_marginBottom="16dp"
-                    android:textStyle="bold"
-                    android:textAlignment="gravity"
-                    android:gravity="right|end" />
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_other"
+                        android:layout_alignParentTop="false"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="INVITE A FRIEND"
+                        android:textSize="14sp"
+                        android:textColor="@color/accent"
+                        android:textStyle="bold"
+                        android:textAlignment="gravity"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="@dimen/keyline_1" />
+
+                </LinearLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"
