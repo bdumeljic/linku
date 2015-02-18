@@ -9,10 +9,15 @@ import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -39,7 +44,7 @@ public class CreateNewEventFragment extends Fragment {
     // Input values from view
     EditText mEditName;
     EditText mEditDescription;
-    EditText mEditLocation;
+    AutoCompleteTextView mEditLocation;
     Button mEditDay;
     Button mEditTime;
     DatePicker mDatePicker;
@@ -52,6 +57,9 @@ public class CreateNewEventFragment extends Fragment {
     int year = -1;
     int hour = -1;
     int minute = -1;
+
+    public ArrayAdapter<String> adapter;
+   // public AutoCompleteTextView textview;
 
     /**
      * Use this factory method to create a new instance of
@@ -71,27 +79,36 @@ public class CreateNewEventFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+        final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
         // Connect to the view
         mEditName = (EditText) view.findViewById(R.id.event_title_input);
         mEditDescription = (EditText) view.findViewById(R.id.event_description_input);
-        mEditLocation = (EditText) view.findViewById(R.id.event_location_input);
+        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
 
         mTimePicker = (TimePicker) view.findViewById(R.id.event_time);
         mDatePicker = (DatePicker) view.findViewById(R.id.event_date);
         mAttendees = (EditText) view.findViewById(R.id.attendees_event);
-        
+
+        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(),R.layout.location_list));
+
+
+
+
         return view;
     }
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -148,6 +165,8 @@ public class CreateNewEventFragment extends Fragment {
             // we don't need this , put a random 10 people just for debugging
             int maxAttendees = 10;
 
+            
+
             // Add event to the model
             EventModel.addEvent(
                     new EventModel.Event(
@@ -174,5 +193,9 @@ public class CreateNewEventFragment extends Fragment {
         mEditTime.setText(hour + ":" + minute);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
+
+
+
+
 
 }
