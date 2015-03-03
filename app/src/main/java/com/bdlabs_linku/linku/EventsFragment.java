@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.identity.intents.AddressConstants;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
  */
 public class EventsFragment extends Fragment implements ListView.OnItemClickListener {
 
+    private static final String TAG = "EventsFragment";
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -121,8 +124,8 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         view.findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
-                startActivityForResult(intent, 1);
+                Intent intent = new Intent(getActivity(),CreateNewEventActivity.class);
+                startActivityForResult(intent, EventsActivity.CREATE_EVENT);
             }
         });
 
@@ -189,13 +192,23 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         // If the event was created successfully then update the adapter
-        if (requestCode == 1) {
+       // if (requestCode == 1) {
             //mAdapter.notifyDataSetChanged();
-            setEmptyText();
+         //   setEmptyText();
+        //}
+        switch (requestCode) {
+            case EventsActivity.CREATE_EVENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    // Event was added successfully, update list
+                    Log.d(TAG, "event added " + data.getStringExtra("eventId").toString());
+                    postsQueryAdapter.loadObjects();
+                    mListView.setAdapter(postsQueryAdapter);
+                }
+                return;
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

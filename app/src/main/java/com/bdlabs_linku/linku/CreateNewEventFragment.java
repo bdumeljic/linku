@@ -3,8 +3,10 @@ package com.bdlabs_linku.linku;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import java.util.List;
  *
  */
 public class CreateNewEventFragment extends Fragment {
+    private static final String TAG = "CreateNewEventFragment";
     private OnFragmentInteractionListener mListener ;
 
     // Input values from view
@@ -142,7 +145,7 @@ public class CreateNewEventFragment extends Fragment {
             dialog.show();
 
             // Create a post.
-            Event event = new Event();
+            final Event event = new Event();
             event.setCreator(ParseUser.getCurrentUser());
             event.setTitle(title);
             event.setDescription(mEditDescription.getText().toString().trim());
@@ -159,6 +162,10 @@ public class CreateNewEventFragment extends Fragment {
                 @Override
                 public void done(ParseException e) {
                     dialog.dismiss();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("eventId", event.getObjectId());
+                    getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                    Log.d(TAG, "added event with id " + resultIntent.toString());
                     getActivity().finish();
                 }
             });
@@ -180,7 +187,7 @@ public class CreateNewEventFragment extends Fragment {
             return false;
         }
         // add place to model
-        else if (!mEditLocation.getText().toString().matches("")) {
+        else if (mEditLocation.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "Location is not provided.", Toast.LENGTH_SHORT).show();
             return false;
         }

@@ -1,5 +1,6 @@
 package com.bdlabs_linku.linku;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +30,8 @@ import java.util.Locale;
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
+    static final int CREATE_EVENT = 1;
+    private static final String TAG = "EventsActivity";
 
 
     /**
@@ -256,6 +260,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                     finish();
                 }
                 return;
+            case CREATE_EVENT:
+                if (resultCode == RESULT_OK) {
+                    // Event was added successfully, update list
+                    Log.d(TAG, "event added " + data.toString());
+                }
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
