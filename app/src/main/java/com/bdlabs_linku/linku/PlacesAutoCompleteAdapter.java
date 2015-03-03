@@ -1,6 +1,7 @@
 package com.bdlabs_linku.linku;
 
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
@@ -17,6 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Phil on 14/02/2015.
@@ -83,11 +86,14 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
 
             // Extract the Place descriptions from the results
             resultList = new ArrayList<String>(predsJsonArray.length());
+            Map dictionary = new HashMap();
             for (int i = 0; i < predsJsonArray.length(); i++) {
+
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+
             }
 
-            Log.d(LOG_TAG, "Number of results: " + resultList.size());
+            //Log.d(LOG_TAG, "Number of results: " + resultList.size());
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Cannot process JSON results", e);
         }

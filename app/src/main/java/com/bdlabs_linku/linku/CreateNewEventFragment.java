@@ -3,8 +3,12 @@ package com.bdlabs_linku.linku;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +24,16 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -152,8 +164,9 @@ public class CreateNewEventFragment extends Fragment {
 
             //mEditLocation.
             // TODO Set the location to the location the user picked
-            event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
-
+            ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
+            //event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
+            event.setLocation(point);
             // Save the post
             event.saveInBackground(new SaveCallback() {
                 @Override
@@ -163,6 +176,27 @@ public class CreateNewEventFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public ParseGeoPoint convertLocation(String address) {
+
+           ParseGeoPoint geoPoint = new ParseGeoPoint();
+        Geocoder gc=new Geocoder(this.getActivity(),Locale.FRANCE);
+        List<Address> addresses;
+        try {
+            addresses=gc.getFromLocationName(address, 5);
+            if (addresses.size() > 0) {
+                double latitude=addresses.get(0).getLatitude();
+                double longitude=addresses.get(0).getLongitude();
+                geoPoint.setLatitude(latitude);
+                geoPoint.setLongitude(longitude);
+            }
+        }
+        catch (  IOException e) {
+            e.printStackTrace();
+        }
+        return geoPoint;
+
     }
 
     public boolean validateEvent() {
@@ -180,7 +214,8 @@ public class CreateNewEventFragment extends Fragment {
             return false;
         }
         // add place to model
-        else if (!mEditLocation.getText().toString().matches("")) {
+        else if (mEditLocation.getText().toString().matches("")) {
+            Log.d("LOC","location: " + mEditLocation.getText().toString());
             Toast.makeText(getActivity(), "Location is not provided.", Toast.LENGTH_SHORT).show();
             return false;
         }
