@@ -276,4 +276,11 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        postsQueryAdapter.notifyDataSetInvalidated();
+    }
 }

@@ -147,8 +147,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:actionBarSize"
                 android:gravity="center_vertical"
-                android:paddingBottom="8dp"
-                android:background="#ffff2d45">
+                android:paddingBottom="8dp">
 
                 <!-- Session title -->
                 <TextView android:layout_height="wrap_content"
@@ -162,8 +161,7 @@
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:text="skh" />
+                    android:layout_marginTop="8dp" />
 
                 <!-- Session subtitle -->
                 <RelativeLayout
@@ -178,8 +176,7 @@
                         android:textColor="@android:color/white"
                         android:layout_marginLeft="@dimen/keyline_2"
                         android:layout_marginRight="@dimen/keyline_1"
-                        android:textSize="14sp"
-                        android:text="fff" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -188,8 +185,7 @@
                         android:layout_alignParentRight="true"
                         android:textSize="14sp"
                         android:textColor="@android:color/white"
-                        android:layout_marginRight="@dimen/keyline_1"
-                        android:text="ffff" />
+                        android:layout_marginRight="@dimen/keyline_1" />
                 </RelativeLayout>
             </LinearLayout>
 

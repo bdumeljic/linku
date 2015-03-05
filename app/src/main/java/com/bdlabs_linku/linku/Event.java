@@ -140,15 +140,28 @@ public class Event extends ParseObject {
     }
 
     public ParseRelation<ParseUser> getAttendingList() {
-
         return getRelation("attendingList");
     }
 
     public void addAttendee() {
         increment("attending");
         getAttendingList().add(ParseUser.getCurrentUser());
-        saveInBackground();
+        try {
+            save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Log.d("EVENT", "attending: " + getAttendingList().toString());
+    }
+
+    public void removeAttendee() {
+        put("attending", getAttending() - 1);
+        getAttendingList().remove(ParseUser.getCurrentUser());
+        try {
+            save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getCategory() {

@@ -163,13 +163,14 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             public void onClick(View v) {
                 if (mGoing) {
                     mGoing = false;
+                    mEvent.removeAttendee();
+                    setParticipants();
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
                 } else {
-                    if (!mGoing) {
-                        mGoing = true;
-                        mEvent.addAttendee();
-                    }
+                    mGoing = true;
+                    mEvent.addAttendee();
+                    setParticipants();
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
                 }
@@ -211,43 +212,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             mPlace.setText(parseDistance(mEvent.getLocation()));
         }
 
-        ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
-        ParseQuery<ParseUser> query = mRelation.getQuery();
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> parseUsers, ParseException e) {
-                if (e == null) {
-                    Log.d("RESULTS", parseUsers.toString());
-
-                    if (parseUsers.isEmpty()) {
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
-                        text.setText("No participants yet. Be the first to join!");
-                        mAttendees.addView(text);
-                    }
-
-                    for (ParseUser user : parseUsers) {
-
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
-
-                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
-                            text.setTextColor(getResources().getColor(R.color.accent));
-                            text.setText(user.getUsername() + " (You!)");
-                        } else {
-                            text.setText(user.getUsername());
-                        }
-
-                        mAttendees.addView(text);
-                    }
-                }
-            }
-        });
-
+        setParticipants();
 
         mDescription.setText(mEvent.getDescription());
         //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
@@ -371,4 +336,43 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         }
     }
 
+    public void setParticipants() {
+        mAttendees.removeAllViewsInLayout();
+        ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
+        ParseQuery<ParseUser> query = mRelation.getQuery();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> parseUsers, ParseException e) {
+                if (e == null) {
+                    Log.d("RESULTS", parseUsers.toString());
+
+                    if (parseUsers.isEmpty()) {
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+                        text.setText("No participants yet. Be the first to join!");
+                        mAttendees.addView(text);
+                    }
+
+                    for (ParseUser user : parseUsers) {
+
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+
+                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
+                            text.setTextColor(getResources().getColor(R.color.accent));
+                            text.setText(user.getUsername() + " (You!)");
+                        } else {
+                            text.setText(user.getUsername());
+                        }
+
+                        mAttendees.addView(text);
+                    }
+                }
+            }
+        });
+    }
 }
