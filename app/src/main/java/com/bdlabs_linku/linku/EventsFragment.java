@@ -2,9 +2,9 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +14,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.identity.intents.AddressConstants;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 
 /**
@@ -31,6 +33,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     private static final String TAG = "EventsFragment";
     private OnFragmentInteractionListener mListener;
 
+    private EventsActivity mActivity;
     /**
      * The fragment's ListView/GridView containing the events.
      */
@@ -110,10 +113,33 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 ImageView cat = (ImageView) view.findViewById(R.id.event_cat);
                 cat.setImageResource(event.getCategoryIcon());
 
+                if (mActivity.getLastLocation() != null) {
+                    TextView location = (TextView) view.findViewById(R.id.event_place);
+
+                    ParseGeoPoint locEvent = event.getLocation();
+                    location.setText(parseDistance(locEvent));
+                }
+
+
 
                 return view;
             }
         };
+    }
+
+    private String parseDistance(ParseGeoPoint locEvent) {
+        Location mUserLocation = mActivity.getLastLocation();
+        double distance = locEvent.distanceInKilometersTo(new ParseGeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));
+
+        if (distance < 1.0) {
+            distance *= 1000;
+            int dist = (int) (Math.ceil(distance / 5d) * 5);
+            return String.valueOf(dist) + " m";
+        } else {
+            BigDecimal bd = new BigDecimal(distance).setScale(1, RoundingMode.HALF_UP);
+            distance = bd.doubleValue();
+            return String.valueOf(distance) + " km";
+        }
     }
 
     @Override
@@ -182,6 +208,9 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        mActivity = (EventsActivity) activity;
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -247,82 +276,4 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
     }
-
-    // Adapter for events
-    /*private class EventsAdapter extends BaseAdapter {
-        private List<EventModel.Event> events;
-
-        public EventsAdapter(List<EventModel.Event> events) {
-            super();
-            this.events = events;
-        }
-
-        @Override
-        public int getCount() {
-            return events.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return events.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.events_list_item, parent, false);
-            }
-
-            /*
-            // Set background image of the event item
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), events.get(position).image);
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(bmp);
-            bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-            convertView.setBackgroundDrawable(bitmapDrawable);
-            /
-            // Set event name
-            TextView name = (TextView) convertView.findViewById(R.id.event_name);
-            name.setText(events.get(position).name);
-
-
-            // Set event time
-            TextView time = (TextView) convertView.findViewById(R.id.event_time);
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            String formattedDate = dateFormat.format(events.get(position).time.getTime());
-            time.setText(formattedDate);
-
-            // Set event distance from user's current location
-            // TODO add location
-            TextView distance = (TextView) convertView.findViewById(R.id.event_place);
-            distance.setText(events.get(position).locName + " - " + events.get(position).dist);
-
-            // Set number of people attending
-            TextView attendees = (TextView) convertView.findViewById(R.id.attendees);
-            if(events.get(position).attendees == 0) {
-                attendees.setText("Be the first to join!");
-            } else {
-                attendees.setText(String.valueOf(events.get(position).attendees) + " people are going");
-            }
-
-            ImageView cat = (ImageView) convertView.findViewById(R.id.event_cat);
-            cat.setImageResource(events.get(position).getCategoryIcon());
-
-            return convertView;
-        }
-
-        // Remove this event from the adapter
-        public void remove(int position) {
-            events.remove(position);
-            return;
-        }
-    }*/
-
-
-
 }

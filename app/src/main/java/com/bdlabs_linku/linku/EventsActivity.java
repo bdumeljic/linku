@@ -1,9 +1,12 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,7 +30,6 @@ import com.parse.ParseUser;
 
 import java.util.Locale;
 
-//ProviderLocationTracker
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
@@ -49,15 +52,40 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      */
     FragmentViewPager mViewPager;
 
-    Location mLastLocation;
+    Location mUserLocation;
     ProviderLocationTracker mLocationTracker;
+    LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
+        @Override
+        public void onUpdate(Location oldLoc, long oldTime, Location newLoc, long newTime) {
+            mUserLocation = newLoc;
+            Log.d(TAG, "loc update " + mUserLocation.toString());
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isNetworkAvailable()) {
+            setContentView(R.layout.no_internet);
+            final Button refreshView = (Button) findViewById(R.id.refresh_button);
+            refreshView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    if (isNetworkAvailable()) {
+                        refreshView();
+                    }
+                }
+            });
+        } else {
+            refreshView();
+        }
+    }
+
+    private void refreshView() {
         setContentView(R.layout.activity_events);
 
-        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
+        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.GPS);
+        mLocationTracker.start(mLoclistener);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -102,8 +130,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-
-        //mLastLocation = new ProviderLocationTracker(getApplicationContext(), LocationManager.GPS_PROVIDER);
     }
 
     @Override
@@ -268,5 +294,16 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Location getLastLocation() {
+        return mUserLocation;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }
