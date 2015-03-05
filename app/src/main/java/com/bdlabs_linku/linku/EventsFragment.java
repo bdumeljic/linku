@@ -99,10 +99,17 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 // Set number of people attending
                 TextView attendees = (TextView) view.findViewById(R.id.attendees);
                 int attend = event.getAttending();
+                boolean mGoing = event.isAlreadyAttending();
                 if(attend < 1) {
                     attendees.setText("Be the first to join!");
+                } else if(attend == 1 && mGoing) {
+                    attendees.setText("You are going.");
                 } else if(attend == 1) {
-                    attendees.setText("One person is going");
+                attendees.setText("One person is going");
+                } else if (attend == 2 && mGoing) {
+                    attendees.setText("You and one other person are going.");
+                } else if (mGoing) {
+                    attendees.setText("You and " + String.valueOf(event.getAttending() - 1) + " other people are going.");
                 } else {
                     attendees.setText(String.valueOf(event.getAttending()) + " people are going");
                 }
