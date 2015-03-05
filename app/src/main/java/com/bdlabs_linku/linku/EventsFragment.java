@@ -66,9 +66,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // When this fragment is created the adapter is populated with events from the EventModel
-        //mAdapter = new EventsAdapter(EventModel.EVENTS);
-
         // Set up a customized query
         ParseQueryAdapter.QueryFactory<Event> factory =
                 new ParseQueryAdapter.QueryFactory<Event>() {
@@ -175,12 +172,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    //mAdapter.remove(position);
-
-                                }
-                                //mAdapter.notifyDataSetChanged();
-                                setEmptyText();
+                                // TODO handle dismiss
                             }
                 });
 
@@ -202,6 +194,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         // Start the View Event Activity that show the clicked event
         Intent intent = new Intent(getActivity(), ViewEventActivity.class);
         intent.putExtra(ViewEventActivity.EVENT_ID, postsQueryAdapter.getItem(position).getObjectId());
+        intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
         startActivity(intent);
     }
 

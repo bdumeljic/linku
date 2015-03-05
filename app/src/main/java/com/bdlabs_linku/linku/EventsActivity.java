@@ -34,6 +34,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     static final int CREATE_EVENT = 1;
+
+    static final String USER_LOC = "user_location";
+
     private static final String TAG = "EventsActivity";
 
 

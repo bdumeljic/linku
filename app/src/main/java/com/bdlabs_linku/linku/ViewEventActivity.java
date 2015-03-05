@@ -3,6 +3,7 @@ package com.bdlabs_linku.linku;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,11 +17,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import org.apache.http.client.HttpClient;
@@ -28,6 +31,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -56,7 +61,9 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private View mScrollViewChild;
     private TextView mTitle;
-    private TextView mSubtitle;
+    private TextView mTime;
+    private TextView mPlace;
+
 
     private int mPhotoHeightPixels;
     private int mHeaderHeightPixels;
@@ -86,10 +93,14 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private boolean mGoing = false;
 
+    private Location mUserLoc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
+
+        mUserLoc = getIntent().getParcelableExtra(EventsActivity.USER_LOC);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_event_toolbar);
         setSupportActionBar(toolbar);
@@ -121,7 +132,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         mDetailsContainer = findViewById(R.id.details_container);
         mHeaderBox = findViewById(R.id.header_session);
         mTitle = (TextView) findViewById(R.id.session_title);
-        mSubtitle = (TextView) findViewById(R.id.session_subtitle);
+        mTime = (TextView) findViewById(R.id.event_time);
+        mPlace = (TextView) findViewById(R.id.event_place);
 
         mCategory = (ImageView) findViewById(R.id.cat);
 
@@ -143,9 +155,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             getWindow().setStatusBarColor(scaleColor(mSessionColor, 0.8f, false));
         }
-
-        // Set event time
-        mSubtitle = (TextView) findViewById(R.id.session_subtitle);
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
         mHasPhoto = true;
@@ -202,9 +211,12 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(mEvent.getTime().getTime());
-        mSubtitle.setText("700m away, starting at " + formattedDate);
+        mTime.setText("Starting at " + formattedDate);
 
-        //mEventDistance.setText("2 km away");
+        if (mUserLoc != null) {
+            mPlace.setText(parseDistance(mEvent.getLocation()));
+        }
+
         //mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
 
         mDescription.setText(mEvent.getDescription());
@@ -314,4 +326,19 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     public static int scaleSessionColorToDefaultBG(int color) {
         return scaleColor(color, SESSION_BG_COLOR_SCALE_FACTOR, false);
     }
+
+    private String parseDistance(ParseGeoPoint locEvent) {
+        double distance = locEvent.distanceInKilometersTo(new ParseGeoPoint(mUserLoc.getLatitude(), mUserLoc.getLongitude()));
+
+        if (distance < 1.0) {
+            distance *= 1000;
+            int dist = (int) (Math.ceil(distance / 5d) * 5);
+            return String.valueOf(dist) + " m away";
+        } else {
+            BigDecimal bd = new BigDecimal(distance).setScale(1, RoundingMode.HALF_UP);
+            distance = bd.doubleValue();
+            return String.valueOf(distance) + " km away";
+        }
+    }
+
 }
