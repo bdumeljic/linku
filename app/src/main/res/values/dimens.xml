@@ -5,12 +5,14 @@
     <dimen name="add_event_edit_horizontal_margin">56dp</dimen>
     <dimen name="vertical_8_margin">8dp</dimen>
     <dimen name="horizontal_36_margin">36dp</dimen>
+    <dimen name="big_margin">72dp</dimen>
 
     <!-- Text sizes -->
     <dimen name="title">20sp</dimen>
     <dimen name="body2">14sp</dimen>
     <dimen name="add_event_title">24sp</dimen>
     <dimen name="add_event_fields">16sp</dimen>
+    <dimen name="hint">16sp</dimen>
 
     <dimen name="headerbar_elevation">4dp</dimen>
 
@@ -26,4 +28,6 @@
     <dimen name="keyline_1_minus_8dp">8dp</dimen>
     <dimen name="keyline_2">72dp</dimen>
     <dimen name="keyline_2_minus_16dp">56dp</dimen>
+    <!-- Forms top margin -->
+    <dimen name="login_form_margin">8dp</dimen>
 </resources>

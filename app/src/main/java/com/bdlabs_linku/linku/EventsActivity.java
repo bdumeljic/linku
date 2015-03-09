@@ -2,6 +2,7 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,6 +108,10 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         }
 
         //mLastLocation = new ProviderLocationTracker(getApplicationContext(), LocationManager.GPS_PROVIDER);
+        SpannableString s = new SpannableString("linkU");
+        s.setSpan(new com.bdlabs_linku.linku.TypefaceSpan(this, "Pacifico.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        actionBar.setTitle(s);
     }
 
     @Override

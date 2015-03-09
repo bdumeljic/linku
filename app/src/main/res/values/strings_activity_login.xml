@@ -5,7 +5,7 @@
     <string name="title_activity_signup">Sign up</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
-    <string name="prompt_password_again">Password Again</string>
+    <string name="prompt_password_again">Password again</string>
     <string name="error_intro">"Please "</string>
     <string name="error_blank_username">enter a username</string>
     <string name="error_blank_password">enter a password</string>
