@@ -160,7 +160,7 @@ public class Event extends ParseObject {
         try {
             save();
         } catch (ParseException e) {
-            e.printStackTrace();
+
         }
     }
 

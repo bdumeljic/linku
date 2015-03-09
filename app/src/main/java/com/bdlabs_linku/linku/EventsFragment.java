@@ -72,7 +72,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                     public ParseQuery<Event> create() {
                         ParseQuery<Event> query = Event.getQuery();
                         //query.include("user");
-                        query.orderByDescending("createdAt");
+                        query.orderByAscending("time");
                         //query.whereWithinKilometers("location", geoPointFromLocation(myLoc), radius
                          //       * METERS_PER_FEET / METERS_PER_KILOMETER);
                         query.setLimit(20);
