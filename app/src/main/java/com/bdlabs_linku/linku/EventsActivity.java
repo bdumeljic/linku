@@ -87,7 +87,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     private void refreshView() {
         setContentView(R.layout.activity_events);
 
-        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.GPS);
+        mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
         mLocationTracker.start(mLoclistener);
 
         // Set up the action bar.
