@@ -2,7 +2,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"    >
+
+    <include layout="@layout/toolbar_actionbar" />
+
     <com.bdlabs_linku.linku.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:plus="http://schemas.android.com/apk/lib/com.google.android.gms.plus"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -18,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false">
+
 
             <!-- Background photo -->
             <FrameLayout android:id="@+id/session_photo_container"
@@ -44,7 +49,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/description"
-                    android:text="Lorem"
                     android:layout_marginLeft="@dimen/keyline_1"
                     android:layout_marginRight="@dimen/keyline_1"
                     android:textSize="14sp"
@@ -65,35 +69,17 @@
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Jane Doe"
                     android:layout_marginLeft="@dimen/keyline_2"
                     android:layout_marginRight="@dimen/keyline_1"
-                    android:textSize="12sp"
-                    android:textColor="@color/body_dark"
-                    android:layout_marginBottom="24dp" />
+                    android:layout_marginBottom="24dp"
+                    android:id="@+id/attendees">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="John Doe"
-                    android:layout_marginLeft="@dimen/keyline_2"
-                    android:layout_marginRight="@dimen/keyline_1"
-                    android:textSize="12sp"
-                    android:textColor="@color/body_dark"
-                    android:layout_marginBottom="24dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Leo White"
-                    android:layout_marginLeft="@dimen/keyline_2"
-                    android:layout_marginRight="@dimen/keyline_1"
-                    android:textSize="12sp"
-                    android:textColor="@color/body_dark"
-                    android:layout_marginBottom="24dp" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -156,59 +142,51 @@
             <!-- Title/subtitle bar (floating; position determined at run time as the content view scrolls) -->
             <LinearLayout
                 android:id="@+id/header_session"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingBottom="16dp">
-
-                <include layout="@layout/toolbar_actionbar" />
+                android:minHeight="?android:actionBarSize"
+                android:gravity="center_vertical"
+                android:paddingBottom="8dp">
 
                 <!-- Session title -->
                 <TextView android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="0dp"
-                    android:text="@string/placeholder_events_item_name"
                     android:id="@+id/session_title"
-                    android:maxLines="4"
+                    android:maxLines="1"
                     android:ellipsize="end"
-                    android:lineSpacingMultiplier="1.1"
-                    android:textAlignment="viewStart"
-                    android:layout_gravity="start"
                     android:layout_marginLeft="@dimen/keyline_2"
                     android:layout_marginRight="@dimen/keyline_1"
                     android:textColor="#fff"
                     android:textIsSelectable="false"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="8dp" />
 
                 <!-- Session subtitle -->
-                <!--<RelativeLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">-->
+                    android:layout_height="wrap_content"
+                    android:id="@+id/session_subtitle" >
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/session_subtitle"
-                        android:text="@string/placeholder_events_item_time"
-
+                        android:id="@+id/event_time"
                         android:textColor="@android:color/white"
                         android:layout_marginLeft="@dimen/keyline_2"
                         android:layout_marginRight="@dimen/keyline_1"
                         android:textSize="14sp" />
 
-                    <!--<TextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/event_place"
-                        android:text="@string/placeholder_events_item_location"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:textColor="@color/body_grey"
-                        android:textSize="@dimen/body2" />-->
-                <!--</RelativeLayout>-->
+                        android:layout_alignParentRight="true"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/white"
+                        android:layout_marginRight="@dimen/keyline_1" />
+                </RelativeLayout>
             </LinearLayout>
 
 

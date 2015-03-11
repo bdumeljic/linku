@@ -3,7 +3,7 @@ package com.bdlabs_linku.linku;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -19,17 +20,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
@@ -42,39 +50,27 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     protected static String STATIC_MAP_API_ENDPOINT;
 
+    private int mSessionColor;
+
     ObservableScrollView mScrollView;
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
 
-    private TextView mAbstract;
-    private LinearLayout mTags;
-    private ViewGroup mTagsContainer;
-    private TextView mRequirements;
+    private int mPhotoHeightPixels;
+    private int mHeaderHeightPixels;
     private View mHeaderBox;
     private View mDetailsContainer;
 
     private View mScrollViewChild;
     private TextView mTitle;
-    private TextView mSubtitle;
-
-    private int mPhotoHeightPixels;
-    private int mHeaderHeightPixels;
-
-    private Event mEvent;
-    private String mEventId;
-
-    private int mSessionColor;
-
-    private Image mEventImage;
-    private TextView mEventName;
+    private TextView mTime;
+    private TextView mPlace;
     private ImageView mCategory;
-    private TextView mEventTime;
-    private TextView mEventDistance;
-    private TextView mEventAttendees;
-    private ImageView mMapView;
+    private LinearLayout mAttendees;
     private TextView mDescription;
 
+    private ImageView mMapView;
     private TextView mLocName;
     private TextView mLocAddress;
 
@@ -82,14 +78,20 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
     private float mMaxHeaderElevation;
 
-    private android.os.Handler mHandler = new android.os.Handler();
+    private FloatingActionButton mJoinButton;
 
     private boolean mGoing = false;
+
+    private Event mEvent;
+    private String mEventId;
+    private Location mUserLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
+
+        mUserLoc = getIntent().getParcelableExtra(EventsActivity.USER_LOC);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_event_toolbar);
         setSupportActionBar(toolbar);
@@ -121,7 +123,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         mDetailsContainer = findViewById(R.id.details_container);
         mHeaderBox = findViewById(R.id.header_session);
         mTitle = (TextView) findViewById(R.id.session_title);
-        mSubtitle = (TextView) findViewById(R.id.session_subtitle);
+        mTime = (TextView) findViewById(R.id.event_time);
+        mPlace = (TextView) findViewById(R.id.event_place);
 
         mCategory = (ImageView) findViewById(R.id.cat);
 
@@ -144,9 +147,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             getWindow().setStatusBarColor(scaleColor(mSessionColor, 0.8f, false));
         }
 
-        // Set event time
-        mSubtitle = (TextView) findViewById(R.id.session_subtitle);
-
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
         mHasPhoto = true;
         mPhotoView.setImageResource(R.drawable.tri_pattern);
@@ -155,26 +155,24 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         onScrollChanged(0, 0); // trigger scroll handling
         mScrollViewChild.setVisibility(View.VISIBLE);
 
-        // Set event distance from user's current location
-        // TODO add location
-        //mEventDistance = (TextView) view.findViewById(R.id.distance);
+        mAttendees = (LinearLayout) findViewById(R.id.attendees);
 
-
-        // Set number of people attending
-        //mEventAttendees = (TextView) view.findViewById(R.id.attendees);
-
-        findViewById(R.id.join_event_btn).setOnClickListener(new View.OnClickListener() {
+        mJoinButton = (FloatingActionButton) findViewById(R.id.join_event_btn);
+        mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mGoing) {
                     mGoing = false;
+                    mEvent.removeAttendee();
+                    setParticipants();
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
                 } else {
                     mGoing = true;
+                    mEvent.addAttendee();
+                    setParticipants();
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
-                    mEvent.addAttendee();
                 }
             }
         });
@@ -185,6 +183,12 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
+                    mGoing = mEvent.isAlreadyAttending();
+                    if (mGoing) {
+                        mJoinButton.setColorNormal(getResources().getColor(R.color.accent));
+                        mJoinButton.setColorPressed(getResources().getColor(R.color.accent_darker));
+                    }
+
                     setInfo();
                 } else {
                     // something went wrong
@@ -202,10 +206,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(mEvent.getTime().getTime());
-        mSubtitle.setText("700m away, starting at " + formattedDate);
+        mTime.setText("Starting at " + formattedDate);
 
-        //mEventDistance.setText("2 km away");
-        //mEventAttendees.setText((Integer.toString(EventModel.EVENTS.get(mEventId).attendees)) + " attendees");
+        if (mUserLoc != null) {
+            mPlace.setText(parseDistance(mEvent.getLocation()));
+        }
+
+        setParticipants();
 
         mDescription.setText(mEvent.getDescription());
         //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
@@ -313,5 +320,59 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     public static int scaleSessionColorToDefaultBG(int color) {
         return scaleColor(color, SESSION_BG_COLOR_SCALE_FACTOR, false);
+    }
+
+    private String parseDistance(ParseGeoPoint locEvent) {
+        double distance = locEvent.distanceInKilometersTo(new ParseGeoPoint(mUserLoc.getLatitude(), mUserLoc.getLongitude()));
+
+        if (distance < 1.0) {
+            distance *= 1000;
+            int dist = (int) (Math.ceil(distance / 5d) * 5);
+            return String.valueOf(dist) + " m away";
+        } else {
+            BigDecimal bd = new BigDecimal(distance).setScale(1, RoundingMode.HALF_UP);
+            distance = bd.doubleValue();
+            return String.valueOf(distance) + " km away";
+        }
+    }
+
+    public void setParticipants() {
+        mAttendees.removeAllViewsInLayout();
+        ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
+        ParseQuery<ParseUser> query = mRelation.getQuery();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> parseUsers, ParseException e) {
+                if (e == null) {
+                    Log.d("RESULTS", parseUsers.toString());
+
+                    if (parseUsers.isEmpty()) {
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+                        text.setText("No participants yet. Be the first to join!");
+                        mAttendees.addView(text);
+                    }
+
+                    for (ParseUser user : parseUsers) {
+
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+
+                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
+                            text.setTextColor(getResources().getColor(R.color.accent));
+                            text.setText(user.getUsername() + " (You!)");
+                        } else {
+                            text.setText(user.getUsername());
+                        }
+
+                        mAttendees.addView(text);
+                    }
+                }
+            }
+        });
     }
 }
