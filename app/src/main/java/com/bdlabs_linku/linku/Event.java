@@ -3,7 +3,6 @@ package com.bdlabs_linku.linku;
 import android.util.Log;
 
 import com.parse.ParseClassName;
-import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -118,27 +117,6 @@ public class Event extends ParseObject {
         put("attending", attendees);
     }
 
-    public boolean isAlreadyAttending() {
-        List<ParseUser> mAttending = null;
-        try {
-            mAttending = getAttendingList().getQuery().find();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        boolean attending = false;
-
-        if (mAttending != null) {
-            for (ParseUser user : mAttending) {
-                if (user.equals(ParseUser.getCurrentUser())) {
-                    attending = true;
-                }
-            }
-        }
-
-        return attending;
-    }
-
     public ParseRelation<ParseUser> getAttendingList() {
         return getRelation("attendingList");
     }
@@ -146,22 +124,8 @@ public class Event extends ParseObject {
     public void addAttendee() {
         increment("attending");
         getAttendingList().add(ParseUser.getCurrentUser());
-        try {
-            save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        saveInBackground();
         Log.d("EVENT", "attending: " + getAttendingList().toString());
-    }
-
-    public void removeAttendee() {
-        put("attending", getAttending() - 1);
-        getAttendingList().remove(ParseUser.getCurrentUser());
-        try {
-            save();
-        } catch (ParseException e) {
-
-        }
     }
 
     public int getCategory() {

@@ -220,7 +220,7 @@ public class MapEventsFragment extends Fragment {
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        Location myLocation = mActivity.getLastLocation();
+        Location myLocation = mActivity.mLastLocation;
 
         if(myLocation != null) {
             // set map type
