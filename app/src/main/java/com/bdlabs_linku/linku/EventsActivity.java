@@ -137,15 +137,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-<<<<<<< HEAD
-
-        //mLastLocation = new ProviderLocationTracker(getApplicationContext(), LocationManager.GPS_PROVIDER);
-        SpannableString s = new SpannableString("linkU");
-        s.setSpan(new com.bdlabs_linku.linku.TypefaceSpan(this, "Pacifico.ttf"), 0, s.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        actionBar.setTitle(s);
-=======
->>>>>>> development-to-login-layout
     }
 
     @Override
