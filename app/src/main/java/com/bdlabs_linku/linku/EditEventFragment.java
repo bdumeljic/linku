@@ -81,7 +81,7 @@ public class EditEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+        final View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
 
         // Connect to the view
         mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
@@ -97,8 +97,15 @@ public class EditEventFragment extends Fragment {
         mEditTitle.setText(mActivity.getEventTitle());
         mEditDescription.setText(mActivity.getEventDescription());
         mEditLocation.setText(mActivity.getEventLocation());
+
+        //set the timepicker values
+        String[] time = mActivity.getEventTime().split(":");
+        setTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
         mEditTime.setText(mActivity.getEventTime());
-        mEditDay.setText(mActivity.getEventDay());
+
+        //set the datepicker values
+        String[] parts = mActivity.getEventDay().split("-");
+        setDay(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
 
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 

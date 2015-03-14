@@ -38,6 +38,11 @@ public class DatePickerFragment extends DialogFragment
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(c.getTime());
-        ((CreateNewEventActivity) getActivity()).setDate(day, month, year);
+        if(this.getActivity() instanceof CreateNewEventActivity) {
+            ((CreateNewEventActivity) getActivity()).setDate(day, month, year);
+        }
+        else if(this.getActivity() instanceof EditEventActivity){
+            ((EditEventActivity) getActivity()).setDate(day, month, year);
+        }
     }
 }

@@ -19,13 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.*;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
+import com.parse.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -68,6 +62,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private ImageView mCategory;
     private LinearLayout mAttendees;
     private TextView mDescription;
+    private ParseUser mCreator;
 
     private ImageView mMapView;
     private TextView mLocName;
@@ -143,7 +138,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         mTitle = (TextView) findViewById(R.id.session_title);
 
         mHeaderBox.setBackgroundColor(mSessionColor);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(scaleColor(mSessionColor, 0.8f, false));
         }
 
@@ -178,13 +173,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         });
 
 
-
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
+                    setEventCreator(object.getCreator());
                     mGoing = mEvent.isAlreadyAttending();
                     if (mGoing) {
                         mJoinButton.setColorNormal(getResources().getColor(R.color.accent));
@@ -199,22 +194,33 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
-        mEditButton = (ImageButton)findViewById(R.id.edit_event_btn);
+        //if (mCreator.equals(ParseUser.getCurrentUser())){
+            mEditButton = (ImageButton) findViewById(R.id.edit_event_btn);
 
-        mEditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
-                intent.putExtra(ViewEventActivity.EVENT_ID,mEventId);
-                intent.putExtra("EventTitle", mEvent.getTitle());
-                intent.putExtra("EventDescription", mEvent.getDescription());
-                intent.putExtra("EventTime", mEvent.getTime().getTime());
-                intent.putExtra("EventDay", mEvent.getTime().getTime());
-                intent.putExtra("EventLocation", mEvent.getLocation().toString());
-                startActivityForResult(intent, EventsActivity.EDIT_EVENT);
+            mEditButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
+                    intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
+                    intent.putExtra("EventTitle", mEvent.getTitle());
+                    intent.putExtra("EventDescription", mEvent.getDescription());
+                    intent.putExtra("EventTime", mEvent.getTime().getTime());
+                    intent.putExtra("EventDay", mEvent.getTime().getTime());
+                    intent.putExtra("EventLocation", mEvent.getLocation().toString());
+                    startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
-            }
-        });
+                }
+            });
+        //}
+    }
+
+    public void setEventCreator(ParseUser creator){
+        mCreator = creator;
+    }
+
+    public ParseUser getCreator(){
+        Log.d("Saved User", "" + mCreator);
+        return mCreator;
     }
 
     public void setInfo() {

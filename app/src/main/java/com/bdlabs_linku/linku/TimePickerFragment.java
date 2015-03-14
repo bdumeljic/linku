@@ -25,6 +25,12 @@ public class TimePickerFragment extends DialogFragment
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        ((CreateNewEventActivity) getActivity()).setTime(hourOfDay, minute);
+
+        if(this.getActivity() instanceof CreateNewEventActivity) {
+            ((CreateNewEventActivity) getActivity()).setTime(hourOfDay, minute);
+        }
+        else if(this.getActivity() instanceof EditEventActivity){
+            ((EditEventActivity) getActivity()).setTime(hourOfDay, minute);
+        }
     }
 }

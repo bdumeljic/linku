@@ -58,7 +58,7 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_confirm:
-                CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
+                EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
                 fragment.saveEvent();
                 return true;
             default:
@@ -81,12 +81,12 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     }
 
     public void setDate(int dayOfMonth, int monthOfYear, int year) {
-        CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
+        EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
         fragment.setDay(dayOfMonth, monthOfYear, year);
     }
 
     public void setTime(int hour, int minute) {
-        CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
+        EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
         fragment.setTime(hour, minute);
     }
 
@@ -103,8 +103,8 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     }
     public String getEventDay(){
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = dateFormat.format(getIntent().getLongExtra("EventDay", -1));
-        return formattedDate;
+        Log.d("TAGGGGG", "" + getIntent().getLongExtra("EventDay", -1));
+        return dateFormat.format(getIntent().getLongExtra("EventDay", -1));
     }
 
 
