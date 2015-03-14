@@ -34,6 +34,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     static final int CREATE_EVENT = 1;
+    static final int EDIT_EVENT = 2;
 
     static final String USER_LOC = "user_location";
 
@@ -293,6 +294,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 if (resultCode == RESULT_OK) {
                     // Event was added successfully, update list
                     Log.d(TAG, "event added " + data.toString());
+                }
+                break;
+            case EDIT_EVENT:
+                if (resultCode == RESULT_OK) {
+                    // Event was added successfully, update list
+                    Log.d(TAG, "event edited " + data.toString());
                 }
                 break;
         }

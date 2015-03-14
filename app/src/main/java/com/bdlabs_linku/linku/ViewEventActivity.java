@@ -1,5 +1,6 @@
 package com.bdlabs_linku.linku;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -15,9 +16,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
@@ -79,6 +78,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private float mMaxHeaderElevation;
 
     private FloatingActionButton mJoinButton;
+    private ImageButton mEditButton;
 
     private boolean mGoing = false;
 
@@ -177,6 +177,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
+
+
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
@@ -194,6 +196,18 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     // something went wrong
                     finish();
                 }
+            }
+        });
+
+        mEditButton = (ImageButton)findViewById(R.id.edit_event_btn);
+
+        mEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
+                intent.putExtra(ViewEventActivity.EVENT_ID,mEventId);
+                startActivityForResult(intent, EventsActivity.EDIT_EVENT);
+
             }
         });
     }

@@ -29,6 +29,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="EventsActivity" />
         </activity>
+        <activity
+                android:name=".EditEventActivity"
+                android:label="@string/title_activity_edit_event"
+                android:parentActivityName=".ViewEventActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ViewEventActivity" />
+        </activity>
 
         <activity
                 android:name=".SignUpActivity"
