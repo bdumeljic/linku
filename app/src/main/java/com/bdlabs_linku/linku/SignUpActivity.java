@@ -56,6 +56,11 @@ public class SignUpActivity extends ActionBarActivity {
         signup();
       }
     });
+
+    // Show up navigation button
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    // little tweak to remove shadow below actionbar
+    getSupportActionBar().setElevation(0);
   }
 
   private void signup() {
