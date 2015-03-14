@@ -206,6 +206,11 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             public void onClick(View v) {
                 Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
                 intent.putExtra(ViewEventActivity.EVENT_ID,mEventId);
+                intent.putExtra("EventTitle", mEvent.getTitle());
+                intent.putExtra("EventDescription", mEvent.getDescription());
+                intent.putExtra("EventTime", mEvent.getTime().getTime());
+                intent.putExtra("EventDay", mEvent.getTime().getTime());
+                intent.putExtra("EventLocation", mEvent.getLocation().toString());
                 startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
             }

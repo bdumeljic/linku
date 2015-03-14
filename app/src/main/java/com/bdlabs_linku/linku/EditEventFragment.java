@@ -53,6 +53,8 @@ public class EditEventFragment extends Fragment {
 
     public ArrayAdapter<String> adapter;
 
+    EditEventActivity mActivity;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -70,9 +72,7 @@ public class EditEventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEvent = ((EditEventActivity)this.getActivity()).getEvent();
 
-        Log.e("EVENT", "" + mEvent);
 
 
     }
@@ -82,9 +82,6 @@ public class EditEventFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
-
-        EditEventActivity activity = (EditEventActivity) getActivity();
-        mEvent = activity.getEvent();
 
         // Connect to the view
         mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
@@ -96,6 +93,12 @@ public class EditEventFragment extends Fragment {
         ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
+
+        mEditTitle.setText(mActivity.getEventTitle());
+        mEditDescription.setText(mActivity.getEventDescription());
+        mEditLocation.setText(mActivity.getEventLocation());
+        mEditTime.setText(mActivity.getEventTime());
+        mEditDay.setText(mActivity.getEventDay());
 
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 
@@ -111,12 +114,8 @@ public class EditEventFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        mActivity = (EditEventActivity) activity;
+
     }
 
     @Override

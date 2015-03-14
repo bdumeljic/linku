@@ -14,46 +14,34 @@ import android.view.View;
 import android.widget.DatePicker;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class EditEventActivity extends ActionBarActivity implements EditEventFragment.OnFragmentInteractionListener{
 
     public static final String EVENT_ID = "event";
-    private Event mEvent;
+    public Event mEvent;
+    private Event mEventObject;
     private String mEventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
-        EditEventFragment eventFragment = new EditEventFragment();
-        eventFragment.setArguments(getIntent().getExtras());
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, eventFragment)
+                    .add(R.id.container, new EditEventFragment())
                     .commit();
         }
-
         // Show up navigation button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //get event information
-        mEventId = getIntent().getStringExtra(EVENT_ID);
-        ParseQuery<Event> query = Event.getQuery();
-        query.getInBackground(mEventId, new GetCallback<Event>() {
-            public void done(Event object, ParseException e) {
-                if (e == null) {
-                    mEvent = object;
-                    Log.e("Event transferred", "" + mEvent);
 
-                } else {
-                    // something went wrong
-                    finish();
-                }
-            }
-        });
-
-        Log.e("Event transferred after", "" + mEvent);
     }
 
 
@@ -102,8 +90,25 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
         fragment.setTime(hour, minute);
     }
 
-    public Event getEvent(){
-        Log.e("TEST FOR EVENT", "" + mEvent);
-        return mEvent;
+    public String getEventTitle(){
+        return getIntent().getStringExtra("EventTitle");
+    }
+    public String getEventDescription(){
+        return getIntent().getStringExtra("EventDescription");
+    }
+    public String getEventTime(){
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String formattedDate = dateFormat.format(getIntent().getLongExtra("EventTime", -1));
+        return formattedDate;
+    }
+    public String getEventDay(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(getIntent().getLongExtra("EventDay", -1));
+        return formattedDate;
+    }
+
+
+    public String getEventLocation(){
+        return getIntent().getStringExtra("EventLocation");
     }
 }
