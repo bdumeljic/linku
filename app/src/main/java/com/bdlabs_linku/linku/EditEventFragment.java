@@ -94,6 +94,8 @@ public class EditEventFragment extends Fragment {
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
 
+        mEventId = mActivity.getEventId();
+
         mEditTitle.setText(mActivity.getEventTitle());
         mEditDescription.setText(mActivity.getEventDescription());
         mEditLocation.setText(mActivity.getEventLocation());
@@ -149,37 +151,36 @@ public class EditEventFragment extends Fragment {
     public void saveEvent() {
         if(validateEvent()) {
 
-            String title = mEditTitle.getText().toString().trim();
+            final String title = mEditTitle.getText().toString().trim();
 
             // Set up a progress dialog
             final ProgressDialog dialog = new ProgressDialog(getActivity());
             dialog.setMessage(getString(R.string.progress_create_event));
             dialog.show();
 
-            // Create a post.
-            final Event event = new Event();
-            event.setCreator(ParseUser.getCurrentUser());
-            event.setTitle(title);
-            event.setDescription(mEditDescription.getText().toString().trim());
-            event.setTime(mEventDate);
-            event.setAttending(0);
-            event.setCategory(mCategorySpinner.getSelectedItemPosition());
+            ParseQuery<Event> query = Event.getQuery();
+            query.getInBackground(mEventId, new GetCallback<Event>() {
+                public void done(Event event, ParseException e) {
+                    if (e == null) {
+                        event.put("title", mEditTitle.getText().toString().trim());
+                        event.put("description", mEditDescription.getText().toString().trim());
+                        event.put("time", mEventDate);
+                        event.put("Attending", 0);
+                        event.put("category", mCategorySpinner.getSelectedItemPosition());
+                        event.put("location", convertLocation(mEditLocation.getText().toString()));
 
-            //mEditLocation.
-            // TODO Set the location to the location the user picked
-            ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
-            //event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
-            event.setLocation(point);
-            // Save the post
-            event.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    dialog.dismiss();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("eventId", event.getObjectId());
-                    getActivity().setResult(Activity.RESULT_OK, resultIntent);
-                    Log.d(TAG, "added event with id " + resultIntent.toString());
-                    getActivity().finish();
+                        // Save the post
+                        event.saveInBackground();
+                        dialog.dismiss();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("eventId", event.getObjectId());
+                        getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                        Log.d(TAG, "edited event with id " + resultIntent.toString());
+                        getActivity().finish();
+
+                    } else {
+                        // something went wrong
+                    }
                 }
             });
         }

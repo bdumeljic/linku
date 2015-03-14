@@ -106,9 +106,10 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
         Log.d("TAGGGGG", "" + getIntent().getLongExtra("EventDay", -1));
         return dateFormat.format(getIntent().getLongExtra("EventDay", -1));
     }
-
-
     public String getEventLocation(){
         return getIntent().getStringExtra("EventLocation");
+    }
+    public String getEventId(){
+        return getIntent().getStringExtra(EVENT_ID);
     }
 }
