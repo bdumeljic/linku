@@ -1,9 +1,7 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,7 +21,7 @@ import com.parse.ParseUser;
 /**
  * Activity which displays a registration screen to the user.
  */
-public class WelcomeActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -31,7 +29,7 @@ public class WelcomeActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_login);
 
         // Set up the login form.
         usernameEditText = (EditText) findViewById(R.id.username);
@@ -61,7 +59,7 @@ public class WelcomeActivity extends ActionBarActivity {
         signupButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 // Starts an intent for the sign up activity
-                startActivity(new Intent(WelcomeActivity.this, SignUpActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
     }
@@ -88,13 +86,13 @@ public class WelcomeActivity extends ActionBarActivity {
 
         // If there is a validation error, display the error
         if (validationError) {
-            Toast.makeText(WelcomeActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
+            Toast.makeText(LoginActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
                     .show();
             return;
         }
 
         // Set up a progress dialog
-        final ProgressDialog dialog = new ProgressDialog(WelcomeActivity.this);
+        final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
         dialog.setMessage(getString(R.string.progress_login));
         dialog.show();
         // Call the Parse login method
@@ -106,11 +104,11 @@ public class WelcomeActivity extends ActionBarActivity {
                     //e.getCode() == ParseException.INVALID;
                     Log.d("PARSE", " " + e.getCode() + " " + e.getMessage());
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        Toast.makeText(WelcomeActivity.this, "Username and/or password incorrect.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Username and/or password incorrect.", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     // Start an intent for the dispatch activity
-                    Intent intent = new Intent(WelcomeActivity.this, DispatchActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, DispatchActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }

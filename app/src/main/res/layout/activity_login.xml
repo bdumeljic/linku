@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:background="@color/primary"
-    tools:context=".WelcomeActivity"
+    tools:context=".LoginActivity"
     android:weightSum="5.0"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MergeRootFrame">
 
 
     <LinearLayout
@@ -55,8 +56,6 @@
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textColorHint="@color/hint"
-                style="@style/Base.Widget.AppCompat.EditText"
-                android:backgroundTint="@color/white30"
                 android:textSize="@dimen/hint" />
 
             <EditText
@@ -69,12 +68,8 @@
                 android:singleLine="true"
                 android:imeActionId="@+id/edittext_action_login"
                 android:imeActionLabel="@string/login"
-                android:imeOptions="actionUnspecified"
                 android:textColor="@android:color/white"
                 android:textColorHint="@color/hint"
-                android:textIsSelectable="false"
-                android:backgroundTint="@color/white30"
-                android:clickable="false"
                 android:textSize="@dimen/hint"
                 android:layout_marginTop="@dimen/login_form_margin" />
 

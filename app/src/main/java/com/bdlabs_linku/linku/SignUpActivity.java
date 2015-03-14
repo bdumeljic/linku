@@ -40,8 +40,7 @@ public class SignUpActivity extends ActionBarActivity {
     passwordAgainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == R.id.edittext_action_signup ||
-            actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+        if (actionId == R.id.action_signup || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
           signup();
           return true;
         }

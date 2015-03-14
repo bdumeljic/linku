@@ -1,17 +1,13 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 
 
 public class CreateNewEventActivity extends ActionBarActivity implements CreateNewEventFragment.OnFragmentInteractionListener {
@@ -56,7 +52,7 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
     public void onFragmentInteraction(Uri uri) {
     }
 
-    public void dayPicker(View v) {
+    public void datePicker(View v) {
         DialogFragment picker = new DatePickerFragment();
         picker.show(getFragmentManager(), "datePicker");
     }
@@ -68,7 +64,7 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
 
     public void setDate(int dayOfMonth, int monthOfYear, int year) {
         CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
-        fragment.setDay(dayOfMonth, monthOfYear, year);
+        fragment.setDate(dayOfMonth, monthOfYear, year);
     }
 
     public void setTime(int hour, int minute) {

@@ -1,6 +1,5 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -25,7 +24,7 @@ public class DispatchActivity extends ActionBarActivity {
       startActivity(new Intent(this, EventsActivity.class));
     } else {
       // Start and intent for the logged out activity
-      startActivity(new Intent(this, WelcomeActivity.class));
+      startActivity(new Intent(this, LoginActivity.class));
     }
   }
 
