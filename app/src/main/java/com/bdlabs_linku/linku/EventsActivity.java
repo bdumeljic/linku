@@ -1,12 +1,12 @@
 package com.bdlabs_linku.linku;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,19 +26,22 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import java.util.List;
 import java.util.Locale;
 
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
-    static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
-    static final int CREATE_EVENT = 1;
+    public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
+    public static final int CREATE_EVENT = 1;
+
+    public static final String EVENT_ID = "EventID";
 
     static final String USER_LOC = "user_location";
 
     private static final String TAG = "EventsActivity";
-
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -48,22 +51,26 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will host the section contents.
      */
-    FragmentViewPager mViewPager;
+    private FragmentViewPager mViewPager;
 
-    Location mUserLocation;
-    ProviderLocationTracker mLocationTracker;
-    LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
+    public Location mUserLocation;
+    public ProviderLocationTracker mLocationTracker;
+    public LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
         @Override
         public void onUpdate(Location oldLoc, long oldTime, Location newLoc, long newTime) {
             mUserLocation = newLoc;
             Log.d(TAG, "loc update " + mUserLocation.toString());
         }
     };
+
+    public EventsAdapter mEventsAdapter;
+    // Set up a progress dialog
+    public ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,19 +89,54 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
+
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.progress_load_events));
     }
 
     private void refreshView() {
         setContentView(R.layout.activity_events);
 
+        // Start location tracking.
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
         mLocationTracker.start(mLoclistener);
+
+        // Start loading events.
+        mEventsAdapter = new EventsAdapter(this);
+        mEventsAdapter.loadObjects();
+        mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
+            @Override
+            public void onLoading() {
+                dialog.show();
+            }
+
+            @Override
+            public void onLoaded(List<Event> events, Exception e) {
+                dialog.dismiss();
+
+                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded() == true) {
+                    ((EventsFragment) mSectionsPagerAdapter.getFragmentForPosition(0)).setEmptyText();
+                }
+
+                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded() == true) {
+                    ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).setEvents(events);
+                }
+            }
+        });
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Create the adapter that will return a fragment for each of the three
+        findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), CreateNewEventActivity.class);
+                startActivityForResult(intent, CREATE_EVENT);
+            }
+        });
+
+        // Create the adapter that will return a fragment for each of the
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -136,6 +178,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -145,7 +193,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.action_logout:
                 // Call the Parse log out method
@@ -160,16 +207,61 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServices();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
+                if (resultCode == RESULT_CANCELED) {
+                    Toast.makeText(this, "Google Play Services must be installed.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            case CREATE_EVENT:
+                if (resultCode == RESULT_OK) {
+                    if(data.getStringExtra(EVENT_ID) != null) {
+                        // Event was added successfully, update list
+                        Log.d(TAG, "event added " + data.toString());
+                        mEventsAdapter.loadObjects();
+                    }
+                }
+
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
+    public Location getLastLocation() {
+        return mUserLocation;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * Make sure Google Play Services are available so map can run.
+     * @return
+     */
+    private boolean checkPlayServices() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
+                showErrorDialog(status);
+            } else {
+                Toast.makeText(this, "This device is not supported.",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    void showErrorDialog(int code) {
+        GooglePlayServicesUtil.getErrorDialog(code, this,
+                REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
     }
 
     @Override
@@ -180,6 +272,13 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
     }
 
     public FragmentViewPager getViewPager() {
@@ -238,8 +337,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
          */
         public @Nullable Fragment getFragmentForPosition(int position) {
             String tag = mViewPager.makeFragmentName(mViewPager.getId(), getItemId(position));
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-            return fragment;
+            return getSupportFragmentManager().findFragmentByTag(tag);
         }
     }
 
@@ -253,60 +351,5 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    /**
-     * Make sure Google Play Services are available so map can run.
-     * @return
-     */
-    private boolean checkPlayServices() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
-                showErrorDialog(status);
-            } else {
-                Toast.makeText(this, "This device is not supported.",
-                        Toast.LENGTH_LONG).show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    void showErrorDialog(int code) {
-        GooglePlayServicesUtil.getErrorDialog(code, this,
-                REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
-                if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(this, "Google Play Services must be installed.",
-                            Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                return;
-            case CREATE_EVENT:
-                if (resultCode == RESULT_OK) {
-                    // Event was added successfully, update list
-                    Log.d(TAG, "event added " + data.toString());
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public Location getLastLocation() {
-        return mUserLocation;
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }

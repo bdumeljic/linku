@@ -1,6 +1,5 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 /**
- * Activity which displays a signup screen to the user.
+ * Activity which displays the signup form to the user.
  */
 public class SignUpActivity extends ActionBarActivity {
   // UI references.
@@ -40,8 +39,7 @@ public class SignUpActivity extends ActionBarActivity {
     passwordAgainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == R.id.edittext_action_signup ||
-            actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+        if (actionId == R.id.action_signup || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
           signup();
           return true;
         }
@@ -56,6 +54,11 @@ public class SignUpActivity extends ActionBarActivity {
         signup();
       }
     });
+
+    // Show up navigation button
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    // Little tweak to remove shadow below actionbar
+    getSupportActionBar().setElevation(0);
   }
 
   private void signup() {
@@ -109,9 +112,13 @@ public class SignUpActivity extends ActionBarActivity {
       public void done(ParseException e) {
         dialog.dismiss();
         if (e != null) {
-          // Show the error message
-            if(e.getCode() == ParseException.USERNAME_TAKEN) {
-                Toast.makeText(SignUpActivity.this, "This username is already taken.", Toast.LENGTH_LONG).show();
+            // Show the error message
+            switch (e.getCode()) {
+                case ParseException.USERNAME_TAKEN:
+                    Toast.makeText(SignUpActivity.this, "This username is already taken.", Toast.LENGTH_LONG).show();
+                    break;
+                case ParseException.CONNECTION_FAILED:
+                    Toast.makeText(SignUpActivity.this, R.string.no_internet, Toast.LENGTH_LONG).show();
             }
 
         } else {

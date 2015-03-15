@@ -1,11 +1,7 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,15 +37,15 @@ import java.util.List;
  */
 public class MapEventsFragment extends Fragment {
 
-    EventsActivity mActivity;
+    private EventsActivity mActivity;
     MapFragment mMapFragment;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //LocationManager locationManager;
     //String provider;
 
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
 
     private List<Event> mEvents;
     private boolean mEventsOnMap = false;
@@ -94,22 +90,6 @@ public class MapEventsFragment extends Fragment {
             pagerPos = getArguments().getInt(ARG_POS);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //setUpMapIfNeeded();
-        //locationManager.requestLocationUpdates(provider, 500, 1, this);
-
-        ParseQuery<Event> query = ParseQuery.getQuery("Event");
-        query.findInBackground(new FindCallback<Event>() {
-            public void done(List<Event> objects, ParseException e) {
-                if (e == null) {
-                    Log.d("map", "retreived the follwing events: " + objects.toString());
-                    mEvents = objects;
-                    putEventsOnMap();
-                } else {
-                    // TODO event retrieval failure
-                }
-            }
-        });
     }
 
     @Override
@@ -117,14 +97,6 @@ public class MapEventsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map_holder, container, false);
-
-        view.findViewById(R.id.add_event_btn_map).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Intent intent= new Intent(getActivity(),CreateNewEventActivity.class);
-                //startActivityForResult(intent, 1);
-            }
-        });
 
         return view;
     }
@@ -161,11 +133,7 @@ public class MapEventsFragment extends Fragment {
         super.onResume();
         Log.d("MAP", "Resuming map");
         setUpMapIfNeeded();
-        putEventsOnMap();
-    }
-
-    public void onPause(){
-        super.onPause();
+        //putEventsOnMap();
     }
 
     /**
@@ -242,6 +210,11 @@ public class MapEventsFragment extends Fragment {
         }
     }
 
+    public void setEvents(List<Event> events) {
+        mEvents = events;
+        putEventsOnMap();
+    }
+
     public void putEventsOnMap() {
         if(mMap != null && mEvents != null) {
             for(Event event : mEvents) {
@@ -274,8 +247,6 @@ public class MapEventsFragment extends Fragment {
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
 
     }
-
-
 
     /**
      * This interface must be implemented by activities that contain this

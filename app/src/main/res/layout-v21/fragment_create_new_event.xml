@@ -10,67 +10,50 @@
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_marginLeft="@dimen/keyline_2_minus_16dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="@dimen/vertical_48dp"
+            android:orientation="vertical">
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/vertical_48dp_minus_8dp"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/event_title_input"
                 android:inputType="text"
                 android:textColor="@color/black_87"
                 android:textSize="@dimen/add_event_title"
-                android:gravity="bottom|left"
                 android:hint="@string/placeholder_events_item_title"
                 android:textColorHint="@color/edit_hint"
-                android:background="#00000000"
-                android:imeOptions="actionDone" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_grey"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:imeOptions="actionNext" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_marginLeft="@dimen/keyline_2_minus_16dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/vertical_48dp"
             android:orientation="vertical"
-            >
+            android:gravity="bottom">
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/vertical_48dp_minus_8dp"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/event_description_input"
                 android:inputType="text"
                 android:textColor="@color/black_87"
                 android:textSize="@dimen/add_event_fields"
-                android:gravity="bottom|left"
                 android:hint="@string/placeholder_events_item_description"
                 android:textColorHint="@color/edit_hint"
-                android:background="#00000000"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionNext" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_grey"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
         </LinearLayout>
 
         <!-- pick date and time -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/keyline_1_minus_8dp" >
+            android:layout_height="@dimen/vertical_48dp"
+            android:orientation="horizontal" >
             <ImageView
                 android:layout_width="@dimen/image_icon"
                 android:layout_height="@dimen/image_icon"
@@ -82,7 +65,11 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2">
+                android:weightSum="2"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp">
 
                 <!-- pick date -->
                 <LinearLayout
@@ -146,9 +133,8 @@
         <!-- pick location -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/keyline_1_minus_8dp" >
+            android:layout_height="@dimen/vertical_48dp"
+            android:orientation="horizontal">
             <ImageView
                 android:layout_width="@dimen/image_icon"
                 android:layout_height="@dimen/image_icon"
@@ -158,40 +144,34 @@
                 android:layout_gravity="center" />
             <!-- pick location -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                >
+                android:gravity="bottom">
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/vertical_48dp_minus_8dp"
-                    android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/event_location_input"
                     android:inputType="text"
                     android:textColor="@color/black_87"
                     android:textSize="@dimen/add_event_fields"
-                    android:gravity="bottom|left"
+                    android:gravity="bottom"
                     android:hint="@string/placeholder_events_item_location"
                     android:textColorHint="@color/edit_hint"
-                    android:background="#00000000"
                     android:imeOptions="actionDone"
                     android:focusable="true"
                     android:clickable="true"
                     android:editable="true"
                     android:enabled="true"
                     android:focusableInTouchMode="true" />
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_grey"/>
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="@dimen/vertical_48dp"
             android:layout_marginBottom="@dimen/keyline_1_minus_8dp" >
 
             <ImageView
@@ -205,15 +185,20 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="@dimen/keyline_1">
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:gravity="center_vertical"
+                android:paddingRight="4dp"
+                android:paddingLeft="4dp">
 
                 <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/vertical_48dp"
+                    android:layout_height="fill_parent"
                     android:id="@+id/category"
-                    android:prompt="@string/placeholder_category"/>
+                    android:prompt="@string/placeholder_category"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
 
                 <View
                     android:layout_width="fill_parent"

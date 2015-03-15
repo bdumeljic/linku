@@ -1,6 +1,5 @@
 package com.bdlabs_linku.linku;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -8,8 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import com.parse.ParseUser;
 
 /**
- * Activity which starts an intent for either the logged in (MainActivity) or logged out
- * (SignUpOrLoginActivity) activity.
+ * Activity which starts an intent for either the logged in {@link com.bdlabs_linku.linku.EventsActivity} or logged out
+ * {@link com.bdlabs_linku.linku.LoginActivity} activity.
  */
 public class DispatchActivity extends ActionBarActivity {
 
@@ -25,7 +24,7 @@ public class DispatchActivity extends ActionBarActivity {
       startActivity(new Intent(this, EventsActivity.class));
     } else {
       // Start and intent for the logged out activity
-      startActivity(new Intent(this, WelcomeActivity.class));
+      startActivity(new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
   }
 
