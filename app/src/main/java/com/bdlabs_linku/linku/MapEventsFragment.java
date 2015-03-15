@@ -19,9 +19,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -38,7 +35,6 @@ import java.util.List;
 public class MapEventsFragment extends Fragment {
 
     private EventsActivity mActivity;
-    MapFragment mMapFragment;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //LocationManager locationManager;
@@ -96,9 +92,8 @@ public class MapEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_map_holder, container, false);
 
-        return view;
+        return inflater.inflate(R.layout.fragment_map_holder, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

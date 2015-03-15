@@ -17,10 +17,10 @@ import java.util.List;
 @ParseClassName("Event")
 public class Event extends ParseObject {
 
-    public static List<Integer> PICS = new ArrayList<Integer>();
-    public static List<String> CATEGORIES = new ArrayList<String>();
-    public static List<Integer> CATEGORIES_ICONS = new ArrayList<Integer>();
-    public static List<Integer> CATEGORIES_MAP = new ArrayList<Integer>();
+    public static List<Integer> PICS = new ArrayList<>();
+    public static List<String> CATEGORIES = new ArrayList<>();
+    public static List<Integer> CATEGORIES_ICONS = new ArrayList<>();
+    public static List<Integer> CATEGORIES_MAP = new ArrayList<>();
 
     static {
         PICS.add(R.drawable.bic_pattern);
@@ -159,7 +159,7 @@ public class Event extends ParseObject {
         try {
             save();
         } catch (ParseException e) {
-
+            e.printStackTrace();
         }
     }
 

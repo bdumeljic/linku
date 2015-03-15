@@ -114,11 +114,11 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             public void onLoaded(List<Event> events, Exception e) {
                 dialog.dismiss();
 
-                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded() == true) {
+                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded()) {
                     ((EventsFragment) mSectionsPagerAdapter.getFragmentForPosition(0)).setEmptyText();
                 }
 
-                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded() == true) {
+                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded()) {
                     ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).setEvents(events);
                 }
             }
@@ -244,7 +244,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      * Make sure Google Play Services are available so map can run.
      * @return
      */
-    private boolean checkPlayServices() {
+    private void checkPlayServices() {
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (status != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
@@ -254,9 +254,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                         Toast.LENGTH_LONG).show();
                 finish();
             }
-            return false;
         }
-        return true;
     }
 
     void showErrorDialog(int code) {
