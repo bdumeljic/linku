@@ -52,7 +52,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private int mSessionColor;
 
-    ObservableScrollView mScrollView;
+    private ObservableScrollView mScrollView;
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
@@ -227,7 +227,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpGet request = new HttpGet(STATIC_MAP_API_ENDPOINT);
 
-                InputStream in = null;
+                InputStream in;
                 try {
                     in = httpclient.execute(request).getEntity().getContent();
                     bmp = BitmapFactory.decodeStream(in);

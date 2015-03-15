@@ -2,12 +2,10 @@ package com.bdlabs_linku.linku;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,9 +14,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,8 +31,8 @@ import java.util.Locale;
 
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
-    static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
-    static final int CREATE_EVENT = 1;
+    public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
+    public static final int CREATE_EVENT = 1;
 
     static final String USER_LOC = "user_location";
 
@@ -52,16 +47,16 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will host the section contents.
      */
-    FragmentViewPager mViewPager;
+    private FragmentViewPager mViewPager;
 
-    Location mUserLocation;
-    ProviderLocationTracker mLocationTracker;
-    LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
+    public Location mUserLocation;
+    public ProviderLocationTracker mLocationTracker;
+    public LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
         @Override
         public void onUpdate(Location oldLoc, long oldTime, Location newLoc, long newTime) {
             mUserLocation = newLoc;
@@ -242,8 +237,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
          */
         public @Nullable Fragment getFragmentForPosition(int position) {
             String tag = mViewPager.makeFragmentName(mViewPager.getId(), getItemId(position));
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-            return fragment;
+            return getSupportFragmentManager().findFragmentByTag(tag);
         }
     }
 

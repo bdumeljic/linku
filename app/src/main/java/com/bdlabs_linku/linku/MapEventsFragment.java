@@ -1,11 +1,7 @@
 package com.bdlabs_linku.linku;
 
 import android.app.Activity;
-import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,15 +37,15 @@ import java.util.List;
  */
 public class MapEventsFragment extends Fragment {
 
-    EventsActivity mActivity;
+    private EventsActivity mActivity;
     MapFragment mMapFragment;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //LocationManager locationManager;
     //String provider;
 
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
 
     private List<Event> mEvents;
     private boolean mEventsOnMap = false;
@@ -102,7 +98,7 @@ public class MapEventsFragment extends Fragment {
         query.findInBackground(new FindCallback<Event>() {
             public void done(List<Event> objects, ParseException e) {
                 if (e == null) {
-                    Log.d("map", "retreived the follwing events: " + objects.toString());
+                    Log.d("map", "received the following events: " + objects.toString());
                     mEvents = objects;
                     putEventsOnMap();
                 } else {
@@ -162,10 +158,6 @@ public class MapEventsFragment extends Fragment {
         Log.d("MAP", "Resuming map");
         setUpMapIfNeeded();
         putEventsOnMap();
-    }
-
-    public void onPause(){
-        super.onPause();
     }
 
     /**

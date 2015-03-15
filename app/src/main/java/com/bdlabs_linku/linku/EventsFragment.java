@@ -230,7 +230,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             case EventsActivity.CREATE_EVENT:
                 if (resultCode == Activity.RESULT_OK) {
                     // Event was added successfully, update list
-                    Log.d(TAG, "event added " + data.getStringExtra("eventId").toString());
+                    Log.d(TAG, "event added " + data.getStringExtra("eventId"));
                     postsQueryAdapter.loadObjects();
                     mListView.setAdapter(postsQueryAdapter);
                 }

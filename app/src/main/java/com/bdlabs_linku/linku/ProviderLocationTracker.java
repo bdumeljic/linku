@@ -16,10 +16,10 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
 
     private LocationManager lm;
 
-    public enum ProviderType{
+    public enum ProviderType {
         NETWORK,
         GPS
-    };
+    }
 
     private String provider;
 
@@ -78,10 +78,7 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
     }
 
     public boolean hasPossiblyStaleLocation(){
-        if(lastLocation != null){
-            return true;
-        }
-        return lm.getLastKnownLocation(provider)!= null;
+        return lastLocation != null || lm.getLastKnownLocation(provider) != null;
     }
 
     public Location getLocation(){

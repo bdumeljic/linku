@@ -201,7 +201,5 @@
         fab:fab_icon="@drawable/ic_confirm"
         fab:fab_colorNormal="@color/primary_dark"
         fab:fab_colorPressed="@color/primary"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="right|bottom" />
 </FrameLayout>

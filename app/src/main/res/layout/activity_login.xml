@@ -33,8 +33,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/imageViewContainer"
         android:layout_weight="3.0"
         android:weightSum="11">
 
@@ -91,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white85"
-                android:text="Don&apos;t have an account?" />
+                android:text="@string/no_account" />
 
             <Button
                 android:id="@+id/signup_button"

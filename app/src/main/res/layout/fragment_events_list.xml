@@ -30,8 +30,6 @@
         fab:fab_icon="@drawable/ic_plus"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_darker"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="right|bottom" />
 
 </FrameLayout>

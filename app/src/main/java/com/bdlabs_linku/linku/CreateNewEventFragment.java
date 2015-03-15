@@ -8,7 +8,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,20 +48,20 @@ public class CreateNewEventFragment extends Fragment {
     private OnFragmentInteractionListener mListener ;
 
     // Input values from view
-    EditText mEditTitle;
-    EditText mEditDescription;
-    AutoCompleteTextView mEditLocation;
-    Button mEditDay;
-    Button mEditTime;
-    Date mEventDate;
-    Spinner mCategorySpinner;
-    ImageView mCatergoryIcon;
+    private EditText mEditTitle;
+    private EditText mEditDescription;
+    private AutoCompleteTextView mEditLocation;
+    private Button mEditDay;
+    private Button mEditTime;
+    private Date mEventDate;
+    private Spinner mCategorySpinner;
+    private ImageView mCategoryIcon;
 
-    int day = -1;
-    int month = -1;
-    int year = -1;
-    int hour = -1;
-    int minute = -1;
+    private int day = -1;
+    private int month = -1;
+    private int year = -1;
+    private int hour = -1;
+    private int minute = -1;
 
     /**
      * Use this factory method to create a new instance of
@@ -71,16 +70,10 @@ public class CreateNewEventFragment extends Fragment {
      * @return A new instance of fragment CreateNewEventFragment.
      */
     public static CreateNewEventFragment newInstance() {
-        CreateNewEventFragment fragment = new CreateNewEventFragment();
-        return fragment;
+        return new CreateNewEventFragment();
     }
     public CreateNewEventFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -103,7 +96,7 @@ public class CreateNewEventFragment extends Fragment {
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCatergoryIcon.setImageResource(Event.CATEGORIES_ICONS.get(position));
+                mCategoryIcon.setImageResource(Event.CATEGORIES_ICONS.get(position));
             }
 
             @Override
@@ -112,7 +105,7 @@ public class CreateNewEventFragment extends Fragment {
             }
         });
 
-        mCatergoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
+        mCategoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
 
         return view;
     }
