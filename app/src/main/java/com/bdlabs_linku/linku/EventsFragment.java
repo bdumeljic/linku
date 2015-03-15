@@ -21,6 +21,7 @@ import com.parse.ParseQueryAdapter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A fragment representing a list of Event Items.
@@ -38,15 +39,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
      * The fragment's ListView/GridView containing the events.
      */
     private ListView mListView;
-
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Event List Item Views.
-     */
-    //private EventsAdapter mAdapter;
-
-    // Adapter for the Parse query
-    private ParseQueryAdapter<Event> postsQueryAdapter;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -66,84 +58,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set up a customized query
-        ParseQueryAdapter.QueryFactory<Event> factory =
-                new ParseQueryAdapter.QueryFactory<Event>() {
-                    public ParseQuery<Event> create() {
-                        ParseQuery<Event> query = Event.getQuery();
-                        //query.include("user");
-                        query.orderByAscending("time");
-                        //query.whereWithinKilometers("location", geoPointFromLocation(myLoc), radius
-                         //       * METERS_PER_FEET / METERS_PER_KILOMETER);
-                        query.setLimit(20);
-                        return query;
-                    }
-                };
-
-        // Set up the query adapter
-        postsQueryAdapter = new ParseQueryAdapter<Event>(getActivity(), factory) {
-            @Override
-            public View getItemView(Event event, View view, ViewGroup parent) {
-                if (view == null) {
-                    view = View.inflate(getContext(), R.layout.events_list_item, null);
-                }
-
-                TextView title = (TextView) view.findViewById(R.id.event_name);
-                title.setText(event.getTitle());
-
-                TextView time = (TextView) view.findViewById(R.id.event_time);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-                String formattedDate = dateFormat.format(event.getTime().getTime());
-                time.setText(formattedDate);
-
-                // Set number of people attending
-                TextView attendees = (TextView) view.findViewById(R.id.attendees);
-                int attend = event.getAttending();
-                boolean mGoing = event.isAlreadyAttending();
-                if(attend < 1) {
-                    attendees.setText("Be the first to join!");
-                } else if(attend == 1 && mGoing) {
-                    attendees.setText("You are going.");
-                } else if(attend == 1) {
-                attendees.setText("One person is going");
-                } else if (attend == 2 && mGoing) {
-                    attendees.setText("You and one other person are going.");
-                } else if (mGoing) {
-                    attendees.setText("You and " + String.valueOf(event.getAttending() - 1) + " other people are going.");
-                } else {
-                    attendees.setText(String.valueOf(event.getAttending()) + " people are going");
-                }
-
-                ImageView cat = (ImageView) view.findViewById(R.id.event_cat);
-                cat.setImageResource(event.getCategoryIcon());
-
-                if (mActivity.getLastLocation() != null) {
-                    TextView location = (TextView) view.findViewById(R.id.event_place);
-
-                    ParseGeoPoint locEvent = event.getLocation();
-                    location.setText(parseDistance(locEvent));
-                }
-
-
-
-                return view;
-            }
-        };
-    }
-
-    private String parseDistance(ParseGeoPoint locEvent) {
-        Location mUserLocation = mActivity.getLastLocation();
-        double distance = locEvent.distanceInKilometersTo(new ParseGeoPoint(mUserLocation.getLatitude(), mUserLocation.getLongitude()));
-
-        if (distance < 1.0) {
-            distance *= 1000;
-            int dist = (int) (Math.ceil(distance / 5d) * 5);
-            return String.valueOf(dist) + " m";
-        } else {
-            BigDecimal bd = new BigDecimal(distance).setScale(1, RoundingMode.HALF_UP);
-            distance = bd.doubleValue();
-            return String.valueOf(distance) + " km";
-        }
     }
 
     @Override
@@ -161,8 +75,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
 
         // Set the list adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
-        //mListView.setAdapter(mAdapter);
-        mListView.setAdapter(postsQueryAdapter);
+        mListView.setAdapter(mActivity.mEventsAdapter);
 
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
@@ -195,12 +108,17 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         return view;
     }
 
+    /**
+     * Start the {@link com.bdlabs_linku.linku.ViewEventActivity} that shows the details of the clicked event.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        // Start the View Event Activity that show the clicked event
         Intent intent = new Intent(getActivity(), ViewEventActivity.class);
-        intent.putExtra(ViewEventActivity.EVENT_ID, postsQueryAdapter.getItem(position).getObjectId());
+        intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
         intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
         startActivity(intent);
     }
@@ -222,17 +140,12 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If the event was created successfully then update the adapter
-       // if (requestCode == 1) {
-            //mAdapter.notifyDataSetChanged();
-         //   setEmptyText();
-        //}
         switch (requestCode) {
             case EventsActivity.CREATE_EVENT:
                 if (resultCode == Activity.RESULT_OK) {
                     // Event was added successfully, update list
                     Log.d(TAG, "event added " + data.getStringExtra("eventId"));
-                    postsQueryAdapter.loadObjects();
-                    mListView.setAdapter(postsQueryAdapter);
+                    mActivity.mEventsAdapter.loadObjects();
                 }
                 return;
         }
@@ -275,12 +188,5 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        postsQueryAdapter.notifyDataSetInvalidated();
     }
 }

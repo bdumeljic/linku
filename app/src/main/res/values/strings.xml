@@ -36,5 +36,6 @@
     <string name="refresh">Refresh</string>
     <string name="no_internet">Connect to a network, then try again.</string>
     <string name="no_account">Don\'t have an account?</string>
+    <string name="progress_load_events">Loading events ...</string>
 
 </resources>

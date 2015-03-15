@@ -1,5 +1,6 @@
 package com.bdlabs_linku.linku;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -25,8 +26,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import java.util.List;
 import java.util.Locale;
 
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
@@ -64,6 +67,10 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         }
     };
 
+    public EventsAdapter mEventsAdapter;
+    // Set up a progress dialog
+    public ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +88,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
+
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.progress_load_events));
     }
 
     private void refreshView() {
@@ -88,6 +98,20 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
         mLocationTracker.start(mLoclistener);
+
+        mEventsAdapter = new EventsAdapter(this);
+        mEventsAdapter.loadObjects();
+        mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
+            @Override
+            public void onLoading() {
+                dialog.show();
+            }
+
+            @Override
+            public void onLoaded(List<Event> events, Exception e) {
+                dialog.dismiss();
+            }
+        });
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
