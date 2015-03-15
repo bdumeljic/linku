@@ -24,7 +24,7 @@ public class DispatchActivity extends ActionBarActivity {
       startActivity(new Intent(this, EventsActivity.class));
     } else {
       // Start and intent for the logged out activity
-      startActivity(new Intent(this, LoginActivity.class));
+      startActivity(new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
   }
 

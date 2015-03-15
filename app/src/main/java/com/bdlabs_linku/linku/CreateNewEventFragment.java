@@ -47,6 +47,8 @@ public class CreateNewEventFragment extends Fragment {
     private static final String TAG = "CreateNewEventFragment";
     private OnFragmentInteractionListener mListener ;
 
+    public static final String EVENT_ID = "EventID";
+
     // Input values from view
     private EditText mEditTitle;
     private EditText mEditDescription;
@@ -175,7 +177,7 @@ public class CreateNewEventFragment extends Fragment {
                 public void done(ParseException e) {
                     dialog.dismiss();
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("eventId", event.getObjectId());
+                    resultIntent.putExtra(EVENT_ID, event.getObjectId());
                     getActivity().setResult(Activity.RESULT_OK, resultIntent);
                     getActivity().finish();
                 }

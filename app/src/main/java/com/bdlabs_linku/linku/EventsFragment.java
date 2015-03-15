@@ -65,14 +65,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
-        view.findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),CreateNewEventActivity.class);
-                startActivityForResult(intent, EventsActivity.CREATE_EVENT);
-            }
-        });
-
         // Set the list adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mActivity.mEventsAdapter);
@@ -135,22 +127,6 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // If the event was created successfully then update the adapter
-        switch (requestCode) {
-            case EventsActivity.CREATE_EVENT:
-                if (resultCode == Activity.RESULT_OK) {
-                    // Event was added successfully, update list
-                    Log.d(TAG, "event added " + data.getStringExtra("eventId"));
-                    mActivity.mEventsAdapter.loadObjects();
-                }
-                return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

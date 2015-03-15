@@ -37,10 +37,11 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     public static final int CREATE_EVENT = 1;
 
+    public static final String EVENT_ID = "EventID";
+
     static final String USER_LOC = "user_location";
 
     private static final String TAG = "EventsActivity";
-
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -127,6 +128,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), CreateNewEventActivity.class);
+                startActivityForResult(intent, CREATE_EVENT);
+            }
+        });
+
         // Create the adapter that will return a fragment for each of the
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -169,6 +178,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -178,7 +193,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.action_logout:
                 // Call the Parse log out method
@@ -193,16 +207,61 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServices();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
+                if (resultCode == RESULT_CANCELED) {
+                    Toast.makeText(this, "Google Play Services must be installed.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            case CREATE_EVENT:
+                if (resultCode == RESULT_OK) {
+                    if(data.getStringExtra(EVENT_ID) != null) {
+                        // Event was added successfully, update list
+                        Log.d(TAG, "event added " + data.toString());
+                        mEventsAdapter.loadObjects();
+                    }
+                }
+
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
+    public Location getLastLocation() {
+        return mUserLocation;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * Make sure Google Play Services are available so map can run.
+     * @return
+     */
+    private boolean checkPlayServices() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
+                showErrorDialog(status);
+            } else {
+                Toast.makeText(this, "This device is not supported.",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    void showErrorDialog(int code) {
+        GooglePlayServicesUtil.getErrorDialog(code, this,
+                REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
     }
 
     @Override
@@ -213,6 +272,13 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
     }
 
     public FragmentViewPager getViewPager() {
@@ -285,60 +351,5 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    /**
-     * Make sure Google Play Services are available so map can run.
-     * @return
-     */
-    private boolean checkPlayServices() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
-                showErrorDialog(status);
-            } else {
-                Toast.makeText(this, "This device is not supported.",
-                        Toast.LENGTH_LONG).show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    void showErrorDialog(int code) {
-        GooglePlayServicesUtil.getErrorDialog(code, this,
-                REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
-                if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(this, "Google Play Services must be installed.",
-                            Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                return;
-            case CREATE_EVENT:
-                if (resultCode == RESULT_OK) {
-                    // Event was added successfully, update list
-                    Log.d(TAG, "event added " + data.toString());
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public Location getLastLocation() {
-        return mUserLocation;
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }
