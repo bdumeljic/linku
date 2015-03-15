@@ -90,22 +90,6 @@ public class MapEventsFragment extends Fragment {
             pagerPos = getArguments().getInt(ARG_POS);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //setUpMapIfNeeded();
-        //locationManager.requestLocationUpdates(provider, 500, 1, this);
-
-        ParseQuery<Event> query = ParseQuery.getQuery("Event");
-        query.findInBackground(new FindCallback<Event>() {
-            public void done(List<Event> objects, ParseException e) {
-                if (e == null) {
-                    Log.d("map", "received the following events: " + objects.toString());
-                    mEvents = objects;
-                    putEventsOnMap();
-                } else {
-                    // TODO event retrieval failure
-                }
-            }
-        });
     }
 
     @Override
@@ -157,7 +141,7 @@ public class MapEventsFragment extends Fragment {
         super.onResume();
         Log.d("MAP", "Resuming map");
         setUpMapIfNeeded();
-        putEventsOnMap();
+        //putEventsOnMap();
     }
 
     /**
@@ -234,6 +218,11 @@ public class MapEventsFragment extends Fragment {
         }
     }
 
+    public void setEvents(List<Event> events) {
+        mEvents = events;
+        putEventsOnMap();
+    }
+
     public void putEventsOnMap() {
         if(mMap != null && mEvents != null) {
             for(Event event : mEvents) {
@@ -266,8 +255,6 @@ public class MapEventsFragment extends Fragment {
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
 
     }
-
-
 
     /**
      * This interface must be implemented by activities that contain this

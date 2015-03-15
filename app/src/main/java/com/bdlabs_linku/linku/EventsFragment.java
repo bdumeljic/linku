@@ -167,11 +167,11 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
     public void setEmptyText() {
         View emptyView = getView().findViewById(R.id.empty_events);
         if(emptyView != null) {
-            /*if (mAdapter.isEmpty()) {
+            if (mActivity.mEventsAdapter.isEmpty()) {
                 emptyView.setVisibility(View.VISIBLE);
             } else {
                 emptyView.setVisibility(View.INVISIBLE);
-            }*/
+            }
         }
     }
 

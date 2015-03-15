@@ -96,9 +96,11 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     private void refreshView() {
         setContentView(R.layout.activity_events);
 
+        // Start location tracking.
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
         mLocationTracker.start(mLoclistener);
 
+        // Start loading events.
         mEventsAdapter = new EventsAdapter(this);
         mEventsAdapter.loadObjects();
         mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
@@ -110,6 +112,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             @Override
             public void onLoaded(List<Event> events, Exception e) {
                 dialog.dismiss();
+
+                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded() == true) {
+                    ((EventsFragment) mSectionsPagerAdapter.getFragmentForPosition(0)).setEmptyText();
+                }
+
+                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded() == true) {
+                    ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).setEvents(events);
+                }
             }
         });
 
@@ -117,7 +127,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

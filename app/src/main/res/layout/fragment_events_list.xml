@@ -21,7 +21,9 @@
         android:text="@string/empty_events_list"
         android:gravity="center"
         android:visibility="invisible"
-        android:textSize="22dp"/>
+        android:layout_margin="@dimen/keyline_2_minus_16dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+        android:textColor="@color/accent_darker" />
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_event_btn"
