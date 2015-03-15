@@ -9,7 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-
+/**
+ * Controlling activity for the {@link com.bdlabs_linku.linku.CreateNewEventFragment} that creates a new event from user input.
+ */
 public class CreateNewEventActivity extends ActionBarActivity implements CreateNewEventFragment.OnFragmentInteractionListener {
 
     @Override
@@ -52,21 +54,40 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
     public void onFragmentInteraction(Uri uri) {
     }
 
+    /**
+     * Call the date picker widget.
+     * @param v
+     */
     public void datePicker(View v) {
         DialogFragment picker = new DatePickerFragment();
         picker.show(getFragmentManager(), "datePicker");
     }
 
+    /**
+     * Call the time picker widget.
+     * @param v
+     */
     public void timePicker(View v) {
         DialogFragment picker = new TimePickerFragment();
         picker.show(getFragmentManager(), "timePicker");
     }
 
+    /**
+     * Return the picked date to the fragment.
+     * @param dayOfMonth
+     * @param monthOfYear
+     * @param year
+     */
     public void setDate(int dayOfMonth, int monthOfYear, int year) {
         CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
         fragment.setDate(dayOfMonth, monthOfYear, year);
     }
 
+    /**
+     * Return the picked hour to the fragment.
+     * @param hour
+     * @param minute
+     */
     public void setTime(int hour, int minute) {
         CreateNewEventFragment fragment = (CreateNewEventFragment) getFragmentManager().findFragmentById(R.id.container);
         fragment.setTime(hour, minute);

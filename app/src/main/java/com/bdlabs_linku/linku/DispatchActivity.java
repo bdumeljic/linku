@@ -7,8 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import com.parse.ParseUser;
 
 /**
- * Activity which starts an intent for either the logged in (MainActivity) or logged out
- * (SignUpOrLoginActivity) activity.
+ * Activity which starts an intent for either the logged in {@link com.bdlabs_linku.linku.EventsActivity} or logged out
+ * {@link com.bdlabs_linku.linku.LoginActivity} activity.
  */
 public class DispatchActivity extends ActionBarActivity {
 

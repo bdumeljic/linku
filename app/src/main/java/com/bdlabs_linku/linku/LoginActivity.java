@@ -19,7 +19,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 /**
- * Activity which displays a registration screen to the user.
+ * Activity which displays a login screen to the user or the option to go to the signup form on {@link com.bdlabs_linku.linku.SignUpActivity}.
  */
 public class LoginActivity extends ActionBarActivity {
 
@@ -46,7 +46,7 @@ public class LoginActivity extends ActionBarActivity {
             }
         });
 
-        // Set up the submit button click handler
+        // Set up the login submit button click handler
         Button actionButton = (Button) findViewById(R.id.login_button);
         actionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -64,6 +64,9 @@ public class LoginActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * Try to log the user in. Go to back to {@link com.bdlabs_linku.linku.DispatchActivity} on success or show error message on failure.
+     */
     private void login() {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -101,10 +104,13 @@ public class LoginActivity extends ActionBarActivity {
             public void done(ParseUser user, ParseException e) {
                 dialog.dismiss();
                 if (e != null) {
-                    //e.getCode() == ParseException.INVALID;
                     Log.d("PARSE", " " + e.getCode() + " " + e.getMessage());
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        Toast.makeText(LoginActivity.this, "Username and/or password incorrect.", Toast.LENGTH_LONG).show();
+                    switch (e.getCode()) {
+                        case ParseException.OBJECT_NOT_FOUND:
+                            Toast.makeText(LoginActivity.this, "Username and/or password incorrect.", Toast.LENGTH_LONG).show();
+                            break;
+                        case ParseException.CONNECTION_FAILED:
+                            Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     // Start an intent for the dispatch activity

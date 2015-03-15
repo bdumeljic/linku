@@ -31,7 +31,7 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
     private LocationUpdateListener listener;
 
     public ProviderLocationTracker(Context context, ProviderType type) {
-        lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if(type == ProviderType.NETWORK){
             provider = LocationManager.NETWORK_PROVIDER;
         }

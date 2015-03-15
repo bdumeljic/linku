@@ -6,7 +6,7 @@
     <string name="action_confirm">Confirm</string>
 
     <!-- Empty text -->
-    <string name="empty_events_list">There are no events around you</string>
+    <string name="empty_events_list">There are no events around you.</string>
 
     <!-- Placeholders -->
     <string name="placeholder_events_item_name">Event title</string>

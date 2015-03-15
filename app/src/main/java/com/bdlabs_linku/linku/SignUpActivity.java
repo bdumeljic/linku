@@ -17,7 +17,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 /**
- * Activity which displays a signup screen to the user.
+ * Activity which displays the signup form to the user.
  */
 public class SignUpActivity extends ActionBarActivity {
   // UI references.
@@ -57,7 +57,7 @@ public class SignUpActivity extends ActionBarActivity {
 
     // Show up navigation button
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    // little tweak to remove shadow below actionbar
+    // Little tweak to remove shadow below actionbar
     getSupportActionBar().setElevation(0);
   }
 
@@ -112,9 +112,13 @@ public class SignUpActivity extends ActionBarActivity {
       public void done(ParseException e) {
         dialog.dismiss();
         if (e != null) {
-          // Show the error message
-            if(e.getCode() == ParseException.USERNAME_TAKEN) {
-                Toast.makeText(SignUpActivity.this, "This username is already taken.", Toast.LENGTH_LONG).show();
+            // Show the error message
+            switch (e.getCode()) {
+                case ParseException.USERNAME_TAKEN:
+                    Toast.makeText(SignUpActivity.this, "This username is already taken.", Toast.LENGTH_LONG).show();
+                    break;
+                case ParseException.CONNECTION_FAILED:
+                    Toast.makeText(SignUpActivity.this, R.string.no_internet, Toast.LENGTH_LONG).show();
             }
 
         } else {
