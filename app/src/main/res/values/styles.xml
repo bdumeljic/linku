@@ -11,6 +11,8 @@
         <item name="android:displayOptions">useLogo|showHome</item>
     </style>
 
+    <style name="AppTheme.Dark" parent="AppTheme"/>
+
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -85,5 +87,35 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">56dp</item>
         <item name="android:paddingRight">56dp</item>
+    </style>
+
+    <style name="EditText.Dark" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:textSize">@dimen/hint</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:paddingTop">@dimen/keyline_1_minus_8dp</item>
+        <item name="android:paddingBottom">@dimen/keyline_1_minus_8dp</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="FlatButton" parent="Base.Widget.AppCompat.ActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:padding">@dimen/keyline_1_minus_8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textAppearance">@style/FlatButton.TextAppearance</item>
+    </style>
+
+    <style name="FlatButton.TextAppearance" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 </resources>

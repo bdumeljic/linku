@@ -48,34 +48,42 @@
 
             <EditText
                 android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/prompt_username"
                 android:inputType="textEmailAddress"
-                style="@style/EditText.Dark" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/hint"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/hint"
+                android:textSize="@dimen/hint" />
 
             <EditText
                 android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:inputType="textPassword"
-                style="@style/EditText.Dark" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/hint"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:maxLines="1"
+                android:singleLine="true"
+                android:imeActionId="@+id/edittext_action_login"
+                android:imeActionLabel="@string/login"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/hint"
+                android:textSize="@dimen/hint"
+                android:layout_marginTop="@dimen/login_form_margin" />
 
             <Button
                 android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/login"
-                style="@style/FlatButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
                 android:textColor="@android:color/white"
-                android:layout_gravity="right" />
+                android:layout_gravity="right"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -91,16 +99,18 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white85"
-                android:text="Don&apos;t have an account?" />
+                android:text="Don&apos;t have an account yet?" />
 
             <Button
                 android:id="@+id/signup_button"
-                android:text="@string/signup"
-                android:textColor="@android:color/white"
-                style="@style/FlatButton"
-                android:layout_gravity="bottom"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:text="@string/signup"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@android:color/white"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Button" />
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>
