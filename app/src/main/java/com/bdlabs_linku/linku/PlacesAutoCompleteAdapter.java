@@ -1,7 +1,6 @@
 package com.bdlabs_linku.linku;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
@@ -21,9 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Phil on 14/02/2015.
- */
 public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements Filterable {
         private ArrayList<String> resultList;
 
@@ -35,7 +31,7 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
 
     private static  String API_KEY;
 
-    Context mContext;
+    private Context mContext;
 
     public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -50,12 +46,8 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
         try {
-            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
-            sb.append("?key=" + API_KEY);
-            sb.append("&components=country:fr&type=geocode");
-            sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
-            URL url = new URL(sb.toString());
+            URL url = new URL(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON + "?key=" + API_KEY + "&components=country:fr&type=geocode" + "&input=" + URLEncoder.encode(input, "utf8"));
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
             Log.d(LOG_TAG,"URL:   "+url);

@@ -42,49 +42,57 @@
 
             <EditText
                 android:id="@+id/username_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/prompt_username"
                 android:inputType="textEmailAddress"
-                style="@style/EditText.Dark" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/hint"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColorHint="@color/hint"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/hint" />
 
             <EditText
                 android:id="@+id/password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:inputType="textPassword"
-                style="@style/EditText.Dark" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/hint"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColorHint="@color/hint"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/hint"
+                android:layout_marginTop="@dimen/login_form_margin" />
 
             <EditText
                 android:id="@+id/password_again_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/prompt_password_again"
                 android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:imeActionId="@+id/action_signup"
                 android:imeActionLabel="@string/signup"
                 android:imeOptions="actionUnspecified"
-                style="@style/EditText.Dark" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/hint"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+                android:textColorHint="@color/hint"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/hint"
+                android:layout_marginTop="@dimen/login_form_margin" />
 
             <Button
                 android:id="@+id/action_button"
-                android:text="@string/signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                style="@style/FlatButton"
-                android:textColor="@android:color/white" />
+                android:text="@string/signup"
+                style="?android:attr/borderlessButtonStyle"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical|center_horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

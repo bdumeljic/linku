@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * A {@link View.OnTouchListener} that makes the list items in a {@link ListView}
- * dismissable. {@link ListView} is given special treatment because by default it handles touches
+ * dismissible. {@link ListView} is given special treatment because by default it handles touches
  * for its list items... i.e. it's in charge of drawing the pressed state (the list selector),
  * handling list item clicks, etc.
  *
@@ -116,7 +116,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given list view.
      *
-     * @param listView  The list view whose items should be dismissable.
+     * @param listView  The list view whose items should be dismissible.
      * @param callbacks The callback to trigger when the user has indicated that she would like to
      *                  dismiss one or more list items.
      */

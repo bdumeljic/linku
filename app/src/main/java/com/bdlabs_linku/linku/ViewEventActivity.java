@@ -32,11 +32,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-
+/**
+ * Activity that displays all the events details.
+ */
 public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
 
     public static final String EVENT_ID = "event";
-
 
     public static final String TRANSITION_NAME_PHOTO = "photo";
     public static final float SESSION_BG_COLOR_SCALE_FACTOR = 0.75f;
@@ -45,7 +46,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private int mSessionColor;
 
-    ObservableScrollView mScrollView;
+    private ObservableScrollView mScrollView;
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
@@ -86,8 +87,10 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
 
+        // Get the user's location
         mUserLoc = getIntent().getParcelableExtra(EventsActivity.USER_LOC);
 
+        // Setup the transparent ActionBar
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_event_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_up);
@@ -99,6 +102,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         });
         toolbar.setTitle("");
 
+        // Setup parallax scrolling effect
         mMaxHeaderElevation = getResources().getDimensionPixelSize(
                 R.dimen.headerbar_elevation);
 
@@ -112,6 +116,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mSessionColor = getResources().getColor(R.color.primary);
 
+        // Connect to view
         mScrollViewChild = findViewById(R.id.scroll_view_child);
         mScrollViewChild.setVisibility(View.INVISIBLE);
 
@@ -134,7 +139,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         ViewCompat.setTransitionName(mPhotoView, TRANSITION_NAME_PHOTO);
 
-        // Set event name
         mTitle = (TextView) findViewById(R.id.session_title);
 
         mHeaderBox.setBackgroundColor(mSessionColor);
@@ -152,6 +156,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mAttendees = (LinearLayout) findViewById(R.id.attendees);
 
+        // Setup FAB
         mJoinButton = (FloatingActionButton) findViewById(R.id.join_event_btn);
         mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,15 +177,25 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
+<<<<<<< HEAD
 
+=======
+        // Query Parse for event details
+>>>>>>> development
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
+<<<<<<< HEAD
                     setEventCreator(object.getCreator());
+=======
+
+                    // Set visible markers if user is going to this event
+>>>>>>> development
                     mGoing = mEvent.isAlreadyAttending();
+
                     if (mGoing) {
                         mJoinButton.setColorNormal(getResources().getColor(R.color.accent));
                         mJoinButton.setColorPressed(getResources().getColor(R.color.accent_darker));
@@ -223,6 +238,9 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         return mCreator;
     }
 
+    /**
+     * After Parse has returned the details of the event, set the details of the view.
+     */
     public void setInfo() {
         Log.d("VIEW", mEvent.toString());
 
@@ -243,6 +261,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
         //mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
 
+        // Get the google maps screenshot of the map near the event
         STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "";
 
         AsyncTask<Void, Void, Bitmap> setImageFromUrl = new AsyncTask<Void, Void, Bitmap>(){
@@ -252,7 +271,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpGet request = new HttpGet(STATIC_MAP_API_ENDPOINT);
 
-                InputStream in = null;
+                InputStream in;
                 try {
                     in = httpclient.execute(request).getEntity().getContent();
                     bmp = BitmapFactory.decodeStream(in);
@@ -272,6 +291,55 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         setImageFromUrl.execute();
     }
 
+    /**
+     * Add the participants to the view.
+     */
+    public void setParticipants() {
+        mAttendees.removeAllViewsInLayout();
+
+        // Query Parse for all the attending relation
+        ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
+        ParseQuery<ParseUser> query = mRelation.getQuery();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> parseUsers, ParseException e) {
+                if (e == null) {
+                    Log.d("RESULTS", parseUsers.toString());
+
+                    // Set the empty text if there are no participants.
+                    if (parseUsers.isEmpty()) {
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+                        text.setText("No participants yet. Be the first to join!");
+                        mAttendees.addView(text);
+                    }
+
+                    // If there are participants, add them to the list.
+                    for (ParseUser user : parseUsers) {
+                        TextView text = new TextView(getApplicationContext());
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                        text.setTextColor(getResources().getColor(R.color.body_dark));
+                        text.setPadding(0,16,0,16);
+
+                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
+                            text.setTextColor(getResources().getColor(R.color.accent));
+                            text.setText(user.getUsername() + " (You!)");
+                        } else {
+                            text.setText(user.getUsername());
+                        }
+
+                        mAttendees.addView(text);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Listen for scrolling. Call the recompute functions when there are changes.
+     */
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener
             = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
@@ -280,7 +348,9 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         }
     };
 
-
+    /**
+     * Recompute the sizes of view elements for the parallax scrolling effect.
+     */
     private void recomputePhotoAndScrollingMetrics() {
         mHeaderHeightPixels = mHeaderBox.getHeight();
 
@@ -359,45 +429,5 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             distance = bd.doubleValue();
             return String.valueOf(distance) + " km away";
         }
-    }
-
-    public void setParticipants() {
-        mAttendees.removeAllViewsInLayout();
-        ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
-        ParseQuery<ParseUser> query = mRelation.getQuery();
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> parseUsers, ParseException e) {
-                if (e == null) {
-                    Log.d("RESULTS", parseUsers.toString());
-
-                    if (parseUsers.isEmpty()) {
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
-                        text.setText("No participants yet. Be the first to join!");
-                        mAttendees.addView(text);
-                    }
-
-                    for (ParseUser user : parseUsers) {
-
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
-
-                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
-                            text.setTextColor(getResources().getColor(R.color.accent));
-                            text.setText(user.getUsername() + " (You!)");
-                        } else {
-                            text.setText(user.getUsername());
-                        }
-
-                        mAttendees.addView(text);
-                    }
-                }
-            }
-        });
     }
 }

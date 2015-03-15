@@ -1,29 +1,31 @@
 <resources>
     <!-- Screen margins -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="add_event_edit_horizontal_margin">56dp</dimen>
-    <dimen name="vertical_8_margin">8dp</dimen>
-    <dimen name="horizontal_36_margin">36dp</dimen>
+    <dimen name="activity_horizontal_margin">@dimen/keyline_1</dimen>
+    <dimen name="activity_vertical_margin">@dimen/keyline_1</dimen>
+    <!-- Keylines -->
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="keyline_1_minus_8dp">8dp</dimen>
+    <dimen name="keyline_2">72dp</dimen>
+    <dimen name="keyline_2_minus_16dp">56dp</dimen>
 
     <!-- Text sizes -->
     <dimen name="title">20sp</dimen>
     <dimen name="body2">14sp</dimen>
     <dimen name="add_event_title">24sp</dimen>
     <dimen name="add_event_fields">16sp</dimen>
+    <dimen name="hint">16sp</dimen>
 
-    <dimen name="headerbar_elevation">4dp</dimen>
 
     <!-- Line heights -->
-    <dimen name="add_event_edit_height">32dp</dimen>
+    <dimen name="vertical_48dp">48dp</dimen>
 
     <!-- Other -->
-    <dimen name="keyline_16">16dp</dimen>
-    <dimen name="edit_drawable_top">16dp</dimen>
-    <dimen name="image_icon">40dp</dimen>
+    <dimen name="headerbar_elevation">4dp</dimen>
 
-    <dimen name="keyline_1">16dp</dimen>
-    <dimen name="keyline_1_minus_8dp">8dp</dimen>
-    <dimen name="keyline_2">72dp</dimen>
-    <dimen name="keyline_2_minus_16dp">56dp</dimen>
+    <dimen name="image_icon">24dp</dimen>
+
+
+    <!-- Forms top margin -->
+    <dimen name="login_form_margin">@dimen/keyline_1_minus_8dp</dimen>
+    <dimen name="vertical_48dp_minus_8dp">32dp</dimen>
 </resources>

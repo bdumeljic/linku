@@ -12,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,22 +47,23 @@ public class CreateNewEventFragment extends Fragment {
     private static final String TAG = "CreateNewEventFragment";
     private OnFragmentInteractionListener mListener ;
 
+    public static final String EVENT_ID = "EventID";
+
     // Input values from view
-    EditText mEditTitle;
-    EditText mEditDescription;
-    AutoCompleteTextView mEditLocation;
-    Button mEditDay;
-    Button mEditTime;
-    Date mEventDate;
-    Spinner mCategorySpinner;
+    private EditText mEditTitle;
+    private EditText mEditDescription;
+    private AutoCompleteTextView mEditLocation;
+    private Button mEditDay;
+    private Button mEditTime;
+    private Date mEventDate;
+    private Spinner mCategorySpinner;
+    private ImageView mCategoryIcon;
 
-    int day = -1;
-    int month = -1;
-    int year = -1;
-    int hour = -1;
-    int minute = -1;
-
-    public ArrayAdapter<String> adapter;
+    private int day = -1;
+    private int month = -1;
+    private int year = -1;
+    private int hour = -1;
+    private int minute = -1;
 
     /**
      * Use this factory method to create a new instance of
@@ -67,40 +72,43 @@ public class CreateNewEventFragment extends Fragment {
      * @return A new instance of fragment CreateNewEventFragment.
      */
     public static CreateNewEventFragment newInstance() {
-        CreateNewEventFragment fragment = new CreateNewEventFragment();
-        return fragment;
+        return new CreateNewEventFragment();
     }
     public CreateNewEventFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
         // Connect to the view
         mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
         mEditDescription = (EditText) view.findViewById(R.id.event_description_input);
-        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
+
+        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
+        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 
         mCategorySpinner = (Spinner) view.findViewById(R.id.category);
         ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
+        mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCategoryIcon.setImageResource(Event.CATEGORIES_ICONS.get(position));
+            }
 
-        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mCategoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
+
         return view;
     }
 
@@ -138,9 +146,11 @@ public class CreateNewEventFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * Save the event to the backend, after checking that all field have been filled.
+     */
     public void saveEvent() {
         if(validateEvent()) {
-
             String title = mEditTitle.getText().toString().trim();
 
             // Set up a progress dialog
@@ -148,7 +158,7 @@ public class CreateNewEventFragment extends Fragment {
             dialog.setMessage(getString(R.string.progress_create_event));
             dialog.show();
 
-            // Create a post.
+            // Create an event
             final Event event = new Event();
             event.setCreator(ParseUser.getCurrentUser());
             event.setTitle(title);
@@ -157,33 +167,38 @@ public class CreateNewEventFragment extends Fragment {
             event.setAttending(0);
             event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
-            //mEditLocation.
-            // TODO Set the location to the location the user picked
+            // Get the location and turn it into a ParseGeoPoint
             ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
-            //event.setLocation(new ParseGeoPoint(48.8607, 2.3524));
             event.setLocation(point);
-            // Save the post
+
+            // Save the event
             event.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     dialog.dismiss();
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("eventId", event.getObjectId());
+                    resultIntent.putExtra(EVENT_ID, event.getObjectId());
                     getActivity().setResult(Activity.RESULT_OK, resultIntent);
-                    Log.d(TAG, "added event with id " + resultIntent.toString());
                     getActivity().finish();
                 }
             });
         }
     }
 
+    /**
+     * Convert the text address into a ParseGeoPoint.
+     *
+     * @param address The event address as text.
+     * @return A ParseGeoPoint of the event location.
+     */
     public ParseGeoPoint convertLocation(String address) {
+        ParseGeoPoint geoPoint = new ParseGeoPoint();
+        Geocoder gc = new Geocoder(this.getActivity(), Locale.FRANCE);
 
-           ParseGeoPoint geoPoint = new ParseGeoPoint();
-        Geocoder gc=new Geocoder(this.getActivity(),Locale.FRANCE);
         List<Address> addresses;
+
         try {
-            addresses=gc.getFromLocationName(address, 5);
+            addresses = gc.getFromLocationName(address, 5);
             if (addresses.size() > 0) {
                 double latitude=addresses.get(0).getLatitude();
                 double longitude=addresses.get(0).getLongitude();
@@ -194,10 +209,14 @@ public class CreateNewEventFragment extends Fragment {
         catch (  IOException e) {
             e.printStackTrace();
         }
-        return geoPoint;
 
+        return geoPoint;
     }
 
+    /**
+     * Check if all the event details have been filled in correctly.
+     * @return True if everything is correct. False if there is data missing.
+     */
     public boolean validateEvent() {
         if(mEditTitle.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "Event doesn't have a name.", Toast.LENGTH_SHORT).show();
@@ -224,18 +243,36 @@ public class CreateNewEventFragment extends Fragment {
         }
     }
 
-    public void setDay(int dayOfMonth, int monthOfYear, int yearPicked) {
+    /**
+     * Set the date picked that the user picked from the date widget.
+     * @param dayOfMonth
+     * @param monthOfYear
+     * @param yearPicked
+     */
+    public void setDate(int dayOfMonth, int monthOfYear, int yearPicked) {
         day = dayOfMonth;
         month = monthOfYear;
         year = yearPicked;
-        mEditDay.setText(dayOfMonth + " / " + monthOfYear);
+        mEditDay.setText(day + " / " + month + " / " + year);
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 
+    /**
+     * Set the time the user picked from the event from the time widget.
+     * @param hourPicked
+     * @param minutePicked
+     */
     public void setTime(int hourPicked, int minutePicked) {
         hour = hourPicked;
         minute = minutePicked;
-        mEditTime.setText(hour + ":" + minute);
+
+        Date time = new Date();
+        time.setHours(hour);
+        time.setMinutes(minute);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String formattedTime = timeFormat.format(time.getTime());
+
+        mEditTime.setText(formattedTime);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
 }
