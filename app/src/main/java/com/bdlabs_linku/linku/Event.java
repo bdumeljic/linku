@@ -2,6 +2,7 @@ package com.bdlabs_linku.linku;
 
 import android.util.Log;
 
+import com.bumptech.glide.GenericRequestBuilder;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -182,5 +183,13 @@ public class Event extends ParseObject {
     @Override
     public String toString() {
         return getTitle() + " " + String.valueOf(getAttending());
+    }
+
+    public boolean hasUploadedPhoto() {
+        return getBoolean("uploadedPhoto");
+    }
+
+    public String getUploadedPhotoUrl() {
+        return getParseFile("photo").getUrl();
     }
 }

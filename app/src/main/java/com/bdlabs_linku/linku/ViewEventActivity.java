@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -43,6 +44,8 @@ import java.util.List;
  * Activity that displays all the events details.
  */
 public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
+
+    public static final String TAG = "ViewEventActivity";
 
     public static final String EVENT_ID = "event";
 
@@ -153,7 +156,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
         mHasPhoto = true;
-        mPhotoView.setImageResource(R.drawable.tri_pattern);
+        //mPhotoView.setImageResource(R.drawable.tri_pattern);
         recomputePhotoAndScrollingMetrics();
 
         onScrollChanged(0, 0); // trigger scroll handling
@@ -212,6 +215,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
      */
     public void setInfo() {
         Log.d("VIEW", mEvent.toString());
+
+        if (mEvent.hasUploadedPhoto()) {
+            Log.d(TAG, mEvent.getUploadedPhotoUrl());
+            Glide.with(this).load(mEvent.getUploadedPhotoUrl()).into(mPhotoView);
+        } else {
+            Glide.with(this).load(R.drawable.tri_pattern).into(mPhotoView);
+        }
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());

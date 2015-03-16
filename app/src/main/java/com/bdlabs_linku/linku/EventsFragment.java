@@ -69,11 +69,11 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                             }
                 });
 
-        mListView.setOnTouchListener(touchListener);
+        //mListView.setOnTouchListener(touchListener);
 
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
-        mListView.setOnScrollListener(touchListener.makeScrollListener());
+        //mListView.setOnScrollListener(touchListener.makeScrollListener());
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
