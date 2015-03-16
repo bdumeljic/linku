@@ -76,6 +76,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.progress_load_events));
+
         if (!isNetworkAvailable()) {
             setContentView(R.layout.no_internet);
             final Button refreshView = (Button) findViewById(R.id.refresh_button);
@@ -89,9 +92,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
-
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.progress_load_events));
     }
 
     private void refreshView() {
@@ -103,7 +103,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         // Start loading events.
         mEventsAdapter = new EventsAdapter(this);
-        mEventsAdapter.loadObjects();
         mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
             @Override
             public void onLoading() {
@@ -123,6 +122,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 }
             }
         });
+        mEventsAdapter.loadObjects();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -145,14 +145,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // Disable swiping.
-        mViewPager.setOnTouchListener(new View.OnTouchListener()
+        /*mViewPager.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
                 return true;
             }
-        });
+        });*/
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -178,8 +178,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         checkPlayServices();
     }
 
@@ -300,7 +300,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-
+            Log.e(TAG, "called get item");
             switch(position) {
                 case 0:
                     return EventsFragment.newInstance();
@@ -334,6 +334,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
          * the current positions fragment.
          */
         public @Nullable Fragment getFragmentForPosition(int position) {
+            Log.e(TAG, "called getFragmentForPosition");
+
             String tag = mViewPager.makeFragmentName(mViewPager.getId(), getItemId(position));
             return getSupportFragmentManager().findFragmentByTag(tag);
         }
