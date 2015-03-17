@@ -30,6 +30,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/progress_bar" />
+
                 <ImageView
                     android:id="@+id/session_photo"
                     android:layout_width="match_parent"

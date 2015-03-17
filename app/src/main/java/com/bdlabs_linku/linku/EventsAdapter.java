@@ -2,10 +2,15 @@ package com.bdlabs_linku.linku;
 
 import android.content.Context;
 import android.location.Location;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -16,12 +21,17 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EventsAdapter extends ParseQueryAdapter<Event> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private EventsActivity mContext;
+    private ParseQueryAdapter<Event> parseAdapter;
 
-    public EventsAdapter(Context context) {
-        super(context, new QueryFactory<Event>() {
+    private ViewGroup parseParent;
+
+    public EventsAdapter(Context context, ViewGroup parentIn) {
+        this.mContext = (EventsActivity) context;
+        this.parseParent = parentIn;
+        this.parseAdapter = new ParseQueryAdapter<Event>(context, new ParseQueryAdapter.QueryFactory<Event>() {
             @Override
             public ParseQuery<Event> create() {
                 ParseQuery<Event> query = Event.getQuery();
@@ -31,57 +41,79 @@ public class EventsAdapter extends ParseQueryAdapter<Event> {
                 return query;
             }
         });
-
-        this.mContext = (EventsActivity) context;
     }
 
     @Override
-    public Event getItem(int index) {
-        return super.getItem(index);
+    public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.events_list_item, parent, false);
+        EventViewHolder vh = new EventViewHolder(v);
+        return vh;
     }
 
     @Override
-    public View getItemView(Event event, View v, ViewGroup parent) {
-        if (v == null) {
-            v = View.inflate(getContext(), R.layout.events_list_item, null);
-        }
+    public void onBindViewHolder(EventViewHolder eventViewHolder, int i) {
+        Event event = parseAdapter.getItem(i);
 
-        TextView title = (TextView) v.findViewById(R.id.event_name);
-        title.setText(event.getTitle());
+        eventViewHolder.title.setText(event.getTitle());
 
-        TextView time = (TextView) v.findViewById(R.id.event_time);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(event.getTime().getTime());
-        time.setText(formattedDate);
+        eventViewHolder.time.setText(formattedDate);
 
         // Set number of people attending
-        TextView attendees = (TextView) v.findViewById(R.id.attendees);
         int attend = event.getAttending();
         boolean mGoing = event.isAlreadyAttending();
         if(attend < 1) {
-            attendees.setText("Be the first to join!");
+            eventViewHolder.attendees.setText("Be the first to join!");
         } else if(attend == 1 && mGoing) {
-            attendees.setText("You are going.");
+            eventViewHolder.attendees.setText("You are going.");
         } else if(attend == 1) {
-            attendees.setText("One person is going");
+            eventViewHolder.attendees.setText("One person is going");
         } else if (attend == 2 && mGoing) {
-            attendees.setText("You and one other person are going.");
+            eventViewHolder.attendees.setText("You and one other person are going.");
         } else if (mGoing) {
-            attendees.setText("You and " + String.valueOf(event.getAttending() - 1) + " other people are going.");
+            eventViewHolder.attendees.setText("You and " + String.valueOf(event.getAttending() - 1) + " other people are going.");
         } else {
-            attendees.setText(String.valueOf(event.getAttending()) + " people are going");
+            eventViewHolder.attendees.setText(String.valueOf(event.getAttending()) + " people are going");
         }
 
-        ImageView cat = (ImageView) v.findViewById(R.id.event_cat);
-        cat.setImageResource(event.getCategoryIcon());
+        eventViewHolder.cat.setImageResource(event.getCategoryIcon());
 
         if (mContext.getLastLocation() != null) {
-            TextView location = (TextView) v.findViewById(R.id.event_place);
-
             ParseGeoPoint locEvent = event.getLocation();
-            location.setText(parseDistance(locEvent));
+            eventViewHolder.location.setText(parseDistance(locEvent));
         }
-        return v;
+    }
+
+
+    public Event getItem(int position) {
+        return parseAdapter.getItem(position);
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    @Override
+    public int getItemCount() {
+        return parseAdapter.getCount();
+    }
+
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
+        TextView title;
+        TextView time;
+        TextView attendees;
+        ImageView cat;
+        TextView location;
+
+        public EventViewHolder(View v) {
+            super(v);
+            title = (TextView) v.findViewById(R.id.event_name);
+            time = (TextView) v.findViewById(R.id.event_time);
+            attendees = (TextView) v.findViewById(R.id.attendees);
+            cat = (ImageView) v.findViewById(R.id.event_cat);
+            location = (TextView) v.findViewById(R.id.event_place);
+        }
     }
 
     private String parseDistance(ParseGeoPoint locEvent) {
@@ -97,5 +129,9 @@ public class EventsAdapter extends ParseQueryAdapter<Event> {
             distance = bd.doubleValue();
             return String.valueOf(distance) + " km";
         }
+    }
+
+    public ParseQueryAdapter<Event> getParseAdapter() {
+        return parseAdapter;
     }
 }

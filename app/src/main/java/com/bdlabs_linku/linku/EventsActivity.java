@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -102,8 +103,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         mLocationTracker.start(mLoclistener);
 
         // Start loading events.
-        mEventsAdapter = new EventsAdapter(this);
-        mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
+        mEventsAdapter = new EventsAdapter(this, null);
+        mEventsAdapter.getParseAdapter().addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
             @Override
             public void onLoading() {
                 dialog.show();
@@ -111,6 +112,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
             @Override
             public void onLoaded(List<Event> events, Exception e) {
+                mEventsAdapter.notifyDataSetChanged();
+
                 dialog.dismiss();
 
                 if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded()) {
@@ -122,7 +125,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 }
             }
         });
-        mEventsAdapter.loadObjects();
+        mEventsAdapter.getParseAdapter().loadObjects();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -220,7 +223,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                     if(data.getStringExtra(EVENT_ID) != null) {
                         // Event was added successfully, update list
                         Log.d(TAG, "event added " + data.toString());
-                        mEventsAdapter.loadObjects();
+                        mEventsAdapter.getParseAdapter().loadObjects();
                     }
                 }
 
@@ -231,6 +234,10 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     public Location getLastLocation() {
         return mUserLocation;
+    }
+
+    public void viewEvent(View v) {
+
     }
 
     private boolean isNetworkAvailable() {
@@ -300,7 +307,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            Log.e(TAG, "called get item");
             switch(position) {
                 case 0:
                     return EventsFragment.newInstance();
@@ -334,8 +340,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
          * the current positions fragment.
          */
         public @Nullable Fragment getFragmentForPosition(int position) {
-            Log.e(TAG, "called getFragmentForPosition");
-
             String tag = mViewPager.makeFragmentName(mViewPager.getId(), getItemId(position));
             return getSupportFragmentManager().findFragmentByTag(tag);
         }
