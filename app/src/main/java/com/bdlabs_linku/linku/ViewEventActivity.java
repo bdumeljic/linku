@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -17,9 +18,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -60,6 +67,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
+    private ProgressBar mProgressBar;
 
     private int mPhotoHeightPixels;
     private int mHeaderHeightPixels;
@@ -138,6 +146,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mPhotoViewContainer = findViewById(R.id.session_photo_container);
         mPhotoView = (ImageView) findViewById(R.id.session_photo);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mDescription = (TextView) findViewById(R.id.description);
 
@@ -214,14 +223,26 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
      * After Parse has returned the details of the event, set the details of the view.
      */
     public void setInfo() {
-        Log.d("VIEW", mEvent.toString());
-
+        Object mPhoto;
         if (mEvent.hasUploadedPhoto()) {
             Log.d(TAG, mEvent.getUploadedPhotoUrl());
-            Glide.with(this).load(mEvent.getUploadedPhotoUrl()).into(mPhotoView);
+            mPhoto = mEvent.getUploadedPhotoUrl();
         } else {
-            Glide.with(this).load(R.drawable.tri_pattern).into(mPhotoView);
+            mPhoto = R.drawable.tri_pattern;
         }
+
+        CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
+
+        Glide.with(this)
+                .load(mPhoto)
+                .transform(mCenterCrop)
+                .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                    @Override
+                    public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                        super.onResourceReady(drawable, anim);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());
@@ -283,8 +304,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             @Override
             public void done(List<ParseUser> parseUsers, ParseException e) {
                 if (e == null) {
-                    Log.d("RESULTS", parseUsers.toString());
-
                     // Set the empty text if there are no participants.
                     if (parseUsers.isEmpty()) {
                         TextView text = new TextView(getApplicationContext());
