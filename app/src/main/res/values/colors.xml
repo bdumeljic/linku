@@ -3,8 +3,9 @@
     <color name="transparent_background">#99484746</color>
     <color name="primary">#F44336</color>
     <color name="primary_dark">#D32F2F</color>
-    <color name="accent">#ff8a0813</color>
-    <color name="accent_darker">#ff7e060f</color>
+    <color name="accent">#D50000</color>
+    <color name="accent_darker">#ffb40000</color>
+    <color name="accent_2">#FFC107</color>
 
     <color name="body_dark">#de000000</color>
     <color name="body_grey">#8a000000</color>

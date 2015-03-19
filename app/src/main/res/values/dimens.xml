@@ -17,7 +17,9 @@
 
 
     <!-- Line heights -->
+    <dimen name="vertical_36dp">36dp</dimen>
     <dimen name="vertical_48dp">48dp</dimen>
+    <dimen name="vertical_48dp_minus_8dp">32dp</dimen>
 
     <!-- Other -->
     <dimen name="headerbar_elevation">4dp</dimen>
@@ -27,5 +29,4 @@
 
     <!-- Forms top margin -->
     <dimen name="login_form_margin">@dimen/keyline_1_minus_8dp</dimen>
-    <dimen name="vertical_48dp_minus_8dp">32dp</dimen>
 </resources>

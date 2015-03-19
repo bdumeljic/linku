@@ -31,7 +31,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     public EventsAdapter(Context context, ViewGroup parentIn) {
         this.mContext = (EventsActivity) context;
         this.parseParent = parentIn;
-        this.parseAdapter = new ParseQueryAdapter<Event>(context, new ParseQueryAdapter.QueryFactory<Event>() {
+        this.parseAdapter = new ParseQueryAdapter<>(context, new ParseQueryAdapter.QueryFactory<Event>() {
             @Override
             public ParseQuery<Event> create() {
                 ParseQuery<Event> query = Event.getQuery();

@@ -1,16 +1,26 @@
 package com.bdlabs_linku.linku;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Path;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.bumptech.glide.GenericRequestBuilder;
+import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -189,7 +199,25 @@ public class Event extends ParseObject {
         return getBoolean("uploadedPhoto");
     }
 
+    public void setHasUploadedPhoto(boolean hasUploadedPhoto) {
+        put("uploadedPhoto", hasUploadedPhoto);
+    }
+
     public String getUploadedPhotoUrl() {
         return getParseFile("photo").getUrl();
+    }
+
+    public void setPhoto(String photo) {
+        Bitmap bitmap = BitmapFactory.decodeFile(photo);
+
+        // Convert it to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+
+        // Create the ParseFile
+        ParseFile file = new ParseFile(image);
+        put("photo", file);
     }
 }

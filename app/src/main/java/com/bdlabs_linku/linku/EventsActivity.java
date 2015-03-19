@@ -228,6 +228,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 }
 
                 break;
+            // TODO notifyItemChanged(int position)
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
