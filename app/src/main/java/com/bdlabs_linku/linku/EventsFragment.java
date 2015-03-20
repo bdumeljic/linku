@@ -2,6 +2,7 @@ package com.bdlabs_linku.linku;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -51,6 +52,8 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mActivity.mEventsAdapter);
 
+        Location myLocation = mActivity.getLastLocation();
+        Log.d("LOC","Location: "+myLocation);
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing

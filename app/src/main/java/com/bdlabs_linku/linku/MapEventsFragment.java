@@ -228,20 +228,7 @@ public class MapEventsFragment extends Fragment {
         }
     }
 
-    public void newLocation(Location loc) {
-        latitude = loc.getLatitude();
-        // Get longitude of the current location
-        longitude = loc.getLongitude();
 
-        LatLng latLng = new LatLng(latitude, longitude);
-
-        // Show the current location in Google Map
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        // Zoom in the Google Map
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this

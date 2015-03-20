@@ -58,15 +58,15 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
      */
     private FragmentViewPager mViewPager;
 
-    public Location mUserLocation;
-    public ProviderLocationTracker mLocationTracker;
-    public LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
+    public Location mLastLocation;
+    public FallbackLocationTracker mLocationTracker;
+    /*public LocationTracker.LocationUpdateListener mLoclistener = new LocationTracker.LocationUpdateListener() {
         @Override
         public void onUpdate(Location oldLoc, long oldTime, Location newLoc, long newTime) {
             mUserLocation = newLoc;
             Log.d(TAG, "loc update " + mUserLocation.toString());
         }
-    };
+    };*/
 
     public EventsAdapter mEventsAdapter;
     // Set up a progress dialog
@@ -89,7 +89,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
-
+        mLocationTracker = new FallbackLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
+        mLocationTracker.start();
+       
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.progress_load_events));
     }
@@ -230,7 +232,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     public Location getLastLocation() {
-        return mUserLocation;
+        return mLocationTracker.getLocation();
     }
 
     private boolean isNetworkAvailable() {
