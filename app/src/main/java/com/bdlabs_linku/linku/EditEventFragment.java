@@ -111,6 +111,8 @@ public class EditEventFragment extends Fragment {
 
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 
+        mCategorySpinner.setSelection(mActivity.getEventCategory());
+
         return view;
     }
 
@@ -155,7 +157,7 @@ public class EditEventFragment extends Fragment {
 
             // Set up a progress dialog
             final ProgressDialog dialog = new ProgressDialog(getActivity());
-            dialog.setMessage(getString(R.string.progress_create_event));
+            dialog.setMessage(getString(R.string.progress_edit_event));
             dialog.show();
 
             ParseQuery<Event> query = Event.getQuery();
@@ -174,6 +176,11 @@ public class EditEventFragment extends Fragment {
                         dialog.dismiss();
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("eventId", event.getObjectId());
+                        resultIntent.putExtra("EventTitle", event.getTitle());
+                        resultIntent.putExtra("EventDescription", event.getDescription());
+                        resultIntent.putExtra("EventDate", mEventDate);
+                        resultIntent.putExtra("EventLocation", event.getLocation().toString());
+                        resultIntent.putExtra("EventCategory", event.getCategory());
                         getActivity().setResult(Activity.RESULT_OK, resultIntent);
                         Log.d(TAG, "edited event with id " + resultIntent.toString());
                         getActivity().finish();

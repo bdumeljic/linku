@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,12 +27,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Activity that displays all the events details.
@@ -177,23 +182,16 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
-<<<<<<< HEAD
-
-=======
-        // Query Parse for event details
->>>>>>> development
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
-<<<<<<< HEAD
                     setEventCreator(object.getCreator());
-=======
 
                     // Set visible markers if user is going to this event
->>>>>>> development
+
                     mGoing = mEvent.isAlreadyAttending();
 
                     if (mGoing) {
@@ -222,6 +220,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     intent.putExtra("EventTime", mEvent.getTime().getTime());
                     intent.putExtra("EventDay", mEvent.getTime().getTime());
                     intent.putExtra("EventLocation", mEvent.getLocation().toString());
+                    intent.putExtra("EventCategory", mEvent.getCategory());
                     startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
                 }
@@ -429,5 +428,42 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             distance = bd.doubleValue();
             return String.valueOf(distance) + " km away";
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == EventsActivity.EDIT_EVENT) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                mEvent.setTitle(data.getStringExtra("EventTitle"));
+                mEvent.setDescription(data.getStringExtra("EventDescription"));
+                mEvent.setTime(new Date(data.getLongExtra("EventDate", -1)));
+                mEvent.setLocation(convertLocation(data.getStringExtra("EventLocation")));
+                mEvent.setCategory(data.getIntExtra("EventCategory", 0));
+
+                setInfo();
+            }
+        }
+    }
+    public ParseGeoPoint convertLocation(String address) {
+
+        ParseGeoPoint geoPoint = new ParseGeoPoint();
+        Geocoder gc=new Geocoder(this, Locale.FRANCE);
+        List<Address> addresses;
+        try {
+            addresses=gc.getFromLocationName(address, 5);
+            if (addresses.size() > 0) {
+                double latitude=addresses.get(0).getLatitude();
+                double longitude=addresses.get(0).getLongitude();
+                geoPoint.setLatitude(latitude);
+                geoPoint.setLongitude(longitude);
+            }
+        }
+        catch (  IOException e) {
+            e.printStackTrace();
+        }
+        return geoPoint;
+
     }
 }

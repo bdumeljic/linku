@@ -34,16 +34,11 @@ import java.util.Locale;
 
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener {
 
-<<<<<<< HEAD
-    static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
-    static final int CREATE_EVENT = 1;
     static final int EDIT_EVENT = 2;
-=======
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     public static final int CREATE_EVENT = 1;
 
     public static final String EVENT_ID = "EventID";
->>>>>>> development
 
     static final String USER_LOC = "user_location";
 
@@ -212,59 +207,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
-                if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(this, "Google Play Services must be installed.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                return;
-            case CREATE_EVENT:
-                if (resultCode == RESULT_OK) {
-                    if(data.getStringExtra(EVENT_ID) != null) {
-                        // Event was added successfully, update list
-                        Log.d(TAG, "event added " + data.toString());
-                        mEventsAdapter.loadObjects();
-                    }
-                }
-
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public Location getLastLocation() {
-        return mUserLocation;
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
-    }
-
-    /**
-     * Make sure Google Play Services are available so map can run.
-     * @return
-     */
-    private boolean checkPlayServices() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
-                showErrorDialog(status);
-            } else {
-                Toast.makeText(this, "This device is not supported.",
-                        Toast.LENGTH_LONG).show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
     void showErrorDialog(int code) {
         GooglePlayServicesUtil.getErrorDialog(code, this,
                 REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
@@ -358,7 +300,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     public void onFragmentInteraction(Uri uri) {
 
     }
-<<<<<<< HEAD
 
     /**
      * Make sure Google Play Services are available so map can run.
@@ -377,11 +318,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             return false;
         }
         return true;
-    }
-
-    void showErrorDialog(int code) {
-        GooglePlayServicesUtil.getErrorDialog(code, this,
-                REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
     }
 
     @Override
@@ -420,6 +356,4 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
-=======
->>>>>>> development
 }
