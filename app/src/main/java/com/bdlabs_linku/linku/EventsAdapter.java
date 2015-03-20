@@ -2,6 +2,7 @@ package com.bdlabs_linku.linku;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -81,6 +82,7 @@ public class EventsAdapter extends ParseQueryAdapter<Event> {
             ParseGeoPoint locEvent = event.getLocation();
             location.setText(parseDistance(locEvent));
         }
+        //Log.d("LOC","last location: "+mContext.getLastLocation());
         return v;
     }
 

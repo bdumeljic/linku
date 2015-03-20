@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,7 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
         Intent intent = new Intent(getActivity(), ViewEventActivity.class);
         intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
         intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
+        Log.d("LOG","Last location: "+mActivity.getLastLocation());
         startActivity(intent);
     }
 
