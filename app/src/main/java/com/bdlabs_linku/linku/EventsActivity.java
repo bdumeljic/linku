@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,6 +77,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.progress_load_events));
+
         if (!isNetworkAvailable()) {
             setContentView(R.layout.no_internet);
             final Button refreshView = (Button) findViewById(R.id.refresh_button);
@@ -89,9 +93,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
-
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.progress_load_events));
     }
 
     private void refreshView() {
@@ -102,9 +103,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         mLocationTracker.start(mLoclistener);
 
         // Start loading events.
-        mEventsAdapter = new EventsAdapter(this);
-        mEventsAdapter.loadObjects();
-        mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
+        mEventsAdapter = new EventsAdapter(this, null);
+        mEventsAdapter.getParseAdapter().addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
             @Override
             public void onLoading() {
                 dialog.show();
@@ -112,6 +112,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
             @Override
             public void onLoaded(List<Event> events, Exception e) {
+                mEventsAdapter.notifyDataSetChanged();
+
                 dialog.dismiss();
 
                 if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded()) {
@@ -123,6 +125,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 }
             }
         });
+        mEventsAdapter.getParseAdapter().loadObjects();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -145,14 +148,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // Disable swiping.
-        mViewPager.setOnTouchListener(new View.OnTouchListener()
+        /*mViewPager.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
                 return true;
             }
-        });
+        });*/
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -178,8 +181,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         checkPlayServices();
     }
 
@@ -220,17 +223,22 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                     if(data.getStringExtra(EVENT_ID) != null) {
                         // Event was added successfully, update list
                         Log.d(TAG, "event added " + data.toString());
-                        mEventsAdapter.loadObjects();
+                        mEventsAdapter.getParseAdapter().loadObjects();
                     }
                 }
 
                 break;
+            // TODO notifyItemChanged(int position)
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     public Location getLastLocation() {
         return mUserLocation;
+    }
+
+    public void viewEvent(View v) {
+
     }
 
     private boolean isNetworkAvailable() {
@@ -300,7 +308,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-
             switch(position) {
                 case 0:
                     return EventsFragment.newInstance();

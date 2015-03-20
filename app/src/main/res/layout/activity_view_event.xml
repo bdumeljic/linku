@@ -30,6 +30,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/progress_bar" />
+
                 <ImageView
                     android:id="@+id/session_photo"
                     android:layout_width="match_parent"
@@ -37,7 +43,7 @@
                     android:scaleType="centerCrop" />
             </FrameLayout>
 
-
+            <!-- Details -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,6 +52,8 @@
                 android:background="#fff"
                 android:paddingTop="16dp"
                 android:clipToPadding="false">
+
+                <!-- Description -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,6 +69,7 @@
                     android:layout_height="1dp"
                     android:background="@color/divider_grey"/>
 
+                <!-- Participants -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -78,10 +87,9 @@
                     android:layout_marginRight="@dimen/keyline_1"
                     android:layout_marginBottom="24dp"
                     android:id="@+id/attendees">
-
-
                 </LinearLayout>
 
+                <!-- Cateory Icon and Share Option -->
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -106,6 +114,7 @@
                         android:layout_centerVertical="true" />
                 </RelativeLayout>
 
+                <!-- Location Information -->
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -150,7 +159,7 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="8dp">
 
-                <!-- Session title -->
+                <!-- Event title -->
                 <TextView android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:id="@+id/session_title"
@@ -164,7 +173,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="8dp" />
 
-                <!-- Session subtitle -->
+                <!-- Event subtitle with time and distance -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -194,6 +203,7 @@
         </FrameLayout>
     </com.bdlabs_linku.linku.ObservableScrollView>
 
+    <!-- Attend Event -->
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/join_event_btn"
         android:layout_width="wrap_content"

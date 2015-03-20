@@ -4,28 +4,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 /**
  * A fragment representing a list of Event Items.
  *
- * Activities containing this fragment MUST implement the {@link Callbacks}
+ * Activities containing this fragment MUST implement the {@link com.bdlabs_linku.linku.ObservableScrollView.Callbacks}
  * interface.
  */
-public class EventsFragment extends Fragment implements ListView.OnItemClickListener {
+public class EventsFragment extends Fragment implements RecyclerView.OnItemTouchListener {
 
     private static final String TAG = "EventsFragment";
     private OnFragmentInteractionListener mListener;
 
     private EventsActivity mActivity;
-    /**
-     * The fragment's ListView/GridView containing the events.
-     */
-    private ListView mListView;
+
+    private RecyclerView mList;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private GestureDetector detector;
 
     public static EventsFragment newInstance() {
         EventsFragment fragment = new EventsFragment();
@@ -46,54 +49,20 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
-        // Set the list adapter
-        mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(mActivity.mEventsAdapter);
+        detector = new GestureDetector(getActivity(), new RecyclerViewOnGestureListener());
 
+        mList = (RecyclerView) view.findViewById(R.id.list);
+        mList.setHasFixedSize(true);
+        mList.addOnItemTouchListener(this);
 
-        // Create a ListView-specific touch listener. ListViews are given special treatment because
-        // by default they handle touches for their list items... i.e. they're in charge of drawing
-        // the pressed state (the list selector), handling list item clicks, etc.
-        SwipeDismissListViewTouchListener touchListener =
-                new SwipeDismissListViewTouchListener(
-                        mListView,
-                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
-                            @Override
-                            public boolean canDismiss(int position) {
-                                return true;
-                            }
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mList.setLayoutManager(mLayoutManager);
 
-                            @Override
-                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                                // TODO handle dismiss
-                            }
-                });
-
-        mListView.setOnTouchListener(touchListener);
-
-        // Setting this scroll listener is required to ensure that during ListView scrolling,
-        // we don't look for swipes.
-        mListView.setOnScrollListener(touchListener.makeScrollListener());
-
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        // specify an adapter (see also next example)
+        mList.setAdapter(mActivity.mEventsAdapter);
 
         return view;
-    }
-
-    /**
-     * Start the {@link com.bdlabs_linku.linku.ViewEventActivity} that shows the details of the clicked event.
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), ViewEventActivity.class);
-        intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
-        intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
-        startActivity(intent);
     }
 
     @Override
@@ -130,6 +99,42 @@ public class EventsFragment extends Fragment implements ListView.OnItemClickList
                 emptyView.setVisibility(View.INVISIBLE);
             }
         }
+    }
+
+    private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            View view = mList.findChildViewUnder(e.getX(), e.getY());
+            int position = mList.getChildPosition(view);
+
+            // handle single tap
+            Intent intent = new Intent(getActivity(), ViewEventActivity.class);
+            intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
+            intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
+            startActivity(intent);
+
+            return super.onSingleTapConfirmed(e);
+        }
+
+        public void onLongPress(MotionEvent e) {
+            View view = mList.findChildViewUnder(e.getX(), e.getY());
+            int position = mList.getChildPosition(view);
+
+            // handle long press
+
+            super.onLongPress(e);
+        }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        detector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
     }
 
     /**
