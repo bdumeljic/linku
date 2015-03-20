@@ -83,7 +83,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private boolean mGoing = false;
 
-    private Event mEvent;
+    private static Event mEvent;
     private String mEventId;
     private Location mUserLoc;
 
@@ -207,6 +207,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
+        Log.d("Creator", "" + mEvent);
         //if (mCreator.equals(ParseUser.getCurrentUser())){
             mEditButton = (ImageButton) findViewById(R.id.edit_event_btn);
 
@@ -215,6 +216,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 public void onClick(View v) {
                     Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
                     intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
+                    Log.d("Creator1", "" + mEvent);
                     intent.putExtra("EventTitle", mEvent.getTitle());
                     intent.putExtra("EventDescription", mEvent.getDescription());
                     intent.putExtra("EventTime", mEvent.getTime().getTime());

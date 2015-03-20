@@ -164,12 +164,11 @@ public class EditEventFragment extends Fragment {
             query.getInBackground(mEventId, new GetCallback<Event>() {
                 public void done(Event event, ParseException e) {
                     if (e == null) {
-                        event.put("title", mEditTitle.getText().toString().trim());
-                        event.put("description", mEditDescription.getText().toString().trim());
-                        event.put("time", mEventDate);
-                        event.put("Attending", 0);
-                        event.put("category", mCategorySpinner.getSelectedItemPosition());
-                        event.put("location", convertLocation(mEditLocation.getText().toString()));
+                        event.setTitle(mEditTitle.getText().toString().trim());
+                        event.setDescription(mEditDescription.getText().toString().trim());
+                        event.setTime(mEventDate);
+                        event.setCategory(mCategorySpinner.getSelectedItemPosition());
+                        event.setLocation(convertLocation(mEditLocation.getText().toString()));
 
                         // Save the post
                         event.saveInBackground();
@@ -178,7 +177,7 @@ public class EditEventFragment extends Fragment {
                         resultIntent.putExtra("eventId", event.getObjectId());
                         resultIntent.putExtra("EventTitle", event.getTitle());
                         resultIntent.putExtra("EventDescription", event.getDescription());
-                        resultIntent.putExtra("EventDate", mEventDate);
+                        resultIntent.putExtra("EventDate", event.getTime());
                         resultIntent.putExtra("EventLocation", event.getLocation().toString());
                         resultIntent.putExtra("EventCategory", event.getCategory());
                         getActivity().setResult(Activity.RESULT_OK, resultIntent);
