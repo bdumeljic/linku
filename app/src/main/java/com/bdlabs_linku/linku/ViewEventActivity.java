@@ -182,13 +182,18 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
+        mEditButton = (ImageButton) findViewById(R.id.edit_event_btn);
+        mEditButton.setVisibility(View.INVISIBLE);
+
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
-                    setEventCreator(object.getCreator());
+                    if(mEvent.getCreator().equals(ParseUser.getCurrentUser())){
+                        mEditButton.setVisibility(View.VISIBLE);
+                    }
 
                     // Set visible markers if user is going to this event
 
@@ -206,28 +211,21 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 }
             }
         });
+        mEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
+                intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
+                intent.putExtra("EventTitle", mEvent.getTitle());
+                intent.putExtra("EventDescription", mEvent.getDescription());
+                intent.putExtra("EventTime", mEvent.getTime().getTime());
+                intent.putExtra("EventDay", mEvent.getTime().getTime());
+                intent.putExtra("EventLocation", mEvent.getLocation().toString());
+                intent.putExtra("EventCategory", mEvent.getCategory());
+                startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
-        Log.d("Creator", "" + mEvent);
-        //if (mCreator.equals(ParseUser.getCurrentUser())){
-            mEditButton = (ImageButton) findViewById(R.id.edit_event_btn);
-
-            mEditButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
-                    intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
-                    Log.d("Creator1", "" + mEvent);
-                    intent.putExtra("EventTitle", mEvent.getTitle());
-                    intent.putExtra("EventDescription", mEvent.getDescription());
-                    intent.putExtra("EventTime", mEvent.getTime().getTime());
-                    intent.putExtra("EventDay", mEvent.getTime().getTime());
-                    intent.putExtra("EventLocation", mEvent.getLocation().toString());
-                    intent.putExtra("EventCategory", mEvent.getCategory());
-                    startActivityForResult(intent, EventsActivity.EDIT_EVENT);
-
-                }
-            });
-        //}
+            }
+        });
     }
 
     public void setEventCreator(ParseUser creator){

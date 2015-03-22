@@ -36,6 +36,11 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop" />
             </FrameLayout>
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_edit"
+                    android:id="@+id/edit_event_btn" android:layout_gravity="right" android:background="@android:color/transparent"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,12 +153,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:actionBarSize"
                 android:gravity="center_vertical"
-                android:paddingBottom="8dp">
-                <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_down"
-                        android:id="@+id/edit_event_btn" android:layout_gravity="right"/>
+                android:paddingBottom="8dp" android:weightSum="1">
 
 
                 <!-- Session title -->
@@ -199,6 +199,7 @@
 
         </FrameLayout>
     </com.bdlabs_linku.linku.ObservableScrollView>
+
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/join_event_btn"

@@ -27,7 +27,7 @@
     <string name="placeholder_category">Event type</string>
 
     <!-- Editing event -->
-    <string name="progress_edit_event">Saving event …</string>
+    <string name="progress_edit_event">Updating event …</string>
 
     <!-- Login / SignUp -->
     <string name="login">Log in</string>

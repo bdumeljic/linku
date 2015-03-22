@@ -181,7 +181,6 @@ public class EditEventFragment extends Fragment {
                         resultIntent.putExtra("EventLocation", event.getLocation().toString());
                         resultIntent.putExtra("EventCategory", event.getCategory());
                         getActivity().setResult(Activity.RESULT_OK, resultIntent);
-                        Log.d(TAG, "edited event with id " + resultIntent.toString());
                         getActivity().finish();
 
                     } else {
