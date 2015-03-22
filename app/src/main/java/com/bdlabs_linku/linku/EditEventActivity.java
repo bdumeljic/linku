@@ -70,7 +70,7 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     public void onFragmentInteraction(Uri uri) {
     }
 
-    public void dayPicker(View v) {
+    public void datePicker(View v) {
         DialogFragment picker = new DatePickerFragment();
         picker.show(getFragmentManager(), "datePicker");
     }

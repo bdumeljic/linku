@@ -178,7 +178,7 @@ public class EditEventFragment extends Fragment {
                         resultIntent.putExtra("EventTitle", event.getTitle());
                         resultIntent.putExtra("EventDescription", event.getDescription());
                         resultIntent.putExtra("EventDate", event.getTime());
-                        resultIntent.putExtra("EventLocation", event.getLocation().toString());
+                        resultIntent.putExtra("EventLocation", mEditLocation.getText().toString());
                         resultIntent.putExtra("EventCategory", event.getCategory());
                         getActivity().setResult(Activity.RESULT_OK, resultIntent);
                         getActivity().finish();

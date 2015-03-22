@@ -220,7 +220,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 intent.putExtra("EventDescription", mEvent.getDescription());
                 intent.putExtra("EventTime", mEvent.getTime().getTime());
                 intent.putExtra("EventDay", mEvent.getTime().getTime());
-                intent.putExtra("EventLocation", mEvent.getLocation().toString());
+                intent.putExtra("EventLocation", convertLocationToAdress(mEvent.getLocation()));
                 intent.putExtra("EventCategory", mEvent.getCategory());
                 startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
@@ -464,6 +464,25 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             e.printStackTrace();
         }
         return geoPoint;
+
+    }
+
+    public String convertLocationToAdress(ParseGeoPoint location) {
+        String address = "";
+        Geocoder gc=new Geocoder(this, Locale.FRANCE);
+        List<Address> addresses;
+        try {
+            addresses=gc.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+            if (addresses.size() > 0) {
+                for (int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++)
+                    address += addresses.get(0).getAddressLine(i) + "\n";
+            }
+        }
+        catch (  IOException e) {
+            e.printStackTrace();
+        }
+        return address;
 
     }
 }
