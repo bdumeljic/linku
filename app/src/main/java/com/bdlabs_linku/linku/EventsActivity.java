@@ -100,7 +100,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         // Start location tracking.
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
-        mLocationTracker.start(mLoclistener);
+        if(mLocationTracker.getLocationManager() != null) {
+            mLocationTracker.start(mLoclistener);
+        }
 
         // Start loading events.
         mEventsAdapter = new EventsAdapter(this, null);

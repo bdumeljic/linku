@@ -116,4 +116,8 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
 
     public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
     }
+
+    public LocationManager getLocationManager() {
+        return lm;
+    }
 }

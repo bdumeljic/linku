@@ -1,6 +1,9 @@
 package com.bdlabs_linku.linku;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -60,6 +63,41 @@ public class LoginActivity extends ActionBarActivity {
             public void onClick(View v) {
                 // Starts an intent for the sign up activity
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
+
+        Button resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
+        resetPasswordButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this, R.style.AppTheme_Dialog);
+
+                View promptView = getLayoutInflater().inflate(R.layout.dialog_email_prompt, null);
+                alertDialogBuilder.setView(promptView);
+
+                final EditText input = (EditText) promptView.findViewById(R.id.email);
+
+                // setup a dialog window
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.action_reset, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // get user input and set it to result
+                                usernameEditText.setText(input.getText());
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create an alert dialog
+                AlertDialog promptEmailDialog = alertDialogBuilder.create();
+
+                promptEmailDialog.show();
+
             }
         });
     }

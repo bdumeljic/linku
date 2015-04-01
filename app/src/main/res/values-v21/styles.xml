@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
+        <item name="colorAccent">@color/accent_2</item>
         <!-- Add logo to action bar -->
         <item name="android:logo">@drawable/linku_logo_white</item>
         <item name="android:displayOptions">useLogo|showHome</item>
@@ -13,12 +13,13 @@
 
     <style name="AppTheme.Dark" parent="AppTheme">
         <item name="android:colorControlNormal">@color/hint</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
+        <item name="colorAccent">@color/accent_2</item>
 
         <item name="android:windowNoTitle">true</item>
         <!--We will be using the toolbar so no need to show ActionBar-->
