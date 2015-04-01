@@ -5,7 +5,7 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_password_again">Password again</string>
     <string name="error_intro">"Please "</string>
-    <string name="error_blank_username">enter a username</string>
+    <string name="error_blank_email">enter a valid email</string>
     <string name="error_blank_password">enter a password</string>
     <string name="error_mismatched_passwords">enter the same password twice</string>
     <string name="error_join">", and "</string>

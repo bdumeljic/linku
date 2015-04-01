@@ -40,6 +40,7 @@
         <activity
             android:name=".CreateNewEventActivity"
             android:label="@string/title_activity_create_new_event"
+            android:theme="@style/AppTheme.Dark"
             android:parentActivityName=".EventsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,7 +51,6 @@
             android:name=".SignUpActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark"
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

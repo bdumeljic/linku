@@ -71,7 +71,7 @@ public class SignUpActivity extends ActionBarActivity {
     StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
     if (username.length() == 0) {
       validationError = true;
-      validationErrorMessage.append(getString(R.string.error_blank_username));
+      validationErrorMessage.append(getString(R.string.error_blank_email));
     }
     if (password.length() == 0) {
       if (validationError) {

@@ -1,12 +1,12 @@
 package com.bdlabs_linku.linku;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.RequestPasswordResetCallback;
 
 /**
  * Activity which displays a login screen to the user or the option to go to the signup form on {@link com.bdlabs_linku.linku.SignUpActivity}.
@@ -76,14 +77,31 @@ public class LoginActivity extends ActionBarActivity {
                 alertDialogBuilder.setView(promptView);
 
                 final EditText input = (EditText) promptView.findViewById(R.id.email);
-
+                if (isValidEmail(usernameEditText.getText())) {
+                    input.setText(usernameEditText.getText());
+                }
                 // setup a dialog window
                 alertDialogBuilder
                         .setCancelable(false)
                         .setPositiveButton(R.string.action_reset, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // get user input and set it to result
-                                usernameEditText.setText(input.getText());
+                                String email = String.valueOf(input.getText());
+
+                                if (isValidEmail(email)) {
+                                    usernameEditText.setText(email);
+
+                                    ParseUser.requestPasswordResetInBackground(email,
+                                            new RequestPasswordResetCallback() {
+                                                public void done(ParseException e) {
+                                                    if (e == null) {
+                                                        Toast.makeText(LoginActivity.this, "You've got mail", Toast.LENGTH_LONG);
+                                                    } else {
+                                                        // Something went wrong. Look at the ParseException to see what's up.
+                                                        Log.e("LOGIN", e.getStackTrace().toString());
+                                                    }
+                                                }
+                                            });
+                                }
                             }
                         })
                         .setNegativeButton("Cancel",
@@ -112,9 +130,9 @@ public class LoginActivity extends ActionBarActivity {
         // Validate the log in data
         boolean validationError = false;
         StringBuilder validationErrorMessage = new StringBuilder(getString(R.string.error_intro));
-        if (username.length() == 0) {
+        if (username.length() == 0 || !isValidEmail(username)) {
             validationError = true;
-            validationErrorMessage.append(getString(R.string.error_blank_username));
+            validationErrorMessage.append(getString(R.string.error_blank_email));
         }
         if (password.length() == 0) {
             if (validationError) {
@@ -145,7 +163,7 @@ public class LoginActivity extends ActionBarActivity {
                     Log.d("PARSE", " " + e.getCode() + " " + e.getMessage());
                     switch (e.getCode()) {
                         case ParseException.OBJECT_NOT_FOUND:
-                            Toast.makeText(LoginActivity.this, "Username and/or password incorrect.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Email and/or password incorrect.", Toast.LENGTH_LONG).show();
                             break;
                         case ParseException.CONNECTION_FAILED:
                             Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_LONG).show();
@@ -158,5 +176,9 @@ public class LoginActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }
