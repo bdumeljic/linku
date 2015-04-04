@@ -86,7 +86,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private TextView mLocName;
     private TextView mLocAddress;
 
-    private boolean mHasPhoto = true;
+    private boolean mHasPhoto = false;
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
     private float mMaxHeaderElevation;
 
@@ -164,10 +164,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         }
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
-        mHasPhoto = true;
-        //mPhotoView.setImageResource(R.drawable.tri_pattern);
         recomputePhotoAndScrollingMetrics();
-
         onScrollChanged(0, 0); // trigger scroll handling
         mScrollViewChild.setVisibility(View.VISIBLE);
 
@@ -223,26 +220,28 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
      * After Parse has returned the details of the event, set the details of the view.
      */
     public void setInfo() {
-        Object mPhoto;
-        if (mEvent.hasUploadedPhoto()) {
-            Log.d(TAG, mEvent.getUploadedPhotoUrl());
-            mPhoto = mEvent.getUploadedPhotoUrl();
-        } else {
-            mPhoto = R.drawable.tri_pattern;
+        mHasPhoto = mEvent.hasUploadedPhoto();
+        recomputePhotoAndScrollingMetrics();
+        onScrollChanged(0, 0); // trigger scroll handling
+        if (mHasPhoto) {
+            String mPhoto = mEvent.getUploadedPhotoUrl();
+            Log.d(TAG, mPhoto);
+
+            CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
+
+            Glide.with(this)
+                    .load(mPhoto)
+                    .transform(mCenterCrop)
+                    .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                            super.onResourceReady(drawable, anim);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    });
         }
 
-        CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
-
-        Glide.with(this)
-                .load(mPhoto)
-                .transform(mCenterCrop)
-                .into(new GlideDrawableImageViewTarget(mPhotoView) {
-                    @Override
-                    public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
-                        super.onResourceReady(drawable, anim);
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                });
+        Log.d(TAG, "no photo uploaded for this event");
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());
