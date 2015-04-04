@@ -108,19 +108,20 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
 
     public void onPickButtonClick(View v) {
         // Construct an intent for the place picker
-        try {
-            PlacePicker.IntentBuilder intentBuilder =
-                    new PlacePicker.IntentBuilder();
-            Intent intent = intentBuilder.build(this);
+       // try {
+            //PlacePicker.IntentBuilder intentBuilder =
+              //      new PlacePicker.IntentBuilder();
+            //Intent intent = intentBuilder.build(this);
+            Intent intent = new Intent(this, MainActivity.class);
             // Start the intent by requesting a result,
             // identified by a request code.
             startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-        } catch (GooglePlayServicesRepairableException e) {
+        /*} catch (GooglePlayServicesRepairableException e) {
             // ...
         } catch (GooglePlayServicesNotAvailableException e) {
             // ...
-        }
+        }*/
     }
         @Override
         public void onActivityResult(int requestCode,  int resultCode, Intent data){
