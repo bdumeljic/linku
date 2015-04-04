@@ -239,9 +239,9 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                             mProgressBar.setVisibility(View.GONE);
                         }
                     });
+        } else {
+            Log.d(TAG, "no photo uploaded for this event");
         }
-
-        Log.d(TAG, "no photo uploaded for this event");
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());

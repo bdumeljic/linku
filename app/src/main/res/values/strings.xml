@@ -42,5 +42,8 @@
     <string name="reset_password_dialog_title">Reset password</string>
     <string name="reset_password_dialog_explanation">Enter email to receive a reset link</string>
     <string name="linku_logo">LinkU Logo</string>
+    <string name="title_feed">Feed</string>
+    <string name="action_refresh_feed">Refresh Feed</string>
+    <string name="placeholder_secondary">Secondary information</string>
 
 </resources>

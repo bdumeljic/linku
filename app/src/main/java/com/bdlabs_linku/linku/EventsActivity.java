@@ -80,6 +80,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.progress_load_events));
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setLogo(R.drawable.ic_hedge);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
         if (!isNetworkAvailable()) {
             setContentView(R.layout.no_internet);
             final Button refreshView = (Button) findViewById(R.id.refresh_button);
@@ -239,10 +245,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         return mUserLocation;
     }
 
-    public void viewEvent(View v) {
-
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -330,7 +332,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_events).toUpperCase(l);
+                    return getString(R.string.title_feed).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_map).toUpperCase(l);
             }

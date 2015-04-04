@@ -58,33 +58,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(event.getTime().getTime());
-        eventViewHolder.time.setText(formattedDate);
-
-        // Set number of people attending
-        int attend = event.getAttending();
-        boolean mGoing = event.isAlreadyAttending();
-        if(attend < 1) {
-            eventViewHolder.attendees.setText("Be the first to join!");
-        } else if(attend == 1 && mGoing) {
-            eventViewHolder.attendees.setText("You are going.");
-        } else if(attend == 1) {
-            eventViewHolder.attendees.setText("One person is going");
-        } else if (attend == 2 && mGoing) {
-            eventViewHolder.attendees.setText("You and one other person are going.");
-        } else if (mGoing) {
-            eventViewHolder.attendees.setText("You and " + String.valueOf(event.getAttending() - 1) + " other people are going.");
-        } else {
-            eventViewHolder.attendees.setText(String.valueOf(event.getAttending()) + " people are going");
-        }
+        eventViewHolder.secondary.setText(formattedDate);
 
         eventViewHolder.cat.setImageResource(event.getCategoryIcon());
 
         if (mContext.getLastLocation() != null) {
             ParseGeoPoint locEvent = event.getLocation();
-            eventViewHolder.location.setText(parseDistance(locEvent));
+            eventViewHolder.secondary.append(" - " + parseDistance(locEvent));
         }
     }
-
 
     public Event getItem(int position) {
         return parseAdapter.getItem(position);
@@ -101,18 +83,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView time;
-        TextView attendees;
+        TextView secondary;
         ImageView cat;
-        TextView location;
 
         public EventViewHolder(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.event_name);
-            time = (TextView) v.findViewById(R.id.event_time);
-            attendees = (TextView) v.findViewById(R.id.attendees);
+            secondary = (TextView) v.findViewById(R.id.event_secondary);
             cat = (ImageView) v.findViewById(R.id.event_cat);
-            location = (TextView) v.findViewById(R.id.event_place);
         }
     }
 
