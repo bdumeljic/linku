@@ -85,7 +85,7 @@ public class LoginActivity extends ActionBarActivity {
                         .setCancelable(false)
                         .setPositiveButton(R.string.action_reset, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                String email = String.valueOf(input.getText());
+                                String email = input.getText().toString().trim();
 
                                 if (isValidEmail(email)) {
                                     usernameEditText.setText(email);
@@ -94,13 +94,22 @@ public class LoginActivity extends ActionBarActivity {
                                             new RequestPasswordResetCallback() {
                                                 public void done(ParseException e) {
                                                     if (e == null) {
-                                                        Toast.makeText(LoginActivity.this, "You've got mail", Toast.LENGTH_LONG);
+                                                        Toast.makeText(LoginActivity.this, "You've got mail", Toast.LENGTH_LONG).show();
                                                     } else {
                                                         // Something went wrong. Look at the ParseException to see what's up.
-                                                        Log.e("LOGIN", e.getStackTrace().toString());
+                                                        Log.e("LOGIN", e.toString() + " " + e.getCode());
+                                                        if (e.getCode() == 205) {
+                                                            Toast.makeText(LoginActivity.this, "No account with this email", Toast.LENGTH_LONG).show();
+                                                        } else if (e.getCode() == 100) {
+                                                            Toast.makeText(LoginActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                                            Toast.makeText(LoginActivity.this, "Something went wrong. Try again later", Toast.LENGTH_LONG).show();
+                                                        }
                                                     }
                                                 }
                                             });
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Not a valid email address", Toast.LENGTH_LONG).show();
                                 }
                             }
                         })

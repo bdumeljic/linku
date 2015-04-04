@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +23,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bdlabs_linku.linku.Utils.ImageChooser;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -355,14 +351,7 @@ public class CreateNewEventFragment extends Fragment {
                 if(resultCode == Activity.RESULT_OK){
                     Uri selectedImage = data.getData();
 
-                    picturePath = FileChooser.getPath(mActivity, selectedImage);
-                      /*  String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                        Cursor cursor = mActivity.getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-                        cursor.moveToFirst();
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        picturePath = cursor.getString(columnIndex);
-                        cursor.close();*/
-
+                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
 
                     Log.d(TAG, "path " + picturePath);
 
