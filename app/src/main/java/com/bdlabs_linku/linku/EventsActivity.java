@@ -213,6 +213,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
+            case R.id.action_refresh:
+                mEventsAdapter.getParseAdapter().loadObjects();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

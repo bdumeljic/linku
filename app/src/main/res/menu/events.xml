@@ -5,6 +5,11 @@
         android:title="@string/action_search"
         app:showAsAction="always" />-->
 
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh_feed"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_logout"
         android:title="@string/action_logout"
         app:showAsAction="never" />
