@@ -45,5 +45,6 @@
     <string name="title_feed">Feed</string>
     <string name="action_refresh_feed">Refresh Feed</string>
     <string name="placeholder_secondary">Secondary information</string>
+    <string name="action_edit">Edit</string>
 
 </resources>

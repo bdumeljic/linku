@@ -1,5 +1,6 @@
 package com.bdlabs_linku.linku;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,6 +14,9 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -97,6 +102,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private Event mEvent;
     private String mEventId;
     private Location mUserLoc;
+
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,10 +223,36 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.view_event, menu);
+
+        mMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * After Parse has returned the details of the event, set the details of the view.
      */
     public void setInfo() {
+        if (ParseUser.getCurrentUser() == mEvent.getCreator()) {
+            Log.e(TAG, "creator");
+            getMenuInflater().inflate(R.menu.view_event_creator, mMenu);
+        }
+
+
         mHasPhoto = mEvent.hasUploadedPhoto();
         recomputePhotoAndScrollingMetrics();
         onScrollChanged(0, 0); // trigger scroll handling
