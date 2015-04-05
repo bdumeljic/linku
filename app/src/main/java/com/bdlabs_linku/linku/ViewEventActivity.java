@@ -22,10 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-<<<<<<< HEAD
 import android.widget.*;
 
-=======
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,7 +36,6 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
->>>>>>> development
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.*;
 
@@ -101,7 +98,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private float mMaxHeaderElevation;
 
     private FloatingActionButton mJoinButton;
-    private ImageButton mEditButton;
+    private MenuItem editOption;
 
     private boolean mGoing = false;
 
@@ -204,18 +201,12 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             }
         });
 
-        mEditButton = (ImageButton) findViewById(R.id.edit_event_btn);
-        mEditButton.setVisibility(View.INVISIBLE);
-
         mEventId = getIntent().getStringExtra(EVENT_ID);
         ParseQuery<Event> query = Event.getQuery();
         query.getInBackground(mEventId, new GetCallback<Event>() {
             public void done(Event object, ParseException e) {
                 if (e == null) {
                     mEvent = object;
-                    if(mEvent.getCreator().equals(ParseUser.getCurrentUser())){
-                        mEditButton.setVisibility(View.VISIBLE);
-                    }
 
                     // Set visible markers if user is going to this event
 
@@ -233,25 +224,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 }
             }
         });
-        mEditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
-                intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
-                intent.putExtra("EventTitle", mEvent.getTitle());
-                intent.putExtra("EventDescription", mEvent.getDescription());
-                intent.putExtra("EventTime", mEvent.getTime().getTime());
-                intent.putExtra("EventDay", mEvent.getTime().getTime());
-                intent.putExtra("EventLocation", convertLocationToAdress(mEvent.getLocation()));
-                intent.putExtra("EventCategory", mEvent.getCategory());
-                startActivityForResult(intent, EventsActivity.EDIT_EVENT);
-
-            }
-        });
-    }
-
-    public void setEventCreator(ParseUser creator){
-        mCreator = creator;
     }
 
     public ParseUser getCreator(){
@@ -274,6 +246,15 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         switch (item.getItemId()) {
             case R.id.action_edit:
                 Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
+                intent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
+                intent.putExtra("EventTitle", mEvent.getTitle());
+                intent.putExtra("EventDescription", mEvent.getDescription());
+                intent.putExtra("EventTime", mEvent.getTime().getTime());
+                intent.putExtra("EventDay", mEvent.getTime().getTime());
+                intent.putExtra("EventLocation", convertLocationToAdress(mEvent.getLocation()));
+                intent.putExtra("EventCategory", mEvent.getCategory());
+                startActivityForResult(intent, EventsActivity.EDIT_EVENT);
 
         }
         return super.onOptionsItemSelected(item);
