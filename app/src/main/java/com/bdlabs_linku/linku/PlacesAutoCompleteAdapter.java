@@ -78,7 +78,7 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
 
             // Extract the Place descriptions from the results
             resultList = new ArrayList<>(predsJsonArray.length());
-            Map dictionary = new HashMap();
+           //Map dictionary = new HashMap();
             for (int i = 0; i < predsJsonArray.length(); i++) {
 
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));

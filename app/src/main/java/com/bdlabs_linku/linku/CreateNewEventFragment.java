@@ -20,12 +20,17 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +48,7 @@ import java.util.Locale;
  *
  */
 public class CreateNewEventFragment extends Fragment {
+    private static final int REQUEST_PLACE_PICKER = 1;
     private static final String TAG = "CreateNewEventFragment";
     private OnFragmentInteractionListener mListener ;
 
@@ -51,7 +57,7 @@ public class CreateNewEventFragment extends Fragment {
     // Input values from view
     private EditText mEditTitle;
     private EditText mEditDescription;
-    private AutoCompleteTextView mEditLocation;
+    private Button mEditLocation;
     private Button mEditDay;
     private Button mEditTime;
     private Date mEventDate;
@@ -63,6 +69,13 @@ public class CreateNewEventFragment extends Fragment {
     private int year = -1;
     private int hour = -1;
     private int minute = -1;
+
+    /** Place **/
+    private ParseGeoPoint geoPoint;
+    private String place_name;
+    private String place_address;
+    private String place_id;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -87,8 +100,7 @@ public class CreateNewEventFragment extends Fragment {
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
 
-        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
-        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
+        mEditLocation = (Button) view.findViewById(R.id.event_location_input);
 
         mCategorySpinner = (Spinner) view.findViewById(R.id.category);
         ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
@@ -167,8 +179,10 @@ public class CreateNewEventFragment extends Fragment {
             event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
             // Get the location and turn it into a ParseGeoPoint
-            ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
-            event.setLocation(point);
+            //ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
+            //event.setLocation(place);
+
+            Log.d("CreateLocationEvent","name: "+place_name+" address: "+place_address+" loc: "+geoPoint.toString());
 
             // Save the event
             event.saveInBackground(new SaveCallback() {
@@ -274,4 +288,33 @@ public class CreateNewEventFragment extends Fragment {
         mEditTime.setText(formattedTime);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
+
+
+
+    public void setLocation(Place place) {
+
+
+            place_name = place.getName().toString();
+            place_address = place.getAddress().toString();
+            place_id = place.getId().toString();
+
+
+            geoPoint = new ParseGeoPoint();
+            geoPoint.setLatitude(place.getLatLng().latitude);
+            geoPoint.setLongitude(place.getLatLng().longitude);
+
+
+
+           /* String attributions = PlacePicker.getAttributions(data);
+            if (attributions == null) {
+                attributions = "";
+            }*/
+
+            mEditLocation.setText(place_name);
+            mEditLocation.setTextColor(getResources().getColor(R.color.body_dark));
+
+
+    }
+
+
 }
