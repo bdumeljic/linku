@@ -16,6 +16,8 @@ import android.widget.*;
 import com.parse.*;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -102,12 +104,14 @@ public class EditEventFragment extends Fragment {
 
         //set the timepicker values
         String[] time = mActivity.getEventTime().split(":");
-        setTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
+        this.setTime(Integer.parseInt(time[0]), Integer.parseInt(time[1]));
         mEditTime.setText(mActivity.getEventTime());
 
         //set the datepicker values
         String[] parts = mActivity.getEventDay().split("-");
-        setDay(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
+
+        Log.d("YEARRRR" , "" + Integer.parseInt(parts[0]));
+        this.setDay(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
 
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 
@@ -167,6 +171,7 @@ public class EditEventFragment extends Fragment {
                         event.setTitle(mEditTitle.getText().toString().trim());
                         event.setDescription(mEditDescription.getText().toString().trim());
                         event.setTime(mEventDate);
+                        Log.d("mEventDate", "" + mEventDate);
                         event.setCategory(mCategorySpinner.getSelectedItemPosition());
                         event.setLocation(convertLocation(mEditLocation.getText().toString()));
 
@@ -233,7 +238,7 @@ public class EditEventFragment extends Fragment {
             return false;
         }
         else {
-            mEventDate = new Date(year, month, day, hour, minute);
+            mEventDate = new Date(year -1900, month, day, hour, minute);
             return true;
         }
     }
@@ -242,14 +247,22 @@ public class EditEventFragment extends Fragment {
         day = dayOfMonth;
         month = monthOfYear;
         year = yearPicked;
-        mEditDay.setText(dayOfMonth + " / " + monthOfYear);
+        mEditDay.setText(day + " / " + month + " / " + year);
+        Log.d("DATEPICKED", "" +  mEditDay.getText());
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 
     public void setTime(int hourPicked, int minutePicked) {
         hour = hourPicked;
         minute = minutePicked;
-        mEditTime.setText(hour + ":" + minute);
+
+        Date time = new Date();
+        time.setHours(hour);
+        time.setMinutes(minute);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String formattedTime = timeFormat.format(time.getTime());
+
+        mEditTime.setText(formattedTime);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
     }
 }

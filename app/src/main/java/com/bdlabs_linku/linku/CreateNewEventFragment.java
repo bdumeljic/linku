@@ -285,7 +285,7 @@ public class CreateNewEventFragment extends Fragment {
             return false;
         }
         else {
-            mEventDate = new Date(year, month, day, hour, minute);
+            mEventDate = new Date(year-1900, month, day, hour, minute);
             return true;
         }
     }
