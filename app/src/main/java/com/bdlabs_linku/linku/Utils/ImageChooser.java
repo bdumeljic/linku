@@ -1,16 +1,24 @@
-package com.bdlabs_linku.linku;
+package com.bdlabs_linku.linku.Utils;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-public class FileChooser {
+import com.parse.ParseException;
+import com.parse.ParseFile;
+
+import java.io.ByteArrayOutputStream;
+
+public class ImageChooser {
 
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
@@ -140,5 +148,24 @@ public class FileChooser {
      */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static ParseFile createParseImageFile(String photoUrl) {
+        Bitmap bitmap = BitmapFactory.decodeFile(photoUrl);
+
+        // Convert it to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+
+        // Create the ParseFile
+        ParseFile file = new ParseFile(image);
+        try {
+            file.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 }

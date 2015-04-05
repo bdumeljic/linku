@@ -22,7 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/image_upload_placeholder" />
+                android:src="@drawable/image_upload_placeholder"
+                android:background="@drawable/background_navbar" />
 
             <ProgressBar
                 android:layout_width="wrap_content"

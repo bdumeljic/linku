@@ -52,7 +52,6 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
         detector = new GestureDetector(getActivity(), new RecyclerViewOnGestureListener());
 
         mList = (RecyclerView) view.findViewById(R.id.list);
-        mList.setHasFixedSize(true);
         mList.addOnItemTouchListener(this);
 
         // use a linear layout manager

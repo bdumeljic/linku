@@ -1,5 +1,6 @@
 package com.bdlabs_linku.linku;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,6 +14,9 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -86,7 +91,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private TextView mLocName;
     private TextView mLocAddress;
 
-    private boolean mHasPhoto = true;
+    private boolean mHasPhoto = false;
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
     private float mMaxHeaderElevation;
 
@@ -97,6 +102,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private Event mEvent;
     private String mEventId;
     private Location mUserLoc;
+
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,10 +171,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         }
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
-        mHasPhoto = true;
-        //mPhotoView.setImageResource(R.drawable.tri_pattern);
         recomputePhotoAndScrollingMetrics();
-
         onScrollChanged(0, 0); // trigger scroll handling
         mScrollViewChild.setVisibility(View.VISIBLE);
 
@@ -219,30 +223,58 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.view_event, menu);
+
+        mMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * After Parse has returned the details of the event, set the details of the view.
      */
     public void setInfo() {
-        Object mPhoto;
-        if (mEvent.hasUploadedPhoto()) {
-            Log.d(TAG, mEvent.getUploadedPhotoUrl());
-            mPhoto = mEvent.getUploadedPhotoUrl();
-        } else {
-            mPhoto = R.drawable.tri_pattern;
+        if (ParseUser.getCurrentUser() == mEvent.getCreator()) {
+            Log.e(TAG, "creator");
+            getMenuInflater().inflate(R.menu.view_event_creator, mMenu);
         }
 
-        CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
 
-        Glide.with(this)
-                .load(mPhoto)
-                .transform(mCenterCrop)
-                .into(new GlideDrawableImageViewTarget(mPhotoView) {
-                    @Override
-                    public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
-                        super.onResourceReady(drawable, anim);
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                });
+        mHasPhoto = mEvent.hasUploadedPhoto();
+        recomputePhotoAndScrollingMetrics();
+        onScrollChanged(0, 0); // trigger scroll handling
+        if (mHasPhoto) {
+            String mPhoto = mEvent.getUploadedPhotoUrl();
+            Log.d(TAG, mPhoto);
+
+            CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
+
+            Glide.with(this)
+                    .load(mPhoto)
+                    .transform(mCenterCrop)
+                    .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                            super.onResourceReady(drawable, anim);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Log.d(TAG, "no photo uploaded for this event");
+        }
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());

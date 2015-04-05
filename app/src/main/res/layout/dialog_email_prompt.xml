@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:theme="@style/AppTheme.Dark"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_password_dialog_title"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:layout_marginBottom="@dimen/keyline_1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_password_dialog_explanation"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
+        android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:hint="@string/prompt_email"
+        android:textSize="@dimen/hint"
+        android:id="@+id/email"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

@@ -80,6 +80,12 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.progress_load_events));
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setLogo(R.drawable.ic_hedge);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
         if (!isNetworkAvailable()) {
             setContentView(R.layout.no_internet);
             final Button refreshView = (Button) findViewById(R.id.refresh_button);
@@ -100,7 +106,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         // Start location tracking.
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
-        mLocationTracker.start(mLoclistener);
+        if(mLocationTracker.getLocationManager() != null) {
+            //mLocationTracker.start(mLoclistener);
+        }
 
         // Start loading events.
         mEventsAdapter = new EventsAdapter(this, null);
@@ -205,6 +213,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
+            case R.id.action_refresh:
+                mEventsAdapter.getParseAdapter().loadObjects();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -235,10 +246,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
     public Location getLastLocation() {
         return mUserLocation;
-    }
-
-    public void viewEvent(View v) {
-
     }
 
     private boolean isNetworkAvailable() {
@@ -328,7 +335,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_events).toUpperCase(l);
+                    return getString(R.string.title_feed).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_map).toUpperCase(l);
             }
