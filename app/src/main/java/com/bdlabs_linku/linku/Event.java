@@ -32,6 +32,7 @@ public class Event extends ParseObject {
     public static List<String> CATEGORIES = new ArrayList<>();
     public static List<Integer> CATEGORIES_ICONS = new ArrayList<>();
     public static List<Integer> CATEGORIES_MAP = new ArrayList<>();
+    public static List<Integer> CATEGORIES_CIRCLE = new ArrayList<>();
 
     static {
         PICS.add(R.drawable.bic_pattern);
@@ -75,6 +76,18 @@ public class Event extends ParseObject {
         CATEGORIES_MAP.add(R.drawable.ic_map_study);
         CATEGORIES_MAP.add(R.drawable.ic_map_cinema);
         CATEGORIES_MAP.add(R.drawable.ic_map_other);
+
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_outdoor);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_food);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_coffee);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_shopping);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_nightlife);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_culture);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_sports);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_music);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_study);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_cinema);
+        CATEGORIES_CIRCLE.add(R.drawable.ic_circle_other);
     }
 
     public static ParseQuery<Event> getQuery() {
@@ -188,6 +201,10 @@ public class Event extends ParseObject {
 
     public int getCategoryMap() {
         return CATEGORIES_MAP.get(getCategory());
+    }
+
+    public int getCategoryCircle() {
+        return CATEGORIES_CIRCLE.get(getCategory());
     }
 
     @Override

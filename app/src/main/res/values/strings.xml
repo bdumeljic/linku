@@ -46,5 +46,6 @@
     <string name="action_refresh_feed">Refresh Feed</string>
     <string name="placeholder_secondary">Secondary information</string>
     <string name="action_edit">Edit</string>
+    <string name="progress_get_event">Fetching event …</string>
 
 </resources>

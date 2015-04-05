@@ -56,19 +56,18 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/keyline_1">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/keyline_1"
+                    android:paddingBottom="@dimen/keyline_1_minus_8dp">
 
                     <ImageView
                         android:id="@+id/cat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_other"
+                        android:src="@drawable/ic_circle_other"
                         android:layout_centerVertical="true"
-                        android:scaleType="fitEnd"
                         android:layout_marginLeft="@dimen/keyline_1"
-                        android:layout_marginRight="@dimen/keyline_1"
-                        android:padding="8dp" />
+                        android:layout_marginRight="@dimen/keyline_1" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -77,8 +76,7 @@
                         android:layout_marginRight="@dimen/keyline_1"
                         android:textSize="14sp"
                         android:textColor="@color/body_dark"
-                        android:layout_marginBottom="24dp"
-                        android:text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum " />
+                        android:layout_marginBottom="24dp" />
 
                 </LinearLayout>
 
@@ -177,7 +175,6 @@
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:layout_marginTop="@dimen/keyline_1_minus_8dp"
-                    android:text="Event title"
                     android:layout_marginLeft="@dimen/keyline_2"
                     android:layout_marginRight="@dimen/keyline_1" />
 
@@ -187,7 +184,6 @@
                     android:id="@+id/event_secondary"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
-                    android:text="Event secondary"
                     android:layout_marginLeft="@dimen/keyline_2"
                     android:layout_marginRight="@dimen/keyline_1"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
@@ -200,7 +196,7 @@
                 fab:fab_size="mini"
                 fab:fab_icon="@drawable/ic_plus_dark"
                 fab:fab_colorNormal="@android:color/white"
-                fab:fab_colorPressed="@color/hint"
+                fab:fab_colorPressed="@color/white_darker"
                 android:layout_marginLeft="@dimen/keyline_1_minus_8dp" />
 
 
