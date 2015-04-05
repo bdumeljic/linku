@@ -300,7 +300,7 @@ public class CreateNewEventFragment extends Fragment {
         day = dayOfMonth;
         month = monthOfYear;
         year = yearPicked;
-        mEditDay.setText(day + " / " + month + " / " + year);
+        mEditDay.setText(day + " / " + (month + 1) + " / " + year);
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 
