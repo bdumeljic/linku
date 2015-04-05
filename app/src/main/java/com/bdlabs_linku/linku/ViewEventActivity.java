@@ -486,7 +486,9 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             if (resultCode == RESULT_OK) {
                 mEvent.setTitle(data.getStringExtra("EventTitle"));
                 mEvent.setDescription(data.getStringExtra("EventDescription"));
-                mEvent.setTime(new Date(data.getLongExtra("EventDate", -1)));
+                Date dt = (Date)data.getSerializableExtra("EventDate");
+                mEvent.setTime(dt);
+                Log.d("NEWDATE", "" + dt);
                 mEvent.setLocation(convertLocation(data.getStringExtra("EventLocation")));
                 mEvent.setCategory(data.getIntExtra("EventCategory", 0));
 

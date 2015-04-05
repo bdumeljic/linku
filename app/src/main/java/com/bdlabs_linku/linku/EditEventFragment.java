@@ -110,8 +110,8 @@ public class EditEventFragment extends Fragment {
         //set the datepicker values
         String[] parts = mActivity.getEventDay().split("-");
 
-        Log.d("YEARRRR" , "" + Integer.parseInt(parts[0]));
-        this.setDay(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
+        Log.d("YEARRRR" , "" + Integer.parseInt(parts[1]));
+        this.setDay(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]) - 1, Integer.parseInt(parts[0]));
 
         mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
 
@@ -247,8 +247,8 @@ public class EditEventFragment extends Fragment {
         day = dayOfMonth;
         month = monthOfYear;
         year = yearPicked;
-        mEditDay.setText(day + " / " + month + " / " + year);
-        Log.d("DATEPICKED", "" +  mEditDay.getText());
+        mEditDay.setText(day + " / " + (month + 1) + " / " + year);
+        Log.d("DATEPICKED", "" + day + " / " + (month + 1) + " / " + year);
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 
