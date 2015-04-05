@@ -11,14 +11,14 @@
             android:layout_height="wrap_content">
 
         <!-- Background photo -->
-        <FrameLayout android:id="@+id/session_photo_container"
+        <FrameLayout android:id="@+id/event_photo_container"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@color/accent_2"
             android:layout_marginBottom="@dimen/vertical_36dp">
 
             <ImageView
-                android:id="@+id/session_photo"
+                android:id="@+id/event_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -42,7 +42,7 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:id="@+id/linearLayout"
-            android:layout_below="@+id/session_photo_container">
+            android:layout_below="@+id/event_photo_container">
 
             <LinearLayout
                 android:layout_width="match_parent"

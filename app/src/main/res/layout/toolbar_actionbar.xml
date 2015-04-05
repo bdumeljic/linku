@@ -1,11 +1,10 @@
-<merge >
-    <android.support.v7.widget.Toolbar
-        android:layout_height="?android:actionBarSize"
-        android:layout_width="match_parent"
-        android:id="@+id/view_event_toolbar"
-        android:minHeight="?android:actionBarSize"
-        android:background="?attr/selectableItemBackground"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_gravity="top"
-        android:translationZ="5dp" />
-</merge>
+<android.support.v7.widget.Toolbar
+    android:layout_height="?android:actionBarSize"
+    android:layout_width="match_parent"
+    android:id="@+id/view_event_toolbar"
+    android:minHeight="?android:actionBarSize"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/selectableItemBackground"
+    android:layout_gravity="top"
+    app:theme="@style/ActionBarThemeOverlay" />

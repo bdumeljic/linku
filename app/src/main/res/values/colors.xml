@@ -6,6 +6,8 @@
     <color name="accent">#D50000</color>
     <color name="accent_darker">#ffb40000</color>
     <color name="accent_2">#FFC107</color>
+    <color name="accent_2_darker">#ffd8a306</color>
+
 
     <color name="body_dark">#de000000</color>
     <color name="body_grey">#8a000000</color>

@@ -137,8 +137,8 @@ public class CreateNewEventFragment extends Fragment {
 
         mCategoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
 
-        mPhotoViewContainer = view.findViewById(R.id.session_photo_container);
-        mPhotoView = (ImageView) view.findViewById(R.id.session_photo);
+        mPhotoViewContainer = view.findViewById(R.id.event_photo_container);
+        mPhotoView = (ImageView) view.findViewById(R.id.event_photo);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         mPickImageButton = (FloatingActionButton) view.findViewById(R.id.pick_image_btn);

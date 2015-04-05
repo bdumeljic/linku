@@ -6,8 +6,6 @@
     android:animateLayoutChanges="true"
     android:theme="@style/AppThemeNoActionBar">
 
-    <include layout="@layout/toolbar_actionbar" />
-
     <com.bdlabs_linku.linku.ObservableScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -22,11 +20,11 @@
             android:id="@+id/scroll_view_child"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false">
-
+            android:clipChildren="false"
+            android:visibility="invisible">
 
             <!-- Background photo -->
-            <FrameLayout android:id="@+id/session_photo_container"
+            <FrameLayout android:id="@+id/event_photo_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -37,7 +35,7 @@
                     android:id="@+id/progress_bar" />
 
                 <ImageView
-                    android:id="@+id/session_photo"
+                    android:id="@+id/event_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -55,20 +53,40 @@
                 android:clipToPadding="false">
 
                 <!-- Description -->
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/description"
-                    android:layout_marginLeft="@dimen/keyline_1"
-                    android:layout_marginRight="@dimen/keyline_1"
-                    android:textSize="14sp"
-                    android:textColor="@color/body_dark"
-                    android:layout_marginBottom="24dp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/keyline_1">
+
+                    <ImageView
+                        android:id="@+id/cat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_other"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitEnd"
+                        android:layout_marginLeft="@dimen/keyline_1"
+                        android:layout_marginRight="@dimen/keyline_1"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/description"
+                        android:layout_marginRight="@dimen/keyline_1"
+                        android:textSize="14sp"
+                        android:textColor="@color/body_dark"
+                        android:layout_marginBottom="24dp"
+                        android:text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum " />
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/divider_grey"/>
+                    android:background="@color/divider_grey"
+                    android:layout_marginLeft="@dimen/keyline_2" />
 
                 <!-- Participants -->
                 <TextView
@@ -84,36 +102,11 @@
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/keyline_2"
-                    android:layout_marginRight="@dimen/keyline_1"
                     android:layout_marginBottom="24dp"
                     android:id="@+id/attendees">
                 </LinearLayout>
 
                 <!-- Cateory Icon and Share Option -->
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/cat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_other"
-                        android:layout_centerVertical="true" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="INVITE A FRIEND"
-                        android:textSize="14sp"
-                        android:textColor="@color/accent"
-                        android:textStyle="bold"
-                        android:textAlignment="gravity"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true" />
-                </RelativeLayout>
 
                 <!-- Location Information -->
                 <ImageView
@@ -123,13 +116,27 @@
                     android:scaleType="centerCrop"
                     android:background="@color/primary_dark" />
 
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/direction_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_icon="@drawable/ic_direction"
+                    fab:fab_colorNormal="@color/accent_2"
+                    fab:fab_colorPressed="@color/accent_2_darker"
+                    android:layout_marginLeft="@dimen/keyline_1_minus_8dp"
+                    android:visibility="gone" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@color/primary"
-                    android:padding="@dimen/keyline_1"
-                    android:elevation="4dp">
+                    android:elevation="4dp"
+                    android:paddingLeft="@dimen/keyline_2"
+                    android:paddingRight="@dimen/keyline_1"
+                    android:paddingTop="@dimen/keyline_1"
+                    android:paddingBottom="@dimen/keyline_1">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -151,66 +158,54 @@
             </LinearLayout>
 
             <!-- Title/subtitle bar (floating; position determined at run time as the content view scrolls) -->
+
             <LinearLayout
-                android:id="@+id/header_session"
+                android:id="@+id/header_event"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:actionBarSize"
-                android:gravity="center_vertical"
-                android:paddingBottom="8dp">
+                android:minHeight="?android:actionBarSize">
 
                 <!-- Event title -->
+
                 <TextView android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:id="@+id/session_title"
+                    android:id="@+id/event_title"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:layout_marginLeft="@dimen/keyline_2"
-                    android:layout_marginRight="@dimen/keyline_1"
                     android:textColor="#fff"
                     android:textIsSelectable="false"
                     android:textSize="20sp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="@dimen/keyline_1_minus_8dp"
+                    android:text="Event title"
+                    android:layout_marginLeft="@dimen/keyline_2"
+                    android:layout_marginRight="@dimen/keyline_1" />
 
-                <!-- Event subtitle with time and distance -->
-                <RelativeLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/session_subtitle" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/event_time"
-                        android:textColor="@android:color/white"
-                        android:layout_marginLeft="@dimen/keyline_2"
-                        android:layout_marginRight="@dimen/keyline_1"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/event_place"
-                        android:layout_alignParentRight="true"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/white"
-                        android:layout_marginRight="@dimen/keyline_1" />
-                </RelativeLayout>
+                    android:id="@+id/event_secondary"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:text="Event secondary"
+                    android:layout_marginLeft="@dimen/keyline_2"
+                    android:layout_marginRight="@dimen/keyline_1"
+                    android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
             </LinearLayout>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/join_event_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_size="mini"
+                fab:fab_icon="@drawable/ic_plus_dark"
+                fab:fab_colorNormal="@android:color/white"
+                fab:fab_colorPressed="@color/hint"
+                android:layout_marginLeft="@dimen/keyline_1_minus_8dp" />
 
 
         </FrameLayout>
     </com.bdlabs_linku.linku.ObservableScrollView>
 
-    <!-- Attend Event -->
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/join_event_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        fab:fab_icon="@drawable/ic_confirm"
-        fab:fab_colorNormal="@color/primary_dark"
-        fab:fab_colorPressed="@color/primary"
-        android:layout_gravity="right|bottom" />
+    <include layout="@layout/toolbar_actionbar" />
 </FrameLayout>

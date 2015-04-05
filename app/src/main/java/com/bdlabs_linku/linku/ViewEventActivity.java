@@ -1,6 +1,5 @@
 package com.bdlabs_linku.linku;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -30,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
@@ -66,7 +63,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     protected static String STATIC_MAP_API_ENDPOINT;
 
-    private int mSessionColor;
+    private int mEventColor;
 
     private ObservableScrollView mScrollView;
 
@@ -76,13 +73,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private int mPhotoHeightPixels;
     private int mHeaderHeightPixels;
+    private int mActiobarHeightPixels;
     private View mHeaderBox;
     private View mDetailsContainer;
 
     private View mScrollViewChild;
     private TextView mTitle;
-    private TextView mTime;
-    private TextView mPlace;
+    private TextView mSecondaryTitle;
     private ImageView mCategory;
     private LinearLayout mAttendees;
     private TextView mDescription;
@@ -94,6 +91,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private boolean mHasPhoto = false;
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
     private float mMaxHeaderElevation;
+    private float mFABElevation;
 
     private FloatingActionButton mJoinButton;
 
@@ -104,6 +102,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private Location mUserLoc;
 
     private Menu mMenu;
+
+    private int mJoinButtonHeightPixels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +128,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         // Setup parallax scrolling effect
         mMaxHeaderElevation = getResources().getDimensionPixelSize(
                 R.dimen.headerbar_elevation);
+        mFABElevation = getResources().getDimensionPixelSize(R.dimen.fab_elevation);
 
         // Get views by ids
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
@@ -137,48 +138,43 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             vto.addOnGlobalLayoutListener(mGlobalLayoutListener);
         }
 
-        mSessionColor = getResources().getColor(R.color.primary);
+        mEventColor = getResources().getColor(R.color.primary);
 
         // Connect to view
         mScrollViewChild = findViewById(R.id.scroll_view_child);
         mScrollViewChild.setVisibility(View.INVISIBLE);
 
         mDetailsContainer = findViewById(R.id.details_container);
-        mHeaderBox = findViewById(R.id.header_session);
-        mTitle = (TextView) findViewById(R.id.session_title);
-        mTime = (TextView) findViewById(R.id.event_time);
-        mPlace = (TextView) findViewById(R.id.event_place);
+        mHeaderBox = findViewById(R.id.header_event);
+        mTitle = (TextView) findViewById(R.id.event_title);
+        mSecondaryTitle = (TextView) findViewById(R.id.event_secondary);
 
-        mCategory = (ImageView) findViewById(R.id.cat);
-
-        mPhotoViewContainer = findViewById(R.id.session_photo_container);
-        mPhotoView = (ImageView) findViewById(R.id.session_photo);
+        mPhotoViewContainer = findViewById(R.id.event_photo_container);
+        mPhotoView = (ImageView) findViewById(R.id.event_photo);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
+        mCategory = (ImageView) findViewById(R.id.cat);
         mDescription = (TextView) findViewById(R.id.description);
+        mAttendees = (LinearLayout) findViewById(R.id.attendees);
 
         mMapView = (ImageView) findViewById(R.id.location_map);
         mLocName = (TextView) findViewById(R.id.location_name);
         mLocAddress = (TextView) findViewById(R.id.location_address);
 
+        mJoinButton = (FloatingActionButton) findViewById(R.id.join_event_btn);
+
         ViewCompat.setTransitionName(mPhotoView, TRANSITION_NAME_PHOTO);
 
-        mTitle = (TextView) findViewById(R.id.session_title);
-
-        mHeaderBox.setBackgroundColor(mSessionColor);
+        mHeaderBox.setBackgroundColor(mEventColor);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            getWindow().setStatusBarColor(scaleColor(mSessionColor, 0.8f, false));
+            getWindow().setStatusBarColor(scaleColor(mEventColor, 0.8f, false));
         }
 
-        mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
-        recomputePhotoAndScrollingMetrics();
-        onScrollChanged(0, 0); // trigger scroll handling
-        mScrollViewChild.setVisibility(View.VISIBLE);
+        mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mEventColor));
+        //recomputePhotoAndScrollingMetrics();
+        //onScrollChanged(0, 0); // trigger scroll handling
 
-        mAttendees = (LinearLayout) findViewById(R.id.attendees);
-
-        // Setup FAB
-        mJoinButton = (FloatingActionButton) findViewById(R.id.join_event_btn);
+        // Setup join FAB action
         mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,14 +182,16 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     mGoing = false;
                     mEvent.removeAttendee();
                     setParticipants();
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.primary));
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.primary_dark));
+                    ((FloatingActionButton) v).setIcon(R.drawable.ic_plus_dark);
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(android.R.color.white));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.hint));
                 } else {
                     mGoing = true;
                     mEvent.addAttendee();
                     setParticipants();
-                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent));
-                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_darker));
+                    ((FloatingActionButton) v).setIcon(R.drawable.ic_confirm);
+                    ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent_2));
+                    ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_2_darker));
                 }
             }
         });
@@ -210,11 +208,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     mGoing = mEvent.isAlreadyAttending();
 
                     if (mGoing) {
-                        mJoinButton.setColorNormal(getResources().getColor(R.color.accent));
-                        mJoinButton.setColorPressed(getResources().getColor(R.color.accent_darker));
+                        mJoinButton.setIcon(R.drawable.ic_confirm);
+                        mJoinButton.setColorNormal(getResources().getColor(R.color.accent_2));
+                        mJoinButton.setColorPressed(getResources().getColor(R.color.accent_2_darker));
                     }
 
                     setInfo();
+                    mScrollViewChild.setVisibility(View.VISIBLE);
                 } else {
                     // something went wrong
                     finish();
@@ -252,7 +252,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             getMenuInflater().inflate(R.menu.view_event_creator, mMenu);
         }
 
-
         mHasPhoto = mEvent.hasUploadedPhoto();
         recomputePhotoAndScrollingMetrics();
         onScrollChanged(0, 0); // trigger scroll handling
@@ -281,10 +280,10 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(mEvent.getTime().getTime());
-        mTime.setText("Starting at " + formattedDate);
+        mSecondaryTitle.setText("Starting at " + formattedDate);
 
         if (mUserLoc != null) {
-            mPlace.setText(parseDistance(mEvent.getLocation()));
+            mSecondaryTitle.append(" - " + parseDistance(mEvent.getLocation()));
         }
 
         setParticipants();
@@ -341,7 +340,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                         TextView text = new TextView(getApplicationContext());
                         text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                         text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
+                        text.setPadding(0, 16, 0, 16);
                         text.setText("No participants yet. Be the first to join!");
                         mAttendees.addView(text);
                     }
@@ -351,13 +350,13 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                         TextView text = new TextView(getApplicationContext());
                         text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                         text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0,16,0,16);
+                        text.setPadding(0, 16, 0, 16);
 
                         if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
                             text.setTextColor(getResources().getColor(R.color.accent));
-                            text.setText(user.getUsername() + " (You!)");
+                            text.setText(user.get("name") + " (You!)");
                         } else {
-                            text.setText(user.getUsername());
+                            text.setText(user.get("name").toString());
                         }
 
                         mAttendees.addView(text);
@@ -374,6 +373,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
+            mJoinButtonHeightPixels = mJoinButton.getHeight();
             recomputePhotoAndScrollingMetrics();
         }
     };
@@ -383,11 +383,15 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
      */
     private void recomputePhotoAndScrollingMetrics() {
         mHeaderHeightPixels = mHeaderBox.getHeight();
+        mActiobarHeightPixels = getSupportActionBar().getHeight();
 
         mPhotoHeightPixels = 0;
         if (mHasPhoto) {
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(android.R.drawable.list_selector_background));
             mPhotoHeightPixels = (int) (mPhotoView.getWidth() / PHOTO_ASPECT_RATIO);
             mPhotoHeightPixels = Math.min(mPhotoHeightPixels, mScrollView.getHeight() * 2 / 3);
+        } else {
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.selectable_item_background_primary));
         }
 
         ViewGroup.LayoutParams lp;
@@ -397,9 +401,11 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             mPhotoViewContainer.setLayoutParams(lp);
         }
 
-        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)
-                mDetailsContainer.getLayoutParams();
-        if (mlp.topMargin != mHeaderHeightPixels + mPhotoHeightPixels) {
+        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) mDetailsContainer.getLayoutParams();
+        if (!mHasPhoto && mlp.topMargin != mHeaderHeightPixels + mPhotoHeightPixels + mActiobarHeightPixels) {
+            mlp.topMargin = mHeaderHeightPixels + mPhotoHeightPixels + mActiobarHeightPixels;
+            mDetailsContainer.setLayoutParams(mlp);
+        } else if (mHasPhoto && mlp.topMargin != mHeaderHeightPixels + mPhotoHeightPixels) {
             mlp.topMargin = mHeaderHeightPixels + mPhotoHeightPixels;
             mDetailsContainer.setLayoutParams(mlp);
         }
@@ -414,16 +420,39 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         int scrollY = mScrollView.getScrollY();
 
         float newTop = Math.max(mPhotoHeightPixels, scrollY);
-        mHeaderBox.setTranslationY(newTop);
 
+        float dif = Math.abs(newTop - Math.min(mPhotoHeightPixels, scrollY));
+
+        Log.e(TAG, "top " + newTop + " photot " + mPhotoHeightPixels + " scrollY " + scrollY + " dif " + dif);
+        if (mPhotoHeightPixels == 0) {
+            Log.e(TAG, "nophoto");
+            mHeaderBox.setTranslationY(mPhotoHeightPixels + mActiobarHeightPixels + dif);
+            mJoinButton.setTranslationY(mPhotoHeightPixels + mActiobarHeightPixels + dif + mHeaderHeightPixels - mJoinButtonHeightPixels / 2);
+        } else if (scrollY > mPhotoHeightPixels) {
+            Log.e(TAG, "222222222UMBRELLAALELELELEALLALEEEEHEHEHEEH");
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.selectable_item_background_primary));
+            mHeaderBox.setTranslationY(mPhotoHeightPixels + mActiobarHeightPixels + dif);
+            mJoinButton.setTranslationY(mPhotoHeightPixels + mActiobarHeightPixels + dif + mHeaderHeightPixels - mJoinButtonHeightPixels / 2);
+        } else if (dif <= mActiobarHeightPixels) {
+            Log.e(TAG, "UMBRELLAALELELELEALLALEEEEHEHEHEEH");
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.selectable_item_background_primary));
+            mHeaderBox.setTranslationY(mPhotoHeightPixels + (mActiobarHeightPixels - dif));
+            mJoinButton.setTranslationY(mPhotoHeightPixels + (mActiobarHeightPixels - dif) + mHeaderHeightPixels - mJoinButtonHeightPixels / 2);
+        } else {
+            Log.e(TAG, "nope");
+            getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(android.R.drawable.list_selector_background));
+            mHeaderBox.setTranslationY(newTop);
+            mJoinButton.setTranslationY(newTop + mHeaderHeightPixels - mJoinButtonHeightPixels / 2);
+        }
 
         float gapFillProgress = 1;
         if (mPhotoHeightPixels != 0) {
-            gapFillProgress = Math.min(Math.max(getProgress(scrollY, 0,
-                    mPhotoHeightPixels), 0), 1);
+            gapFillProgress = Math.min(Math.max(getProgress(scrollY, 0, mPhotoHeightPixels), 0), 1);
         }
 
         ViewCompat.setElevation(mHeaderBox, gapFillProgress * mMaxHeaderElevation);
+        ViewCompat.setElevation(mJoinButton, gapFillProgress * mMaxHeaderElevation
+                + mFABElevation);
 
         // Move background photo (parallax effect)
         mPhotoViewContainer.setTranslationY(scrollY * 0.5f);
