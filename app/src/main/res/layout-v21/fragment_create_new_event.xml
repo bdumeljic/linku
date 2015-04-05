@@ -149,22 +149,22 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
                 android:gravity="bottom">
-
-                <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/vertical_48dp_minus_8dp"
-                    android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/event_location_input"
-                    android:textColor="@color/edit_hint"
+                    android:inputType="text"
+                    android:textColor="@color/black_87"
                     android:textSize="@dimen/add_event_fields"
-                    android:text="@string/placeholder_events_item_location"
-                    android:textAllCaps="false"
-                    android:gravity="left|center_vertical"
-                    android:drawableRight="@drawable/ic_down"
-                    android:background="#00000000"
-                    android:onClick="onPickButtonClick"
-                    />
-
+                    android:gravity="bottom"
+                    android:hint="@string/placeholder_events_item_location"
+                    android:textColorHint="@color/edit_hint"
+                    android:imeOptions="actionDone"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:editable="true"
+                    android:enabled="true"
+                    android:focusableInTouchMode="true" />
             </LinearLayout>
         </LinearLayout>
 
