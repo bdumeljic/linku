@@ -12,14 +12,33 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+<<<<<<< HEAD
 import android.widget.*;
 
+=======
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+>>>>>>> development
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.*;
 
@@ -42,6 +61,8 @@ import java.util.Locale;
  */
 public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
 
+    public static final String TAG = "ViewEventActivity";
+
     public static final String EVENT_ID = "event";
 
     public static final String TRANSITION_NAME_PHOTO = "photo";
@@ -55,6 +76,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
+    private ProgressBar mProgressBar;
 
     private int mPhotoHeightPixels;
     private int mHeaderHeightPixels;
@@ -74,7 +96,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private TextView mLocName;
     private TextView mLocAddress;
 
-    private boolean mHasPhoto = true;
+    private boolean mHasPhoto = false;
     private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
     private float mMaxHeaderElevation;
 
@@ -86,6 +108,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private static Event mEvent;
     private String mEventId;
     private Location mUserLoc;
+
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +159,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mPhotoViewContainer = findViewById(R.id.session_photo_container);
         mPhotoView = (ImageView) findViewById(R.id.session_photo);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mDescription = (TextView) findViewById(R.id.description);
 
@@ -152,10 +177,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         }
 
         mPhotoViewContainer.setBackgroundColor(scaleSessionColorToDefaultBG(mSessionColor));
-        mHasPhoto = true;
-        mPhotoView.setImageResource(R.drawable.tri_pattern);
         recomputePhotoAndScrollingMetrics();
-
         onScrollChanged(0, 0); // trigger scroll handling
         mScrollViewChild.setVisibility(View.VISIBLE);
 
@@ -237,11 +259,58 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         return mCreator;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.view_event, menu);
+
+        mMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * After Parse has returned the details of the event, set the details of the view.
      */
     public void setInfo() {
-        Log.d("VIEW", mEvent.toString());
+        if (ParseUser.getCurrentUser() == mEvent.getCreator()) {
+            Log.e(TAG, "creator");
+            getMenuInflater().inflate(R.menu.view_event_creator, mMenu);
+        }
+
+
+        mHasPhoto = mEvent.hasUploadedPhoto();
+        recomputePhotoAndScrollingMetrics();
+        onScrollChanged(0, 0); // trigger scroll handling
+        if (mHasPhoto) {
+            String mPhoto = mEvent.getUploadedPhotoUrl();
+            Log.d(TAG, mPhoto);
+
+            CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
+
+            Glide.with(this)
+                    .load(mPhoto)
+                    .transform(mCenterCrop)
+                    .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                            super.onResourceReady(drawable, anim);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Log.d(TAG, "no photo uploaded for this event");
+        }
 
         mTitle.setText(mEvent.getTitle());
         mCategory.setImageResource(mEvent.getCategoryIcon());
@@ -303,8 +372,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             @Override
             public void done(List<ParseUser> parseUsers, ParseException e) {
                 if (e == null) {
-                    Log.d("RESULTS", parseUsers.toString());
-
                     // Set the empty text if there are no participants.
                     if (parseUsers.isEmpty()) {
                         TextView text = new TextView(getApplicationContext());

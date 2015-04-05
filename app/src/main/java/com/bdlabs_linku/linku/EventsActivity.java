@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,6 +78,15 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.progress_load_events));
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setLogo(R.drawable.ic_hedge);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
         if (!isNetworkAvailable()) {
             setContentView(R.layout.no_internet);
             final Button refreshView = (Button) findViewById(R.id.refresh_button);
@@ -90,9 +100,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         } else {
             refreshView();
         }
-
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.progress_load_events));
     }
 
     private void refreshView() {
@@ -100,12 +107,13 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         // Start location tracking.
         mLocationTracker = new ProviderLocationTracker(getApplicationContext(), ProviderLocationTracker.ProviderType.NETWORK);
-        mLocationTracker.start(mLoclistener);
+        if(mLocationTracker.getLocationManager() != null) {
+            //mLocationTracker.start(mLoclistener);
+        }
 
         // Start loading events.
-        mEventsAdapter = new EventsAdapter(this);
-        mEventsAdapter.loadObjects();
-        mEventsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
+        mEventsAdapter = new EventsAdapter(this, null);
+        mEventsAdapter.getParseAdapter().addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Event>() {
             @Override
             public void onLoading() {
                 dialog.show();
@@ -113,17 +121,20 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
             @Override
             public void onLoaded(List<Event> events, Exception e) {
+                mEventsAdapter.notifyDataSetChanged();
+
                 dialog.dismiss();
 
-                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded() == true) {
+                if (mSectionsPagerAdapter.getFragmentForPosition(0).isAdded()) {
                     ((EventsFragment) mSectionsPagerAdapter.getFragmentForPosition(0)).setEmptyText();
                 }
 
-                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded() == true) {
+                if (mSectionsPagerAdapter.getFragmentForPosition(1).isAdded()) {
                     ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).setEvents(events);
                 }
             }
         });
+        mEventsAdapter.getParseAdapter().loadObjects();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -146,14 +157,14 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // Disable swiping.
-        mViewPager.setOnTouchListener(new View.OnTouchListener()
+        /*mViewPager.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
                 return true;
             }
-        });
+        });*/
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -179,8 +190,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         checkPlayServices();
     }
 
@@ -203,8 +214,62 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
+            case R.id.action_refresh:
+                mEventsAdapter.getParseAdapter().loadObjects();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
+                if (resultCode == RESULT_CANCELED) {
+                    Toast.makeText(this, "Google Play Services must be installed.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            case CREATE_EVENT:
+                if (resultCode == RESULT_OK) {
+                    if(data.getStringExtra(EVENT_ID) != null) {
+                        // Event was added successfully, update list
+                        Log.d(TAG, "event added " + data.toString());
+                        mEventsAdapter.getParseAdapter().loadObjects();
+                    }
+                }
+
+                break;
+            // TODO notifyItemChanged(int position)
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Location getLastLocation() {
+        return mUserLocation;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * Make sure Google Play Services are available so map can run.
+     * @return
+     */
+    private void checkPlayServices() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
+                showErrorDialog(status);
+            } else {
+                Toast.makeText(this, "This device is not supported.",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
     void showErrorDialog(int code) {
@@ -250,7 +315,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-
             switch(position) {
                 case 0:
                     return EventsFragment.newInstance();
@@ -271,7 +335,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_events).toUpperCase(l);
+                    return getString(R.string.title_feed).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_map).toUpperCase(l);
             }

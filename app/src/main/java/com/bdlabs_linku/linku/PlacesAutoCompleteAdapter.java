@@ -77,7 +77,7 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList<String>(predsJsonArray.length());
+            resultList = new ArrayList<>(predsJsonArray.length());
             Map dictionary = new HashMap();
             for (int i = 0; i < predsJsonArray.length(); i++) {
 
@@ -106,7 +106,7 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
 
         @Override
         public Filter getFilter() {
-            Filter filter = new Filter() {
+            return new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults filterResults = new FilterResults();
@@ -130,7 +130,6 @@ public class PlacesAutoCompleteAdapter  extends ArrayAdapter<String> implements 
                         notifyDataSetInvalidated();
                     }
                 }};
-            return filter;
         }
 
 }

@@ -1,10 +1,8 @@
 package com.bdlabs_linku.linku;
 
 import android.app.DialogFragment;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,7 +50,7 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction() {
     }
 
     /**

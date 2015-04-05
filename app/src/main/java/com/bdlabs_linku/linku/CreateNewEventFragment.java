@@ -18,9 +18,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bdlabs_linku.linku.Utils.ImageChooser;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
@@ -49,6 +58,10 @@ public class CreateNewEventFragment extends Fragment {
 
     public static final String EVENT_ID = "EventID";
 
+    public static final int REQUEST_PHOTO = 0;
+
+    private ScrollView mContainer;
+
     // Input values from view
     private EditText mEditTitle;
     private EditText mEditDescription;
@@ -64,6 +77,19 @@ public class CreateNewEventFragment extends Fragment {
     private int year = -1;
     private int hour = -1;
     private int minute = -1;
+
+    String picturePath = null;
+
+    private View mPhotoViewContainer;
+    private ImageView mPhotoView;
+    private ProgressBar mProgressBar;
+
+    private int mPhotoHeightPixels = 0;
+    private static final float PHOTO_ASPECT_RATIO = 1.7777777f;
+
+    private FloatingActionButton mPickImageButton;
+
+    private CreateNewEventActivity mActivity;
 
     /**
      * Use this factory method to create a new instance of
@@ -81,6 +107,8 @@ public class CreateNewEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+
+        mContainer = (ScrollView) view.findViewById(R.id.scroll_view);
 
         // Connect to the view
         mEditTitle = (EditText) view.findViewById(R.id.event_title_input);
@@ -109,14 +137,27 @@ public class CreateNewEventFragment extends Fragment {
 
         mCategoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
 
+        mPhotoViewContainer = view.findViewById(R.id.session_photo_container);
+        mPhotoView = (ImageView) view.findViewById(R.id.session_photo);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+
+        mPickImageButton = (FloatingActionButton) view.findViewById(R.id.pick_image_btn);
+        mPickImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickImage();
+            }
+        });
+
         return view;
     }
-
-
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        mActivity = (CreateNewEventActivity) activity;
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -143,7 +184,7 @@ public class CreateNewEventFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction();
     }
 
     /**
@@ -154,7 +195,7 @@ public class CreateNewEventFragment extends Fragment {
             String title = mEditTitle.getText().toString().trim();
 
             // Set up a progress dialog
-            final ProgressDialog dialog = new ProgressDialog(getActivity());
+            final ProgressDialog dialog = new ProgressDialog(mActivity);
             dialog.setMessage(getString(R.string.progress_create_event));
             dialog.show();
 
@@ -171,6 +212,9 @@ public class CreateNewEventFragment extends Fragment {
             ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
             event.setLocation(point);
 
+            event.setPhoto(picturePath);
+            event.setHasUploadedPhoto(true);
+
             // Save the event
             event.saveInBackground(new SaveCallback() {
                 @Override
@@ -178,8 +222,8 @@ public class CreateNewEventFragment extends Fragment {
                     dialog.dismiss();
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(EVENT_ID, event.getObjectId());
-                    getActivity().setResult(Activity.RESULT_OK, resultIntent);
-                    getActivity().finish();
+                    mActivity.setResult(Activity.RESULT_OK, resultIntent);
+                    mActivity.finish();
                 }
             });
         }
@@ -219,22 +263,25 @@ public class CreateNewEventFragment extends Fragment {
      */
     public boolean validateEvent() {
         if(mEditTitle.getText().toString().matches("")) {
-            Toast.makeText(getActivity(), "Event doesn't have a name.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Event doesn't have a name.", Toast.LENGTH_SHORT).show();
             return false;
         }
         else if (day == -1 || hour == -1) {
-            Toast.makeText(getActivity(), "Event date or time are not set.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Event date or time are not set.", Toast.LENGTH_SHORT).show();
             return false;
         }
         // add description to model
         else if (mEditDescription.getText().toString().matches("")) {
-            Toast.makeText(getActivity(), "There is no event description.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "There is no event description.", Toast.LENGTH_SHORT).show();
             return false;
         }
         // add place to model
         else if (mEditLocation.getText().toString().matches("")) {
             Log.d("LOC","location: " + mEditLocation.getText().toString());
-            Toast.makeText(getActivity(), "Location is not provided.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Location is not provided.", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (picturePath == null) {
+            Toast.makeText(mActivity, "No picture selected.", Toast.LENGTH_SHORT).show();
             return false;
         }
         else {
@@ -274,5 +321,53 @@ public class CreateNewEventFragment extends Fragment {
 
         mEditTime.setText(formattedTime);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));
+    }
+
+    public void recomputePhotoMetrics() {
+        mPhotoHeightPixels = (int) (mPhotoView.getWidth() / PHOTO_ASPECT_RATIO);
+        Log.d(TAG, "width: " + mPhotoView.getWidth() +" height: " + mPhotoHeightPixels + " container height " + mContainer.getHeight());
+        mPhotoHeightPixels = Math.min(mPhotoHeightPixels, mContainer.getHeight() * 2 / 3);
+        Log.d(TAG, "height: " + mPhotoHeightPixels);
+
+        if (mPhotoView.getHeight() == mPhotoHeightPixels) {
+            ViewGroup.LayoutParams lp;
+            lp = mPhotoViewContainer.getLayoutParams();
+            lp.height = mPhotoHeightPixels;
+            mPhotoViewContainer.setLayoutParams(lp);
+        }
+    }
+
+    private void pickImage() {
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, REQUEST_PHOTO);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_PHOTO:
+                if(resultCode == Activity.RESULT_OK){
+                    Uri selectedImage = data.getData();
+
+                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
+
+                    Log.d(TAG, "path " + picturePath);
+
+                    CenterCrop mCenterCrop = new CenterCrop(Glide.get(mActivity).getBitmapPool());
+
+                    Glide.with(this)
+                            .load(picturePath)
+                            .transform(mCenterCrop)
+                            .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                                @Override
+                                public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                                    super.onResourceReady(drawable, anim);
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                }
+        }
     }
 }

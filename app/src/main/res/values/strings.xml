@@ -22,7 +22,6 @@
     <!-- Create new event -->
     <string name="title_map">Map</string>
     <string name="title_events">Events</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="progress_create_event">Creating event …</string>
     <string name="placeholder_category">Event type</string>
 
@@ -40,6 +39,16 @@
     <string name="refresh">Refresh</string>
     <string name="no_internet">Connect to a network, then try again.</string>
     <string name="no_account">Don\'t have an account?</string>
-    <string name="progress_load_events">Loading events ...</string>
+    <string name="progress_load_events">Loading events …</string>
+    <string name="prompt_email">Email</string>
+    <string name="action_reset">Reset</string>
+    <string name="forgotton_password">Forgot your password?</string>
+    <string name="reset_password_dialog_title">Reset password</string>
+    <string name="reset_password_dialog_explanation">Enter email to receive a reset link</string>
+    <string name="linku_logo">LinkU Logo</string>
+    <string name="title_feed">Feed</string>
+    <string name="action_refresh_feed">Refresh Feed</string>
+    <string name="placeholder_secondary">Secondary information</string>
+    <string name="action_edit">Edit</string>
 
 </resources>

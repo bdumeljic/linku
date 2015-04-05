@@ -51,7 +51,6 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
         lm.requestLocationUpdates(provider, MIN_UPDATE_TIME, MIN_UPDATE_DISTANCE, this);
         lastLocation = null;
         lastTime = 0;
-        return;
     }
 
     public void start(LocationUpdateListener update) {
@@ -116,5 +115,9 @@ public class ProviderLocationTracker implements LocationListener, LocationTracke
     }
 
     public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+    }
+
+    public LocationManager getLocationManager() {
+        return lm;
     }
 }
