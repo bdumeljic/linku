@@ -2,15 +2,12 @@ package com.bdlabs_linku.linku;
 
 import android.content.Context;
 import android.location.Location;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -63,7 +60,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         eventViewHolder.cat.setImageResource(event.getCategoryIcon());
 
         if (mContext.getLastLocation() != null) {
-            ParseGeoPoint locEvent = event.getLocation();
+            ParseGeoPoint locEvent = event.getLocationGeo();
             eventViewHolder.secondary.append(" - " + parseDistance(locEvent));
         }
     }

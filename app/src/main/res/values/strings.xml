@@ -14,7 +14,7 @@
     <string name="placeholder_events_item_description">Event description</string>
     <string name="placeholder_events_item_time">Time</string>
     <string name="placeholder_events_item_day">Date</string>
-    <string name="placeholder_events_item_location">Location</string>
+    <string name="placeholder_events_item_location">Pick location</string>
     <string name="placeholder_events_item_attendees">Participants</string>
     <string name="title_activity_create_new_event">New event</string>
 

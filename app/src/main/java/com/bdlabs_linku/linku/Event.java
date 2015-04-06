@@ -126,11 +126,27 @@ public class Event extends ParseObject {
         put("time", time);
     }
 
-    public ParseGeoPoint getLocation() {
+    public ParseGeoPoint getLocationGeo() {
         return getParseGeoPoint("location");
     }
 
-    public void setLocation(ParseGeoPoint location) {
+    public String getLocationPlaceId() {
+        return getString("locationPlaceId");
+    }
+
+    public String getLocationName() {
+        return getString("locationName");
+    }
+
+    public String getLocationAddress() {
+        return getString("locationAddress");
+    }
+
+
+    public void setLocation(String id, ParseGeoPoint location, String name, String address) {
+        put("locationPlaceId", id);
+        put("locationName", name);
+        put("locationAddress", address);
         put("location", location);
     }
     public int getAttending() {

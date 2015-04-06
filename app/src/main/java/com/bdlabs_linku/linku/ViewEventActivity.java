@@ -296,7 +296,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         mSecondaryTitle.setText("Starting at " + formattedDate);
 
         if (mUserLoc != null) {
-            mSecondaryTitle.append(" - " + parseDistance(mEvent.getLocation()));
+            mSecondaryTitle.append(" - " + parseDistance(mEvent.getLocationGeo()));
         }
 
         setParticipants();
@@ -306,7 +306,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         //mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
 
         // Get the google maps screenshot of the map near the event
-        STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(mEvent.getLocation().getLatitude()) + "," + Double.toString(mEvent.getLocation().getLongitude()) + "";
+        STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(mEvent.getLocationGeo().getLatitude()) + "," + Double.toString(mEvent.getLocationGeo().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(mEvent.getLocationGeo().getLatitude()) + "," + Double.toString(mEvent.getLocationGeo().getLongitude()) + "";
 
         AsyncTask<Void, Void, Bitmap> setImageFromUrl = new AsyncTask<Void, Void, Bitmap>(){
             @Override
