@@ -48,4 +48,6 @@
     <string name="action_edit">Edit</string>
     <string name="progress_get_event">Fetching event …</string>
 
+    <string name="no_attendees">No participants yet. Be the first to join!</string>
+
 </resources>

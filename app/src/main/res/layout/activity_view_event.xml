@@ -50,7 +50,7 @@
                 android:id="@+id/details_container"
                 android:background="#fff"
                 android:paddingTop="16dp"
-                android:clipToPadding="false">
+                android:clipToPadding="false" >
 
                 <!-- Description -->
                 <LinearLayout
@@ -94,19 +94,43 @@
                     android:layout_marginLeft="@dimen/keyline_2"
                     android:layout_marginRight="@dimen/keyline_1"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:id="@+id/attendees">
+                    android:id="@+id/attendees"
+                    android:orientation="vertical" >
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/list_participants"
+                        android:visibility="gone"
+                        android:divider="@null" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/keyline_2"
+                        android:layout_marginRight="@dimen/keyline_1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:id="@+id/emptyViewParticipants"
+                        android:layout_marginTop="@dimen/keyline_1"
+                        android:layout_marginBottom="@dimen/keyline_1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:visibility="gone"
+                        android:text="@string/no_attendees" />
+
                 </LinearLayout>
 
-                <!-- Cateory Icon and Share Option -->
 
                 <!-- Location Information -->
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

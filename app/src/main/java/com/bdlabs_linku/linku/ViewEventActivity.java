@@ -12,7 +12,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,10 +20,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bdlabs_linku.linku.Adapters.ParticipantsAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -82,6 +84,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private TextView mTitle;
     private TextView mSecondaryTitle;
     private ImageView mCategory;
+    private TextView mEmptyParticipants;
+    private ListView mParticipantsList;
     private LinearLayout mAttendees;
     private TextView mDescription;
 
@@ -162,6 +166,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         mCategory = (ImageView) findViewById(R.id.cat);
         mDescription = (TextView) findViewById(R.id.description);
+        mParticipantsList = (ListView) findViewById(R.id.list_participants);
+        mEmptyParticipants = (TextView) findViewById(R.id.emptyViewParticipants);
         mAttendees = (LinearLayout) findViewById(R.id.attendees);
 
         mMapView = (ImageView) findViewById(R.id.location_map);
@@ -333,44 +339,49 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
      * Add the participants to the view.
      */
     public void setParticipants() {
-        mAttendees.removeAllViewsInLayout();
-
         // Query Parse for all the attending relation
         ParseRelation<ParseUser> mRelation = mEvent.getAttendingList();
         ParseQuery<ParseUser> query = mRelation.getQuery();
+        query.orderByAscending("name");
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> parseUsers, ParseException e) {
                 if (e == null) {
                     // Set the empty text if there are no participants.
                     if (parseUsers.isEmpty()) {
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0, 16, 0, 16);
-                        text.setText("No participants yet. Be the first to join!");
-                        mAttendees.addView(text);
-                    }
-
-                    // If there are participants, add them to the list.
-                    for (ParseUser user : parseUsers) {
-                        TextView text = new TextView(getApplicationContext());
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                        text.setTextColor(getResources().getColor(R.color.body_dark));
-                        text.setPadding(0, 16, 0, 16);
-
-                        if (user.equals(ParseUser.getCurrentUser()) && mGoing) {
-                            text.setTextColor(getResources().getColor(R.color.accent));
-                            text.setText(user.get("name") + " (You!)");
-                        } else {
-                            text.setText(user.get("name").toString());
-                        }
-
-                        mAttendees.addView(text);
+                        mParticipantsList.setVisibility(View.GONE);
+                        mEmptyParticipants.setVisibility(View.VISIBLE);
+                    } else {
+                        mParticipantsList.setAdapter(new ParticipantsAdapter(ViewEventActivity.this, parseUsers));
+                        setListViewHeightBasedOnChildren(mParticipantsList);
+                        mEmptyParticipants.setVisibility(View.GONE);
+                        mParticipantsList.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0) {
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     /**

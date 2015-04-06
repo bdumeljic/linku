@@ -212,8 +212,14 @@ public class CreateNewEventFragment extends Fragment {
             ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
             event.setLocation(point);
 
-            event.setPhoto(picturePath);
-            event.setHasUploadedPhoto(true);
+            if (picturePath != null) {
+                if (!picturePath.equals("")) {
+                    event.setPhoto(picturePath);
+                    event.setHasUploadedPhoto(true);
+                } else {
+                    event.setHasUploadedPhoto(false);
+                }
+            }
 
             // Save the event
             event.saveInBackground(new SaveCallback() {
@@ -280,11 +286,7 @@ public class CreateNewEventFragment extends Fragment {
             Log.d("LOC","location: " + mEditLocation.getText().toString());
             Toast.makeText(mActivity, "Location is not provided.", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (picturePath == null) {
-            Toast.makeText(mActivity, "No picture selected.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        else {
+        } else {
             mEventDate = new Date(year, month, day, hour, minute);
             return true;
         }
