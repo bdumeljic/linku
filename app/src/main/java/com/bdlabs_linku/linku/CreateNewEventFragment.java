@@ -38,8 +38,10 @@ import com.parse.SaveCallback;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /**
@@ -249,6 +251,18 @@ public class CreateNewEventFragment extends Fragment {
             dialog.setMessage(getString(R.string.progress_create_event));
             dialog.show();
 
+            Date date = new Date();
+            date.setYear(year - 1900);
+            date.setMonth(month);
+            date.setDate(day);
+            date.setHours(hour);
+            date.setMinutes(minute);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+            calendar.setTime(date);
+            mEventDate = calendar.getTime();
+
             // Create an event
             final Event event = new Event();
             event.setCreator(ParseUser.getCurrentUser());
@@ -306,7 +320,7 @@ public class CreateNewEventFragment extends Fragment {
             Toast.makeText(mActivity, "No location picked for the event", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            mEventDate = new Date(year, month, day, hour, minute);
+            // All mandatory info has been provided to create an event
             return true;
         }
     }
