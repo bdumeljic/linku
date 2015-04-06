@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,17 +27,21 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -59,13 +60,14 @@ public class CreateNewEventFragment extends Fragment {
     public static final String EVENT_ID = "EventID";
 
     public static final int REQUEST_PHOTO = 0;
+    public static final int REQUEST_PLACE_PICKER = 1;
 
     private ScrollView mContainer;
 
     // Input values from view
     private EditText mEditTitle;
     private EditText mEditDescription;
-    private AutoCompleteTextView mEditLocation;
+    private Button mEditLocation;
     private Button mEditDay;
     private Button mEditTime;
     private Date mEventDate;
@@ -91,6 +93,12 @@ public class CreateNewEventFragment extends Fragment {
 
     private CreateNewEventActivity mActivity;
 
+    /** Place **/
+    private ParseGeoPoint mGeoPoint;
+    private String mPlaceName;
+    private String mPlaceAddress;
+    private String mPlaceId;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -108,6 +116,8 @@ public class CreateNewEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
 
+        mGeoPoint = new ParseGeoPoint();
+
         mContainer = (ScrollView) view.findViewById(R.id.scroll_view);
 
         // Connect to the view
@@ -116,8 +126,13 @@ public class CreateNewEventFragment extends Fragment {
         mEditDay = (Button) view.findViewById(R.id.event_day_input);
         mEditTime = (Button) view.findViewById(R.id.event_time_input);
 
-        mEditLocation = (AutoCompleteTextView) view.findViewById(R.id.event_location_input);
-        mEditLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.location_list));
+        mEditLocation = (Button) view.findViewById(R.id.event_location_input);
+        mEditLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPickPlace();
+            }
+        });
 
         mCategorySpinner = (Spinner) view.findViewById(R.id.category);
         ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
@@ -137,8 +152,8 @@ public class CreateNewEventFragment extends Fragment {
 
         mCategoryIcon = (ImageView) view.findViewById(R.id.cat_icon);
 
-        mPhotoViewContainer = view.findViewById(R.id.session_photo_container);
-        mPhotoView = (ImageView) view.findViewById(R.id.session_photo);
+        mPhotoViewContainer = view.findViewById(R.id.event_photo_container);
+        mPhotoView = (ImageView) view.findViewById(R.id.event_photo);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         mPickImageButton = (FloatingActionButton) view.findViewById(R.id.pick_image_btn);
@@ -187,6 +202,43 @@ public class CreateNewEventFragment extends Fragment {
         public void onFragmentInteraction();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_PHOTO:
+                if(resultCode == Activity.RESULT_OK){
+                    Uri selectedImage = data.getData();
+
+                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
+
+                    Log.d(TAG, "path " + picturePath);
+
+                    CenterCrop mCenterCrop = new CenterCrop(Glide.get(mActivity).getBitmapPool());
+
+                    Glide.with(this)
+                            .load(picturePath)
+                            .transform(mCenterCrop)
+                            .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                                @Override
+                                public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                                    super.onResourceReady(drawable, anim);
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                }
+                break;
+            case REQUEST_PLACE_PICKER:
+                if (resultCode == Activity.RESULT_OK) {
+                    // The user has selected a place. Extract the name and address.
+                    final Place place = PlacePicker.getPlace(data, mActivity);
+                    setLocation(place);
+                }
+                break;
+        }
+    }
+
     /**
      * Save the event to the backend, after checking that all field have been filled.
      */
@@ -199,6 +251,18 @@ public class CreateNewEventFragment extends Fragment {
             dialog.setMessage(getString(R.string.progress_create_event));
             dialog.show();
 
+            Date date = new Date();
+            date.setYear(year - 1900);
+            date.setMonth(month);
+            date.setDate(day);
+            date.setHours(hour);
+            date.setMinutes(minute);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+            calendar.setTime(date);
+            mEventDate = calendar.getTime();
+
             // Create an event
             final Event event = new Event();
             event.setCreator(ParseUser.getCurrentUser());
@@ -208,12 +272,16 @@ public class CreateNewEventFragment extends Fragment {
             event.setAttending(0);
             event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
-            // Get the location and turn it into a ParseGeoPoint
-            ParseGeoPoint point = convertLocation(mEditLocation.getText().toString());
-            event.setLocation(point);
+            if (picturePath != null) {
+                if (!picturePath.equals("")) {
+                    event.setPhoto(picturePath);
+                    event.setHasUploadedPhoto(true);
+                } else {
+                    event.setHasUploadedPhoto(false);
+                }
+            }
 
-            event.setPhoto(picturePath);
-            event.setHasUploadedPhoto(true);
+            event.setLocation(mPlaceId, mGeoPoint, mPlaceName, mPlaceAddress);
 
             // Save the event
             event.saveInBackground(new SaveCallback() {
@@ -230,62 +298,29 @@ public class CreateNewEventFragment extends Fragment {
     }
 
     /**
-     * Convert the text address into a ParseGeoPoint.
-     *
-     * @param address The event address as text.
-     * @return A ParseGeoPoint of the event location.
-     */
-    public ParseGeoPoint convertLocation(String address) {
-        ParseGeoPoint geoPoint = new ParseGeoPoint();
-        Geocoder gc = new Geocoder(this.getActivity(), Locale.FRANCE);
-
-        List<Address> addresses;
-
-        try {
-            addresses = gc.getFromLocationName(address, 5);
-            if (addresses.size() > 0) {
-                double latitude=addresses.get(0).getLatitude();
-                double longitude=addresses.get(0).getLongitude();
-                geoPoint.setLatitude(latitude);
-                geoPoint.setLongitude(longitude);
-            }
-        }
-        catch (  IOException e) {
-            e.printStackTrace();
-        }
-
-        return geoPoint;
-    }
-
-    /**
      * Check if all the event details have been filled in correctly.
      * @return True if everything is correct. False if there is data missing.
      */
     public boolean validateEvent() {
         if(mEditTitle.getText().toString().matches("")) {
-            Toast.makeText(mActivity, "Event doesn't have a name.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Event does nt have a title", Toast.LENGTH_SHORT).show();
             return false;
         }
         else if (day == -1 || hour == -1) {
-            Toast.makeText(mActivity, "Event date or time are not set.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Date or time is not set", Toast.LENGTH_SHORT).show();
             return false;
         }
         // add description to model
         else if (mEditDescription.getText().toString().matches("")) {
-            Toast.makeText(mActivity, "There is no event description.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "There is no event description", Toast.LENGTH_SHORT).show();
             return false;
         }
         // add place to model
-        else if (mEditLocation.getText().toString().matches("")) {
-            Log.d("LOC","location: " + mEditLocation.getText().toString());
-            Toast.makeText(mActivity, "Location is not provided.", Toast.LENGTH_SHORT).show();
+        else if (mGeoPoint.getLatitude() == 0 || mGeoPoint.getLongitude() == 0) {
+            Toast.makeText(mActivity, "No location picked for the event", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (picturePath == null) {
-            Toast.makeText(mActivity, "No picture selected.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        else {
-            mEventDate = new Date(year, month, day, hour, minute);
+        } else {
+            // All mandatory info has been provided to create an event
             return true;
         }
     }
@@ -342,32 +377,33 @@ public class CreateNewEventFragment extends Fragment {
         startActivityForResult(i, REQUEST_PHOTO);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void startPickPlace() {
+        // Construct an intent for the place picker
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(mActivity);
+            startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-        switch (requestCode) {
-            case REQUEST_PHOTO:
-                if(resultCode == Activity.RESULT_OK){
-                    Uri selectedImage = data.getData();
-
-                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
-
-                    Log.d(TAG, "path " + picturePath);
-
-                    CenterCrop mCenterCrop = new CenterCrop(Glide.get(mActivity).getBitmapPool());
-
-                    Glide.with(this)
-                            .load(picturePath)
-                            .transform(mCenterCrop)
-                            .into(new GlideDrawableImageViewTarget(mPhotoView) {
-                                @Override
-                                public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
-                                    super.onResourceReady(drawable, anim);
-                                    mProgressBar.setVisibility(View.GONE);
-                                }
-                            });
-                }
+        } catch (GooglePlayServicesRepairableException e) {
+            // ...
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // ...
         }
     }
+
+    public void setLocation(Place place) {
+        mPlaceName = place.getName().toString();
+        mPlaceAddress = place.getAddress().toString();
+        mPlaceId = place.getId();
+
+        mGeoPoint.setLatitude(place.getLatLng().latitude);
+        mGeoPoint.setLongitude(place.getLatLng().longitude);
+
+        mEditLocation.setText(mPlaceName);
+        mEditLocation.setTextColor(getResources().getColor(R.color.body_dark));
+        mEditLocation.setTextAppearance(mActivity, android.R.style.TextAppearance_Material_Body1);
+
+        Log.d("CreateLocationEvent", "name: " + mPlaceName + " address: " + mPlaceAddress + " loc: " + mGeoPoint.toString() + " id " + mPlaceId);
+    }
 }
+

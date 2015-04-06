@@ -6,6 +6,7 @@
     <color name="accent">#D50000</color>
     <color name="accent_darker">#ffb40000</color>
     <color name="accent_2">#FFC107</color>
+    <color name="accent_2_darker">#ffd8a306</color>
 
     <color name="body_dark">#de000000</color>
     <color name="body_grey">#8a000000</color>
@@ -23,5 +24,5 @@
     <!-- Edit text fields -->
     <color name="edit_hint">#1A000000</color>
 
-
+    <color name="white_darker">#ffd9d9d9</color>
 </resources>

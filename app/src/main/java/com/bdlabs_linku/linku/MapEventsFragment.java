@@ -219,7 +219,7 @@ public class MapEventsFragment extends Fragment {
                 mMap.addMarker(new MarkerOptions()
                         .icon(BitmapDescriptorFactory.fromResource(event.getCategoryMap()))
                         .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                        .position(new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude()))
+                        .position(new LatLng(event.getLocationGeo().getLatitude(), event.getLocationGeo().getLongitude()))
                         .title(event.getTitle())
                         .snippet("at " + formattedDate));
             }

@@ -14,7 +14,7 @@
     <string name="placeholder_events_item_description">Event description</string>
     <string name="placeholder_events_item_time">Time</string>
     <string name="placeholder_events_item_day">Date</string>
-    <string name="placeholder_events_item_location">Location</string>
+    <string name="placeholder_events_item_location">Pick location</string>
     <string name="placeholder_events_item_attendees">Participants</string>
     <string name="title_activity_create_new_event">New event</string>
 
@@ -46,5 +46,8 @@
     <string name="action_refresh_feed">Refresh Feed</string>
     <string name="placeholder_secondary">Secondary information</string>
     <string name="action_edit">Edit</string>
+    <string name="progress_get_event">Fetching event …</string>
+
+    <string name="no_attendees">No participants yet. Be the first to join!</string>
 
 </resources>

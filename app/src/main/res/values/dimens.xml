@@ -24,6 +24,7 @@
 
     <!-- Other -->
     <dimen name="headerbar_elevation">4dp</dimen>
+    <dimen name="fab_elevation">8dp</dimen>
 
     <dimen name="image_icon">24dp</dimen>
 
