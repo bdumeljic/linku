@@ -272,7 +272,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         if (mHasPhoto) {
             String mPhoto = mEvent.getUploadedPhotoUrl();
-            Log.d(TAG, mPhoto);
 
             CenterCrop mCenterCrop = new CenterCrop(Glide.get(this).getBitmapPool());
 
@@ -302,8 +301,17 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         setParticipants();
 
         mDescription.setText(mEvent.getDescription());
-        //mLocName.setText(EventModel.EVENTS.get(mEventId).locName);
-        //mLocAddress.setText(EventModel.EVENTS.get(mEventId).locAddress);
+
+        if (mEvent.getLocationName() == null && mEvent.getLocationAddress() == null) {
+            mLocName.setText("(" + mEvent.getLocationGeo().getLatitude() + ", " + mEvent.getLocationGeo().getLongitude() + ")");
+            mLocAddress.setVisibility(View.GONE);
+        } else if (mEvent.getLocationAddress().equals("")) {
+            mLocName.setText(mEvent.getLocationName());
+            mLocAddress.setVisibility(View.GONE);
+        } else if (!mEvent.getLocationName().equals("") && !mEvent.getLocationAddress().equals("")) {
+            mLocName.setText(mEvent.getLocationName());
+            mLocAddress.setText(mEvent.getLocationAddress());
+        }
 
         // Get the google maps screenshot of the map near the event
         STATIC_MAP_API_ENDPOINT = "http://maps.google.com/maps/api/staticmap?center=" + Double.toString(mEvent.getLocationGeo().getLatitude()) + "," + Double.toString(mEvent.getLocationGeo().getLongitude()) + "&zoom=16&size=1100x300&scale=2&sensor=false&markers=color:blue%7Clabel:%7C" + Double.toString(mEvent.getLocationGeo().getLatitude()) + "," + Double.toString(mEvent.getLocationGeo().getLongitude()) + "";
