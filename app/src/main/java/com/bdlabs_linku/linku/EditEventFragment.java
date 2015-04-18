@@ -216,8 +216,13 @@ public class EditEventFragment extends Fragment {
         mCategorySpinner.setSelection(bundle.getInt(ViewEventActivity.EVENT_CATEGORY));
 
         mEventDate = (Date) bundle.get(ViewEventActivity.EVENT_TIME);
-        setDateView();
-        setTime(mEventDate.getHours(), mEventDate.getMinutes());
+        day = mEventDate.getDay();
+        month = mEventDate.getMonth() + 1;
+        year = mEventDate.getYear() + 1900;
+        hour = mEventDate.getHours();
+        minute = mEventDate.getMinutes();
+        setDate(day, month, year);
+        setTime(hour, minute);
 
         mGeoPoint.setLatitude(bundle.getDouble(ViewEventActivity.EVENT_LOCATION_GEO_LAT));
         mGeoPoint.setLongitude(bundle.getDouble(ViewEventActivity.EVENT_LOCATION_GEO_LONG));
@@ -421,7 +426,7 @@ public class EditEventFragment extends Fragment {
      * @param v
      */
     public void datePicker(View v) {
-        DialogFragment picker = new DatePickerFragment();
+        DialogFragment picker = DatePickerFragment.newInstance(year, month, day);
         picker.show(getFragmentManager(), "datePicker");
     }
 
@@ -430,8 +435,7 @@ public class EditEventFragment extends Fragment {
      * @param v
      */
     public void timePicker(View v) {
-        DialogFragment picker = new TimePickerFragment();
-
+        DialogFragment picker = TimePickerFragment.newInstance(hour, minute);
         picker.show(getFragmentManager(), "timePicker");
     }
 
@@ -446,18 +450,11 @@ public class EditEventFragment extends Fragment {
         month = monthOfYear;
         year = yearPicked;
 
-
-        mEditDay.setText(day + " / " + (month + 1) + " / " + year);
-        mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
-    }
-
-    private void setDateView() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(mEventDate);
-        //setDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+        calendar.set(year, month, day);
 
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mActivity.getApplicationContext());
-        mEditDay.setText(dateFormat.format(mEventDate));
+        mEditDay.setText(dateFormat.format(calendar.getTime()));
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 

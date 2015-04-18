@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Calendar;
+
 /**
  * Controlling activity for the {@link com.bdlabs_linku.linku.CreateNewEventFragment} that creates a new event from user input.
  */
@@ -58,7 +60,8 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
      * @param v
      */
     public void datePicker(View v) {
-        DialogFragment picker = new DatePickerFragment();
+        final Calendar c = Calendar.getInstance();
+        DialogFragment picker = DatePickerFragment.newInstance(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         picker.show(getFragmentManager(), "datePicker");
     }
 
@@ -67,7 +70,8 @@ public class CreateNewEventActivity extends ActionBarActivity implements CreateN
      * @param v
      */
     public void timePicker(View v) {
-        DialogFragment picker = new TimePickerFragment();
+        final Calendar c = Calendar.getInstance();
+        DialogFragment picker = TimePickerFragment.newInstance(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
         picker.show(getFragmentManager(), "timePicker");
     }
 

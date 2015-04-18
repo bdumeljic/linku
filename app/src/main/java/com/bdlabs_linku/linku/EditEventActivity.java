@@ -60,24 +60,6 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     }
 
     /**
-     * Call the date picker widget.
-     * @param v
-     */
-    public void datePicker(View v) {
-        DialogFragment picker = new DatePickerFragment();
-        picker.show(getFragmentManager(), "datePicker");
-    }
-
-    /**
-     * Call the time picker widget.
-     * @param v
-     */
-    public void timePicker(View v) {
-        DialogFragment picker = new TimePickerFragment();
-        picker.show(getFragmentManager(), "timePicker");
-    }
-
-    /**
      * Return the picked date to the fragment.
      * @param dayOfMonth
      * @param monthOfYear

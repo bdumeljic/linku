@@ -11,14 +11,25 @@ import java.util.Calendar;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
+    static DatePickerFragment newInstance(int year, int month, int day) {
+        Bundle args = new Bundle();
+        args.putInt("year", year);
+        args.putInt("month", month);
+        args.putInt("day", day);
+        DatePickerFragment fragment = new DatePickerFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Bundle args = getArguments();
+
         // Use the current date as the default date in the picker
         final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        int year = args.getInt("year", c.get(Calendar.YEAR));
+        int month = args.getInt("month", c.get(Calendar.MONTH));
+        int day = args.getInt("day", c.get(Calendar.DAY_OF_MONTH));
 
         // Create a new instance of DatePickerDialog and return it
         return new DatePickerDialog(getActivity(), R.style.AppTheme_Dialog, this, year, month, day);
