@@ -409,7 +409,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -427,7 +426,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                         mEventsAdapter.getParseAdapter().loadObjects();
                     }
                 }
-
                 break;
             // TODO notifyItemChanged(int position)
         }
@@ -475,4 +473,5 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

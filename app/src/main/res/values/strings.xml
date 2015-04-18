@@ -17,12 +17,16 @@
     <string name="placeholder_events_item_location">Pick location</string>
     <string name="placeholder_events_item_attendees">Participants</string>
     <string name="title_activity_create_new_event">New event</string>
+    <string name="title_activity_edit_event">Edit event</string>
 
     <!-- Create new event -->
     <string name="title_map">Map</string>
     <string name="title_events">Events</string>
     <string name="progress_create_event">Creating event …</string>
     <string name="placeholder_category">Event type</string>
+
+    <!-- Editing event -->
+    <string name="progress_edit_event">Updating event …</string>
 
     <!-- Login / SignUp -->
     <string name="login">Log in</string>

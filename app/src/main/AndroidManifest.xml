@@ -46,6 +46,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="EventsActivity" />
         </activity>
+        <activity
+            android:name=".EditEventActivity"
+            android:theme="@style/AppTheme.Dark"
+            android:label="@string/title_activity_edit_event"
+            android:parentActivityName=".ViewEventActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ViewEventActivity" />
+        </activity>
 
         <activity
             android:name=".SignUpActivity"
@@ -75,5 +84,8 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+        <instrumentation
+                android:targetPackage="com.bdlabs_linku.linku"
+                android:name="android.test.InstrumentationTestRunner" />
     </application>
 </manifest>

@@ -1,6 +1,8 @@
 package com.bdlabs_linku.linku;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -50,6 +52,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,7 +62,22 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
     public static final String TAG = "ViewEventActivity";
 
-    public static final String EVENT_ID = "event";
+    private static final int EDIT_EVENT = 2;
+    private static final String EVENT_POS = "event_pos";
+    private static final String EDITED = "event_edited";
+
+    public static final String EVENT_ID = "event_id";
+    public static final String EVENT_IMAGE = "event_image";
+    public static final String EVENT_TITLE = "event_title";
+    public static final String EVENT_DESCRIPTION = "event_description";
+    public static final String EVENT_TIME = "event_time";
+    public static final String EVENT_LOCATION_GEO_LAT = "event_location_geo_lat";
+    public static final String EVENT_LOCATION_GEO_LONG = "event_location_geo_long";
+    public static final String EVENT_LOCATION_NAME = "event_location_name";
+    public static final String EVENT_LOCATION_ADDRESS = "event_location_address";
+    public static final String EVENT_LOCATION_ID = "event_location_id";
+
+    public static final String EVENT_CATEGORY = "event_category";
 
     public static final String TRANSITION_NAME_PHOTO = "photo";
     public static final float SESSION_BG_COLOR_SCALE_FACTOR = 0.75f;
@@ -105,6 +123,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     private Event mEvent;
     private String mEventId;
     private Location mUserLoc;
+
+    private int mEventPos;
 
     private Menu mMenu;
 
@@ -204,6 +224,11 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                     ((FloatingActionButton) v).setColorNormal(getResources().getColor(R.color.accent_2));
                     ((FloatingActionButton) v).setColorPressed(getResources().getColor(R.color.accent_2_darker));
                 }
+
+                Intent intent = new Intent();
+                intent.putExtra(EVENT_POS, mEventPos);
+                intent.putExtra(EDITED, true);
+                setResult(Activity.RESULT_OK, intent);
             }
         });
 
@@ -231,6 +256,8 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                 }
             }
         });
+
+        mEventPos = getIntent().getIntExtra(EVENT_POS, -1);
     }
 
     @Override
@@ -248,7 +275,24 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
         switch (item.getItemId()) {
             case R.id.action_edit:
                 Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
+                intent.putExtra(EVENT_ID, mEventId);
+                if (mEvent.hasUploadedPhoto()) {
+                    intent.putExtra(EVENT_IMAGE, mEvent.getUploadedPhotoUrl());
+                } else {
+                    intent.putExtra(EVENT_IMAGE, "");
+                }
+                intent.putExtra(EVENT_TITLE, mEvent.getTitle());
+                intent.putExtra(EVENT_DESCRIPTION, mEvent.getDescription());
+                intent.putExtra(EVENT_TIME, mEvent.getTime());
+                intent.putExtra(EVENT_LOCATION_GEO_LAT, mEvent.getLocationGeo().getLatitude());
+                intent.putExtra(EVENT_LOCATION_GEO_LONG, mEvent.getLocationGeo().getLongitude());
+                intent.putExtra(EVENT_LOCATION_NAME, mEvent.getLocationName());
+                intent.putExtra(EVENT_LOCATION_ADDRESS, mEvent.getLocationAddress());
+                intent.putExtra(EVENT_LOCATION_ID, mEvent.getLocationPlaceId());
+                intent.putExtra(EVENT_CATEGORY, mEvent.getCategory());
+                startActivityForResult(intent, EDIT_EVENT);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -508,6 +552,59 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             BigDecimal bd = new BigDecimal(distance).setScale(1, RoundingMode.HALF_UP);
             distance = bd.doubleValue();
             return String.valueOf(distance) + " km away";
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_EVENT && resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            mTitle.setText(bundle.getString(EVENT_TITLE));
+            mDescription.setText(bundle.getString(EVENT_DESCRIPTION));
+            mCategory.setImageResource(Event.CATEGORIES_CIRCLE.get(bundle.getInt(EVENT_CATEGORY)));
+
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            String formattedDate = dateFormat.format(((Date) bundle.get(EVENT_TIME)).getTime());
+            mSecondaryTitle.setText("Starting at " + formattedDate);
+
+            if (mUserLoc != null) {
+                Log.i(TAG, mUserLoc.toString());
+                mSecondaryTitle.append(" - " + parseDistance(new ParseGeoPoint(bundle.getDouble(EVENT_LOCATION_GEO_LAT), bundle.getDouble(EVENT_LOCATION_GEO_LONG))));
+            }
+
+            String mPhoto = bundle.getString(EVENT_IMAGE);
+            if (!mPhoto.equals("")) {
+                mProgressBar.setVisibility(View.VISIBLE);
+                mHasPhoto = true;
+                    Glide.with(this)
+                            .load(mPhoto)
+                            .centerCrop()
+                            .into(new GlideDrawableImageViewTarget(mPhotoView) {
+                                @Override
+                                public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                                    super.onResourceReady(drawable, anim);
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                }
+
+            if (bundle.getString(EVENT_LOCATION_NAME) == null && bundle.getString(EVENT_LOCATION_ADDRESS) == null) {
+                mLocName.setText("(" + bundle.getDouble(EVENT_LOCATION_GEO_LAT) + ", " + bundle.getDouble(EVENT_LOCATION_GEO_LONG) + ")");
+                mLocAddress.setVisibility(View.GONE);
+            } else if (bundle.getString(EVENT_LOCATION_ADDRESS).equals("")) {
+                mLocName.setText(bundle.getString(EVENT_LOCATION_NAME));
+                mLocAddress.setVisibility(View.GONE);
+            } else if (!bundle.getString(EVENT_LOCATION_NAME).equals("") && !bundle.getString(EVENT_LOCATION_ADDRESS).equals("")) {
+                mLocName.setText(bundle.getString(EVENT_LOCATION_NAME));
+                mLocAddress.setText(bundle.getString(EVENT_LOCATION_ADDRESS));
+            }
+
+            Intent intent = new Intent();
+            intent.putExtra(EVENT_POS, mEventPos);
+            intent.putExtra(EDITED, true);
+            setResult(Activity.RESULT_OK, intent);
         }
     }
 }

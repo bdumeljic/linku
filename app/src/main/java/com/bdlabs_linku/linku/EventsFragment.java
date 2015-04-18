@@ -24,6 +24,10 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
     private static final String TAG = "EventsFragment";
     private OnFragmentInteractionListener mListener;
 
+    public static final int VIEW_EVENT = 3;
+    private static final String EDITED = "event_edited";
+    private static final String EVENT_POS = "event_pos";
+
     private EventsActivity mActivity;
 
     private RecyclerView mList;
@@ -109,9 +113,10 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
 
             // handle single tap
             Intent intent = new Intent(getActivity(), ViewEventActivity.class);
+            intent.putExtra(EVENT_POS, position);
             intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
             intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
-            startActivity(intent);
+            startActivityForResult(intent, VIEW_EVENT);
 
             return super.onSingleTapConfirmed(e);
         }
@@ -149,5 +154,21 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String name);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == VIEW_EVENT && resultCode == mActivity.RESULT_OK) {
+            if (data.getBooleanExtra(EDITED, false)) {
+                int pos = data.getIntExtra(EVENT_POS, -1);
+                if (pos >= 0) {
+                    mActivity.mEventsAdapter.notifyItemChanged(pos);
+                } else {
+                    mActivity.mEventsAdapter.getParseAdapter().loadObjects();
+                }
+            }
+        }
     }
 }
