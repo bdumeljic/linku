@@ -34,7 +34,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                 ParseQuery<Event> query = Event.getQuery();
                 query.orderByAscending("time");
                 query.whereGreaterThanOrEqualTo("time", new Date(System.currentTimeMillis()));
-                query.setLimit(30);
+                query.setLimit(20);
                 return query;
             }
         });

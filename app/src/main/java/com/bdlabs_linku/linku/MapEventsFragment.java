@@ -37,8 +37,6 @@ public class MapEventsFragment extends Fragment {
     private EventsActivity mActivity;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    //LocationManager locationManager;
-    //String provider;
 
     private double latitude;
     private double longitude;
