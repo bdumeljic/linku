@@ -245,6 +245,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        if (mSectionsPagerAdapter.getFragmentForPosition(1) != null) {
+            ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).newLocation(location);
+        }
         Log.i(TAG, "Location changed to " + mCurrentLocation);
     }
 

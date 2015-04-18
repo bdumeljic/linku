@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -32,10 +33,13 @@ import java.util.List;
  * Use the {@link MapEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapEventsFragment extends Fragment {
+public class MapEventsFragment extends Fragment implements OnMapReadyCallback {
+
+    private static final String TAG = "MapEventsFragment";
 
     private EventsActivity mActivity;
 
+    MapFragment mMapFragment;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private double latitude;
@@ -43,6 +47,7 @@ public class MapEventsFragment extends Fragment {
 
     private List<Event> mEvents;
     private boolean mEventsOnMap = false;
+    private boolean mFirstZoom = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -90,7 +95,6 @@ public class MapEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_map_holder, container, false);
     }
 
@@ -124,9 +128,7 @@ public class MapEventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("MAP", "Resuming map");
         setUpMapIfNeeded();
-        //putEventsOnMap();
     }
 
     /**
@@ -148,58 +150,8 @@ public class MapEventsFragment extends Fragment {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             Log.d("MAP", "No map found, setting map.");
-            mMap = ((MapFragment) mActivity.getFragmentManager().findFragmentByTag("Map")).getMap();
-
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                Log.d("MAP", "Have map now");
-
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                mMap.setMyLocationEnabled(true);
-                setUpMap();
-            }
-        } else {
-            Log.d("MAP", "There was a map.");
-
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mMap.setMyLocationEnabled(true);
-            setUpMap();
-        }
-    }
-
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-        putEventsOnMap();
-
-        // Enable MyLocation Layer of Google Map
-        mMap.setMyLocationEnabled(true);
-
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        Location myLocation = mActivity.getLastLocation();
-
-        if(myLocation != null) {
-            // set map type
-
-            // Get latitude of the current location
-            latitude = myLocation.getLatitude();
-
-            // Get longitude of the current location
-            longitude = myLocation.getLongitude();
-
-            // Create a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
-
-            // Show the current location in Google Map
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-            // Zoom in the Google Map
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+            mMapFragment = ((MapFragment) mActivity.getFragmentManager().findFragmentByTag("Map"));
+            mMapFragment.getMapAsync(this);
         }
     }
 
@@ -227,18 +179,33 @@ public class MapEventsFragment extends Fragment {
     }
 
     public void newLocation(Location loc) {
-        latitude = loc.getLatitude();
-        // Get longitude of the current location
-        longitude = loc.getLongitude();
+        if (loc != null && !mFirstZoom) {
+            latitude = loc.getLatitude();
+            longitude = loc.getLongitude();
 
-        LatLng latLng = new LatLng(latitude, longitude);
+            LatLng latLng = new LatLng(latitude, longitude);
 
-        // Show the current location in Google Map
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            // Move to the current location in Google Map
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
 
-        // Zoom in the Google Map
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+            mFirstZoom = true;
+        }
+    }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.i(TAG, "map ready");
+        mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
+
+        Location mCurrentLocation = mActivity.getLastLocation();
+
+        if (mCurrentLocation != null) {
+            LatLng myLocation = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 13));
+        }
+
+        putEventsOnMap();
     }
 
     /**
@@ -254,34 +221,5 @@ public class MapEventsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-    }
-
-    class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-
-        private final View myContentsView;
-        private View layoutInflater;
-
-        MyInfoWindowAdapter() {
-            myContentsView = getLayoutInflater(null).inflate(R.layout.custom_info_contents, null);
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-            TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
-            tvTitle.setText(marker.getTitle());
-            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
-            tvSnippet.setText(marker.getSnippet());
-
-            //   ImageView ivIcon = ((ImageView)myContentsView.findViewById(R.id.icon));
-            //   ivIcon.setImageDrawable(getResources().getDrawable(R.drawable.sports_icon));
-
-            return myContentsView;
-        }
-
-        @Override
-        public View getInfoWindow(Marker marker) {
-            // TODO Auto-generated method stub
-            return null;
-        }
     }
 }
