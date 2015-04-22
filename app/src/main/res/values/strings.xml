@@ -61,7 +61,7 @@
     <string name="linku_website">getlinku.com</string>
     <string name="first_run_dialog_title" />
     <string name="first_run_content" />
-    <string name="welcome_legal">Before you start using the app, confirm that you have read and accept our &lt;a href="http://www.getlinku.com/terms-of-use.html">Terms of Service&lt;/a> and &lt;a href="http://www.getlinku.com/privacy.html">Privacy Policy&lt;/a>. &lt;br&lt;/> &lt;br&lt;/> We suggest you also take a look at the &lt;a href="http://www.getlinku.com/safety.html">Safety Guidelines&lt;/a> for tips on staying safe when going to events with strangers.
+    <string name="welcome_legal">By using this app, you agree to the &lt;a href="http://www.getlinku.com/terms-of-use.html">Terms of Service&lt;/a> and &lt;a href="http://www.getlinku.com/privacy.html">Privacy Policy&lt;/a>. &lt;br&lt;/> &lt;br&lt;/> We suggest you also take a look at the &lt;a href="http://www.getlinku.com/safety.html">Safety Guidelines&lt;/a> for tips on staying safe when going to events with strangers.
 </string>
     <string name="title_activity_welcome">WelcomeActivity</string>
 
