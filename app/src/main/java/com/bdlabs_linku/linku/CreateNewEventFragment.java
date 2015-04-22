@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.bdlabs_linku.linku.Utils.ImageChooser;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -80,7 +79,7 @@ public class CreateNewEventFragment extends Fragment {
     private int hour = -1;
     private int minute = -1;
 
-    String picturePath = null;
+    Uri imageUri = null;
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
@@ -99,6 +98,8 @@ public class CreateNewEventFragment extends Fragment {
     private String mPlaceAddress;
     private String mPlaceId;
 
+    public ProgressDialog dialog;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -115,6 +116,10 @@ public class CreateNewEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+
+        dialog = new ProgressDialog(getActivity());
+        dialog.setMessage(getString(R.string.progress_create_event));
+        dialog.setCanceledOnTouchOutside(false);
 
         mGeoPoint = new ParseGeoPoint();
 
@@ -211,15 +216,12 @@ public class CreateNewEventFragment extends Fragment {
                 if(resultCode == Activity.RESULT_OK){
                     Uri selectedImage = data.getData();
 
-                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
+                    Log.d(TAG, "uri " + selectedImage);
 
-                    Log.d(TAG, "path " + picturePath);
-
-                    CenterCrop mCenterCrop = new CenterCrop(Glide.get(mActivity).getBitmapPool());
-
+                    imageUri = selectedImage;
                     Glide.with(this)
-                            .load(picturePath)
-                            .transform(mCenterCrop)
+                            .load(imageUri)
+                            .centerCrop()
                             .into(new GlideDrawableImageViewTarget(mPhotoView) {
                                 @Override
                                 public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
@@ -244,13 +246,10 @@ public class CreateNewEventFragment extends Fragment {
      */
     public void saveEvent() {
         if(validateEvent()) {
-            String title = mEditTitle.getText().toString().trim();
-
-            // Set up a progress dialog
-            final ProgressDialog dialog = new ProgressDialog(mActivity);
-            dialog.setMessage(getString(R.string.progress_create_event));
-            dialog.setCanceledOnTouchOutside(false);
+            //TODO dialog isnt showing up
             dialog.show();
+
+            String title = mEditTitle.getText().toString().trim();
 
             Date date = new Date();
             date.setYear(year - 1900);
@@ -273,13 +272,11 @@ public class CreateNewEventFragment extends Fragment {
             event.setAttending(0);
             event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
-            if (picturePath != null) {
-                if (!picturePath.equals("")) {
-                    event.setPhoto(picturePath);
-                    event.setHasUploadedPhoto(true);
-                } else {
-                    event.setHasUploadedPhoto(false);
-                }
+            if (imageUri != null && !imageUri.equals("")) {
+                event.setPhoto(ImageChooser.createParseImageFileFromUri(mActivity, imageUri));
+                event.setHasUploadedPhoto(true);
+            } else {
+                event.setHasUploadedPhoto(false);
             }
 
             event.setLocation(mPlaceId, mGeoPoint, mPlaceName, mPlaceAddress);
@@ -374,7 +371,8 @@ public class CreateNewEventFragment extends Fragment {
     }
 
     private void pickImage() {
-        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("image/*");
         startActivityForResult(i, REQUEST_PHOTO);
     }
 

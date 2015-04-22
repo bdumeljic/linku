@@ -37,7 +37,7 @@ public class SignUpActivity extends ActionBarActivity {
 
     public static final int REQUEST_PHOTO = 0;
 
-    String picturePath = null;
+    Uri imageUri = null;
 
     // UI references.
     private ImageView mProfilePicture;
@@ -83,7 +83,8 @@ public class SignUpActivity extends ActionBarActivity {
         profilePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("image/*");
                 startActivityForResult(i, REQUEST_PHOTO);
             }
         });
@@ -145,8 +146,8 @@ public class SignUpActivity extends ActionBarActivity {
         String name = parts[0];
         user.put("name", name);
 
-        if (picturePath != null) {
-            user.put("profilePicture", ImageChooser.createParseImageFile(picturePath));
+        if (imageUri != null) {
+            user.put("profilePicture", ImageChooser.createParseImageFileFromUri(this, imageUri));
         }
 
         // Call the Parse signup method
@@ -188,14 +189,12 @@ public class SignUpActivity extends ActionBarActivity {
             case REQUEST_PHOTO:
                 if(resultCode == Activity.RESULT_OK){
                     mProgressBar.setVisibility(View.VISIBLE);
-                    Uri selectedImage = data.getData();
+                    imageUri = data.getData();
 
-                    picturePath = ImageChooser.getPath(this, selectedImage);
-
-                    Log.d(TAG, "path " + picturePath);
+                    Log.d(TAG, "path " + imageUri);
 
                     Glide.with(this)
-                            .load(picturePath)
+                            .load(imageUri)
                             .fitCenter()
                             .transform(new CircleTransform(SignUpActivity.this))
                             .into(new GlideDrawableImageViewTarget(mProfilePicture) {

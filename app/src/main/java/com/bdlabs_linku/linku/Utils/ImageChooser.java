@@ -1,6 +1,7 @@
 package com.bdlabs_linku.linku.Utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,9 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class ImageChooser {
 
@@ -152,6 +156,33 @@ public class ImageChooser {
 
     public static ParseFile createParseImageFile(String photoUrl) {
         Bitmap bitmap = BitmapFactory.decodeFile(photoUrl);
+
+        // Convert it to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+
+        // Create the ParseFile
+        ParseFile file = new ParseFile(image);
+        try {
+            file.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    public static ParseFile createParseImageFileFromUri(Context context, Uri photoUri) {
+        ContentResolver cr = context.getContentResolver();
+        InputStream inputStream = null;
+        try {
+            inputStream = cr.openInputStream(photoUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
         // Convert it to byte
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

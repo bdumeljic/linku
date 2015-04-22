@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.bdlabs_linku.linku.Utils.ImageChooser;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -32,12 +31,10 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.text.DateFormat;
@@ -45,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -78,7 +74,7 @@ public class EditEventFragment extends Fragment {
     private ImageView mCategoryIcon;
 
     String picturePathOld = null;
-    String picturePath = null;
+    Uri imageUri = null;
 
     private View mPhotoViewContainer;
     private ImageView mPhotoView;
@@ -274,15 +270,12 @@ public class EditEventFragment extends Fragment {
                 if(resultCode == Activity.RESULT_OK){
                     Uri selectedImage = data.getData();
 
-                    picturePath = ImageChooser.getPath(mActivity, selectedImage);
+                    Log.d(TAG, "uri " + selectedImage);
 
-                    Log.d(TAG, "path " + picturePath);
-
-                    CenterCrop mCenterCrop = new CenterCrop(Glide.get(mActivity).getBitmapPool());
-
+                    imageUri = selectedImage;
                     Glide.with(this)
-                            .load(picturePath)
-                            .transform(mCenterCrop)
+                            .load(imageUri)
+                            .centerCrop()
                             .into(new GlideDrawableImageViewTarget(mPhotoView) {
                                 @Override
                                 public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
@@ -328,9 +321,10 @@ public class EditEventFragment extends Fragment {
                         event.setTime(mEventDate);
                         event.setCategory(mCategorySpinner.getSelectedItemPosition());
 
-                        if (picturePath != null) {
-                            if (!picturePath.equals("")) {
-                                event.setPhoto(picturePath);
+                        if (imageUri != null) {
+                            if (!imageUri.equals("")) {
+                                //TODO update to be the same ass createnewevent
+                                event.setPhoto(ImageChooser.createParseImageFileFromUri(mActivity, imageUri));
                                 event.setHasUploadedPhoto(true);
                             } else {
                                 event.setHasUploadedPhoto(false);
@@ -346,7 +340,7 @@ public class EditEventFragment extends Fragment {
                                 dialog.dismiss();
                                 Intent resultIntent = new Intent();
                                 resultIntent.putExtra(ViewEventActivity.EVENT_ID, mEventId);
-                                if (picturePath != null && !picturePath.equals("")) {
+                                if (imageUri != null) {
                                     resultIntent.putExtra(ViewEventActivity.EVENT_IMAGE, event.getUploadedPhotoUrl());
                                 } else {
                                     resultIntent.putExtra(ViewEventActivity.EVENT_IMAGE, "");
@@ -463,7 +457,8 @@ public class EditEventFragment extends Fragment {
     }
 
     private void pickImage() {
-        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("image/*");
         startActivityForResult(i, REQUEST_PHOTO);
     }
 

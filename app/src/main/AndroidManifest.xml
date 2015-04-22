@@ -86,21 +86,22 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
 
+        <activity
+            android:name=".WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
+        </activity>
+
+
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
+            android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <instrumentation
             android:name="android.test.InstrumentationTestRunner"
             android:targetPackage="com.bdlabs_linku.linku" />
-
-        <activity
-            android:name=".WelcomeActivity"
-            android:label="@string/title_activity_welcome" >
-        </activity>
     </application>
-
 </manifest>

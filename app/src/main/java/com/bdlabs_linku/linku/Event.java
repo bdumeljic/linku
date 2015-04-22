@@ -240,17 +240,7 @@ public class Event extends ParseObject {
         return getParseFile("photo").getUrl();
     }
 
-    public void setPhoto(String photo) {
-        Bitmap bitmap = BitmapFactory.decodeFile(photo);
-
-        // Convert it to byte
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        // Compress image to lower quality scale 1 - 100
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] image = stream.toByteArray();
-
-        // Create the ParseFile
-        ParseFile file = new ParseFile(image);
-        put("photo", file);
+    public void setPhoto(ParseFile photo) {
+        put("photo", photo);
     }
 }

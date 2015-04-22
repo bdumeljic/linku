@@ -20,11 +20,11 @@ public class DispatchActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Check if there is current user info
-    if (ParseUser.getCurrentUser() != null && !PrefUtils.isTosAccepted(this)) {
+    if (ParseUser.getCurrentUser() != null && PrefUtils.isTosAccepted(this)) {
       // Start an intent for the logged in activity but tos not yet accepted
-      startActivity(new Intent(this, WelcomeActivity.class));
-    } else if (ParseUser.getCurrentUser() != null) {
       startActivity(new Intent(this, EventsActivity.class));
+    } else if (ParseUser.getCurrentUser() != null) {
+      startActivity(new Intent(this, WelcomeActivity.class));
     } else {
       // Start and intent for the logged out activity
       startActivity(new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

@@ -34,6 +34,7 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
 
         // Show up navigation button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_back);
     }
 
 
@@ -49,9 +50,6 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
             case R.id.action_confirm:
                 EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
                 fragment.updateEvent();
