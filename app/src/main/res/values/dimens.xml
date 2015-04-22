@@ -5,6 +5,7 @@
     <!-- Keylines -->
     <dimen name="keyline_1">16dp</dimen>
     <dimen name="keyline_1_minus_8dp">8dp</dimen>
+    <dimen name="keyline_1_plus_8dp">24dp</dimen>
     <dimen name="keyline_2">72dp</dimen>
     <dimen name="keyline_2_minus_16dp">56dp</dimen>
     <!-- Text sizes -->
@@ -26,7 +27,8 @@
     <dimen name="fab_elevation">8dp</dimen>
 
     <dimen name="image_icon">24dp</dimen>
-
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_corner_radius">2dp</dimen>
 
     <!-- Forms top margin -->
     <dimen name="login_form_margin">@dimen/keyline_1_minus_8dp</dimen>

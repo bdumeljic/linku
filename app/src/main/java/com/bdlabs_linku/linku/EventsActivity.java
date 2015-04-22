@@ -109,6 +109,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
 
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.progress_load_events));
+        dialog.setCanceledOnTouchOutside(false);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -122,6 +123,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             refreshView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     if (isNetworkAvailable()) {
+                        buildGoogleApiClient();
+                        mGoogleApiClient.connect();
+                        dialog.show();
                         refreshView();
                     }
                 }
@@ -130,7 +134,6 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
             buildGoogleApiClient();
             dialog.show();
             refreshView();
-            
         }
     }
 
@@ -245,7 +248,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        if (mSectionsPagerAdapter.getFragmentForPosition(1) != null) {
+        if (mSectionsPagerAdapter != null && mSectionsPagerAdapter.getFragmentForPosition(1) != null) {
             ((MapEventsFragment) mSectionsPagerAdapter.getFragmentForPosition(1)).newLocation(location);
         }
         Log.i(TAG, "Location changed to " + mCurrentLocation);
@@ -354,7 +357,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     protected void onStart() {
         super.onStart();
         checkPlayServices();
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
@@ -363,8 +368,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
-
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
     }
@@ -373,7 +377,7 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     protected void onPause() {
         super.onPause();
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
         }
     }
@@ -381,7 +385,9 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -405,6 +411,10 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 break;
             case R.id.action_refresh:
                 mEventsAdapter.getParseAdapter().loadObjects();
+                break;
+            case R.id.action_about:
+                Intent intentAbout = new Intent(EventsActivity.this, AboutActivity.class);
+                startActivity(intentAbout);
                 break;
         }
         return super.onOptionsItemSelected(item);

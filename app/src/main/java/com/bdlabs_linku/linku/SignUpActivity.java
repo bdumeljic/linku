@@ -132,6 +132,7 @@ public class SignUpActivity extends ActionBarActivity {
         // Set up a progress dialog
         final ProgressDialog dialog = new ProgressDialog(SignUpActivity.this);
         dialog.setMessage(getString(R.string.progress_signup));
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
         // Set up a new Parse user

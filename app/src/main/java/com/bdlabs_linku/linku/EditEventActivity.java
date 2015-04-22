@@ -2,11 +2,14 @@ package com.bdlabs_linku.linku;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.util.Calendar;
 
 /**
  * Controlling activity for the {@link CreateNewEventFragment} that creates a new event from user input.
@@ -46,6 +49,9 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
             case R.id.action_confirm:
                 EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
                 fragment.updateEvent();
@@ -61,13 +67,10 @@ public class EditEventActivity extends ActionBarActivity implements EditEventFra
 
     /**
      * Return the picked date to the fragment.
-     * @param dayOfMonth
-     * @param monthOfYear
-     * @param year
      */
-    public void setDate(int dayOfMonth, int monthOfYear, int year) {
+    public void setDate(Calendar calendar) {
         EditEventFragment fragment = (EditEventFragment) getFragmentManager().findFragmentById(R.id.container);
-        fragment.setDate(dayOfMonth, monthOfYear, year);
+        fragment.setDate(calendar);
     }
 
     /**

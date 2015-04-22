@@ -139,6 +139,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
 
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.progress_get_event));
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
         // Get the user's location
@@ -274,7 +275,6 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_edit:
-                Toast.makeText(ViewEventActivity.this, "editing", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ViewEventActivity.this, EditEventActivity.class);
                 intent.putExtra(EVENT_ID, mEventId);
                 if (mEvent.hasUploadedPhoto()) {
@@ -404,7 +404,7 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
                         mParticipantsList.setVisibility(View.GONE);
                         mEmptyParticipants.setVisibility(View.VISIBLE);
                     } else {
-                        mParticipantsList.setAdapter(new ParticipantsAdapter(ViewEventActivity.this, parseUsers));
+                        mParticipantsList.setAdapter(new ParticipantsAdapter(ViewEventActivity.this, parseUsers, mEvent.getCreator()));
                         setListViewHeightBasedOnChildren(mParticipantsList);
                         mEmptyParticipants.setVisibility(View.GONE);
                         mParticipantsList.setVisibility(View.VISIBLE);
@@ -605,6 +605,15 @@ public class ViewEventActivity extends ActionBarActivity implements ObservableSc
             intent.putExtra(EVENT_POS, mEventPos);
             intent.putExtra(EDITED, true);
             setResult(Activity.RESULT_OK, intent);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (dialog != null) {
+            dialog.dismiss();
         }
     }
 }

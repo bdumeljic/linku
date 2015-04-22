@@ -249,6 +249,7 @@ public class CreateNewEventFragment extends Fragment {
             // Set up a progress dialog
             final ProgressDialog dialog = new ProgressDialog(mActivity);
             dialog.setMessage(getString(R.string.progress_create_event));
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
 
             Date date = new Date();
@@ -282,7 +283,7 @@ public class CreateNewEventFragment extends Fragment {
             }
 
             event.setLocation(mPlaceId, mGeoPoint, mPlaceName, mPlaceAddress);
-
+            event.addAttendee();
             // Save the event
             event.saveInBackground(new SaveCallback() {
                 @Override

@@ -183,7 +183,7 @@ public class Event extends ParseObject {
     }
 
     public void addAttendee() {
-        increment("attending");
+        setAttending(getAttending() + 1);
         getAttendingList().add(ParseUser.getCurrentUser());
         try {
             save();
@@ -194,7 +194,7 @@ public class Event extends ParseObject {
     }
 
     public void removeAttendee() {
-        put("attending", getAttending() - 1);
+        setAttending(getAttending() - 1);
         getAttendingList().remove(ParseUser.getCurrentUser());
         try {
             save();

@@ -77,12 +77,6 @@ public class EditEventFragment extends Fragment {
     private Spinner mCategorySpinner;
     private ImageView mCategoryIcon;
 
-    private int day = -1;
-    private int month = -1;
-    private int year = -1;
-    private int hour = -1;
-    private int minute = -1;
-
     String picturePathOld = null;
     String picturePath = null;
 
@@ -216,13 +210,8 @@ public class EditEventFragment extends Fragment {
         mCategorySpinner.setSelection(bundle.getInt(ViewEventActivity.EVENT_CATEGORY));
 
         mEventDate = (Date) bundle.get(ViewEventActivity.EVENT_TIME);
-        day = mEventDate.getDay();
-        month = mEventDate.getMonth() + 1;
-        year = mEventDate.getYear() + 1900;
-        hour = mEventDate.getHours();
-        minute = mEventDate.getMinutes();
-        setDate(day, month, year);
-        setTime(hour, minute);
+        setDateView();
+        setTime(mEventDate.getHours(), mEventDate.getMinutes());
 
         mGeoPoint.setLatitude(bundle.getDouble(ViewEventActivity.EVENT_LOCATION_GEO_LAT));
         mGeoPoint.setLongitude(bundle.getDouble(ViewEventActivity.EVENT_LOCATION_GEO_LONG));
@@ -325,16 +314,9 @@ public class EditEventFragment extends Fragment {
             dialog.setMessage(getString(R.string.progress_edit_event));
             dialog.show();
 
-            Date date = new Date();
-            date.setYear(year - 1900);
-            date.setMonth(month);
-            date.setDate(day);
-            date.setHours(hour);
-            date.setMinutes(minute);
-
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-            calendar.setTime(date);
+            calendar.setTime(mEventDate);
             mEventDate = calendar.getTime();
 
             ParseQuery<Event> query = Event.getQuery();
@@ -402,10 +384,6 @@ public class EditEventFragment extends Fragment {
             Toast.makeText(mActivity, "Event does nt have a title", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if (day == -1 || hour == -1) {
-            Toast.makeText(mActivity, "Date or time is not set", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         // add description to model
         else if (mEditDescription.getText().toString().matches("")) {
             Toast.makeText(mActivity, "There is no event description", Toast.LENGTH_SHORT).show();
@@ -426,7 +404,7 @@ public class EditEventFragment extends Fragment {
      * @param v
      */
     public void datePicker(View v) {
-        DialogFragment picker = DatePickerFragment.newInstance(year, month, day);
+        DialogFragment picker = DatePickerFragment.newInstance(mEventDate.getYear() + 1900, mEventDate.getMonth(), mEventDate.getDate());
         picker.show(getFragmentManager(), "datePicker");
     }
 
@@ -435,26 +413,23 @@ public class EditEventFragment extends Fragment {
      * @param v
      */
     public void timePicker(View v) {
-        DialogFragment picker = TimePickerFragment.newInstance(hour, minute);
+        DialogFragment picker = TimePickerFragment.newInstance(mEventDate.getHours(), mEventDate.getMinutes());
         picker.show(getFragmentManager(), "timePicker");
     }
 
     /**
      * Set the date picked that the user picked from the date widget.
-     * @param dayOfMonth
-     * @param monthOfYear
-     * @param yearPicked
      */
-    public void setDate(int dayOfMonth, int monthOfYear, int yearPicked) {
-        day = dayOfMonth;
-        month = monthOfYear;
-        year = yearPicked;
+    public void setDate(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, mEventDate.getHours());
+        calendar.set(Calendar.MINUTE, mEventDate.getMinutes());
+        mEventDate = calendar.getTime();
+        setDateView();
+    }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-
+    public void setDateView() {
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mActivity.getApplicationContext());
-        mEditDay.setText(dateFormat.format(calendar.getTime()));
+        mEditDay.setText(dateFormat.format(mEventDate));
         mEditDay.setTextColor(getResources().getColor(R.color.body_dark));
     }
 
@@ -464,14 +439,10 @@ public class EditEventFragment extends Fragment {
      * @param minutePicked
      */
     public void setTime(int hourPicked, int minutePicked) {
-        hour = hourPicked;
-        minute = minutePicked;
-
-        Date time = new Date();
-        time.setHours(hour);
-        time.setMinutes(minute);
+        mEventDate.setHours(hourPicked);
+        mEventDate.setMinutes(minutePicked);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String formattedTime = timeFormat.format(time.getTime());
+        String formattedTime = timeFormat.format(mEventDate.getTime());
 
         mEditTime.setText(formattedTime);
         mEditTime.setTextColor(getResources().getColor(R.color.body_dark));

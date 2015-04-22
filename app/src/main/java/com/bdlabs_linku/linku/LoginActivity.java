@@ -162,6 +162,7 @@ public class LoginActivity extends ActionBarActivity {
         // Set up a progress dialog
         final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
         dialog.setMessage(getString(R.string.progress_login));
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         // Call the Parse login method
         ParseUser.logInInBackground(username, password, new LogInCallback() {

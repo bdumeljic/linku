@@ -15,7 +15,7 @@
 
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
+        android:required="true" />
 
     <application
         android:name=".Application"
@@ -26,13 +26,13 @@
         <activity
             android:name=".EventsActivity"
             android:clearTaskOnLaunch="true"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ViewEventActivity"
             android:label=""
-            android:theme="@style/AppThemeNoActionBar"
-            android:parentActivityName=".EventsActivity" >
+            android:parentActivityName=".EventsActivity"
+            android:theme="@style/AppThemeNoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="EventsActivity" />
@@ -40,43 +40,51 @@
         <activity
             android:name=".CreateNewEventActivity"
             android:label="@string/title_activity_create_new_event"
-            android:theme="@style/AppTheme.Dark"
-            android:parentActivityName=".EventsActivity" >
+            android:parentActivityName=".EventsActivity"
+            android:theme="@style/AppTheme.Dark" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="EventsActivity" />
+                android:value=".EventsActivity" />
         </activity>
         <activity
             android:name=".EditEventActivity"
-            android:theme="@style/AppTheme.Dark"
             android:label="@string/title_activity_edit_event"
-            android:parentActivityName=".ViewEventActivity" >
+            android:parentActivityName=".ViewEventActivity"
+            android:theme="@style/AppTheme.Dark" >
             <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ViewEventActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ViewEventActivity" />
         </activity>
-
         <activity
             android:name=".SignUpActivity"
             android:label=""
-            android:screenOrientation="portrait"
-            android:parentActivityName=".LoginActivity">
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />
         </activity>
         <activity
-                android:name=".DispatchActivity"
-                android:noHistory="true" >
+            android:name=".DispatchActivity"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".EventsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EventsActivity" />
+        </activity>
+        <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppThemeNoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -84,8 +92,15 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
         <instrumentation
-                android:targetPackage="com.bdlabs_linku.linku"
-                android:name="android.test.InstrumentationTestRunner" />
+            android:name="android.test.InstrumentationTestRunner"
+            android:targetPackage="com.bdlabs_linku.linku" />
+
+        <activity
+            android:name=".WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
+        </activity>
     </application>
+
 </manifest>
