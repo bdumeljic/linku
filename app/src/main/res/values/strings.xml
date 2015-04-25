@@ -64,6 +64,9 @@
     <string name="welcome_legal">By using this app, you agree to the &lt;a href="http://www.getlinku.com/terms-of-use.html">Terms of Service&lt;/a> and &lt;a href="http://www.getlinku.com/privacy.html">Privacy Policy&lt;/a>. &lt;br&lt;/> &lt;br&lt;/> We suggest you also take a look at the &lt;a href="http://www.getlinku.com/safety.html">Safety Guidelines&lt;/a> for tips on staying safe when going to events with strangers.
 </string>
     <string name="title_activity_welcome">WelcomeActivity</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="scan">Scan code</string>
+    <string name="checkin">Check in</string>
+    <string name="cancel">Cancel</string>
+    <string name="current_event_title">CURRENT EVENT</string>
+    <string name="scanning">Scanning for QR code</string>
 </resources>

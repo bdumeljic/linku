@@ -8,6 +8,8 @@
     <dimen name="keyline_1_plus_8dp">24dp</dimen>
     <dimen name="keyline_2">72dp</dimen>
     <dimen name="keyline_2_minus_16dp">56dp</dimen>
+    <dimen name="keyline_2_minus_8dp">64dp</dimen>
+
     <!-- Text sizes -->
     <dimen name="title">20sp</dimen>
     <dimen name="body2">14sp</dimen>
@@ -17,6 +19,7 @@
 
 
     <!-- Line heights -->
+    <dimen name="vertical_24dp">24dp</dimen>
     <dimen name="vertical_36dp">36dp</dimen>
     <dimen name="vertical_48dp">48dp</dimen>
     <dimen name="vertical_48dp_minus_8dp">32dp</dimen>

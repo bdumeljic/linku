@@ -10,6 +10,11 @@
         android:icon="@drawable/ic_refresh"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_scan"
+        android:title="@string/scan"
+        app:showAsAction="never" />
+
+
     <item android:id="@+id/action_about"
         android:title="@string/title_activity_about"
         app:showAsAction="never" />

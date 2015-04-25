@@ -1,14 +1,7 @@
 package com.bdlabs_linku.linku;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Path;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
-import com.bumptech.glide.GenericRequestBuilder;
-import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -18,9 +11,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,16 +80,20 @@ public class Event extends ParseObject {
         CATEGORIES_CIRCLE.add(R.drawable.ic_circle_other);
     }
 
+    public static String timeString = "time";
+    public static String creatorString = "creator";
+    public static String classNameString = "Event";
+
     public static ParseQuery<Event> getQuery() {
         return ParseQuery.getQuery(Event.class);
     }
 
     public void setCreator(ParseUser user) {
-        put("creator", user);
+        put(creatorString, user);
     }
 
     public ParseUser getCreator() {
-        return getParseUser("creator");
+        return getParseUser(creatorString);
     }
 
     public String getTitle() {
@@ -119,11 +113,11 @@ public class Event extends ParseObject {
     }
 
     public Date getTime() {
-        return getDate("time");
+        return getDate(timeString);
     }
 
     public void setTime(Date time) {
-        put("time", time);
+        put(timeString, time);
     }
 
     public ParseGeoPoint getLocationGeo() {
@@ -180,6 +174,10 @@ public class Event extends ParseObject {
 
     public ParseRelation<ParseUser> getAttendingList() {
         return getRelation("attendingList");
+    }
+
+    public ParseRelation<ParseUser> getCheckedInList() {
+        return getRelation("checkedInList");
     }
 
     public void addAttendee() {
@@ -242,5 +240,37 @@ public class Event extends ParseObject {
 
     public void setPhoto(ParseFile photo) {
         put("photo", photo);
+    }
+
+    public boolean isCurrentUserCheckedIn() {
+        List<ParseUser> mCheckedIn = null;
+        try {
+            mCheckedIn = getCheckedInList().getQuery().find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        boolean checkedIn = false;
+
+        if (mCheckedIn != null) {
+            for (ParseUser user : mCheckedIn) {
+                if (user.equals(ParseUser.getCurrentUser())) {
+                    checkedIn = true;
+                }
+            }
+        }
+
+        return checkedIn;
+    }
+
+    public void checkIn() {
+        getCheckedInList().add(ParseUser.getCurrentUser());
+        try {
+            save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("EVENT", "check in: " + getCheckedInList().getQuery().toString());
     }
 }

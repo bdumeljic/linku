@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/vertical_24dp"
+    android:paddingTop="@dimen/vertical_24dp"
+    android:paddingRight="@dimen/vertical_24dp">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/vertical_24dp">
+
+        <ImageView
+            android:layout_width="@dimen/keyline_2_minus_8dp"
+            android:layout_height="@dimen/keyline_2_minus_8dp"
+            android:id="@+id/photo"
+            android:src="@drawable/profile_picture_placeholder" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/name"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:paddingLeft="@dimen/keyline_1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/vertical_48dp"
+            android:text="@string/current_event_title"
+            android:textColor="@color/accent"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/keyline_1_minus_8dp"
+            android:paddingBottom="@dimen/keyline_1_minus_8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Checked in."
+            android:id="@+id/checkedin"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/keyline_1"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+            android:textStyle="italic"
+            android:visibility="invisible" />
+    </LinearLayout>
+</LinearLayout>

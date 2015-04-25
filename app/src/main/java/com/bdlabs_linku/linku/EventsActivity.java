@@ -3,15 +3,12 @@ package com.bdlabs_linku.linku;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -30,13 +27,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class EventsActivity extends ActionBarActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -388,6 +390,8 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
+
+
     }
 
     @Override
@@ -416,6 +420,19 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                 Intent intentAbout = new Intent(EventsActivity.this, AboutActivity.class);
                 startActivity(intentAbout);
                 break;
+            case R.id.action_scan:
+                IntentIntegrator intentScan = new IntentIntegrator(this);
+                intentScan.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                intentScan.setCaptureLayout(R.layout.custom_capture_layout);
+                intentScan.setPrompt(getResources().getString(R.string.scanning));
+                if (getResources().getConfiguration().orientation == 2) {
+                    intentScan.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                } else {
+                    intentScan.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+
+                intentScan.initiateScan();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -437,9 +454,57 @@ public class EventsActivity extends ActionBarActivity implements MapEventsFragme
                     }
                 }
                 break;
-            // TODO notifyItemChanged(int position)
         }
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                super.onActivityResult(requestCode, resultCode, data);
+                showUserDialog(result.getContents());
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showUserDialog(String userId) {
+        final UserDialog userDialog = new UserDialog(this);
+        userDialog.show(getSupportFragmentManager(), "userdialog");
+
+        ParseQuery<ParseUser> userParseQuery = ParseUser.getQuery();
+        userParseQuery.getInBackground(userId, new GetCallback<ParseUser>() {
+            public void done(ParseUser object, ParseException e) {
+                if (e == null) {
+                    userDialog.setUser(object);
+                } else {
+                    Log.d("user", "Error: " + e.getMessage());
+                    if (userDialog != null) {
+                        userDialog.dismiss();
+                    }
+                }
+            }
+        });
+
+        ParseQuery<Event> eventQuery = ParseQuery.getQuery(Event.classNameString);
+        eventQuery.whereMatchesQuery(Event.creatorString, userParseQuery);
+        eventQuery.whereGreaterThan(Event.timeString, new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)));
+        eventQuery.whereLessThan(Event.timeString, new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 2)));
+        eventQuery.findInBackground(new FindCallback<Event>() {
+            public void done(List<Event> eventList, ParseException e) {
+                if (e == null) {
+                    Log.d("event", "Retrieved " + eventList.size() + " scores");
+                    userDialog.setEvent(eventList);
+                } else {
+                    Log.d("event", "Error: " + e.getMessage());
+                    if (userDialog != null) {
+                        userDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
     void showErrorDialog(int code) {
