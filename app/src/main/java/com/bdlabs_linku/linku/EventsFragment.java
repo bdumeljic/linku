@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -153,14 +152,14 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String name);
+        void onFragmentInteraction(String name);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == VIEW_EVENT && resultCode == mActivity.RESULT_OK) {
+        if (requestCode == VIEW_EVENT && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra(EDITED, false)) {
                 int pos = data.getIntExtra(EVENT_POS, -1);
                 if (pos >= 0) {

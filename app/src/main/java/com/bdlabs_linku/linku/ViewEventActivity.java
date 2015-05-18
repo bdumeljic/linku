@@ -11,7 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -26,7 +26,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bdlabs_linku.linku.Adapters.ParticipantsAdapter;
 import com.bumptech.glide.Glide;
@@ -58,7 +57,7 @@ import java.util.List;
 /**
  * Activity that displays all the events details.
  */
-public class ViewEventActivity extends ActionBarActivity implements ObservableScrollView.Callbacks {
+public class ViewEventActivity extends AppCompatActivity implements ObservableScrollView.Callbacks {
 
     public static final String TAG = "ViewEventActivity";
 

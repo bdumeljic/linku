@@ -36,7 +36,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -140,7 +139,7 @@ public class CreateNewEventFragment extends Fragment {
         });
 
         mCategorySpinner = (Spinner) view.findViewById(R.id.category);
-        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -204,7 +203,7 @@ public class CreateNewEventFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction();
+        void onFragmentInteraction();
     }
 
     @Override
@@ -349,7 +348,7 @@ public class CreateNewEventFragment extends Fragment {
         Date time = new Date();
         time.setHours(hour);
         time.setMinutes(minute);
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        DateFormat timeFormat = DateFormat.getTimeInstance();
         String formattedTime = timeFormat.format(time.getTime());
 
         mEditTime.setText(formattedTime);
@@ -383,9 +382,7 @@ public class CreateNewEventFragment extends Fragment {
             Intent intent = intentBuilder.build(mActivity);
             startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-        } catch (GooglePlayServicesRepairableException e) {
-            // ...
-        } catch (GooglePlayServicesNotAvailableException e) {
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             // ...
         }
     }

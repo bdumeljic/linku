@@ -31,8 +31,6 @@
     <!-- Login / SignUp -->
     <string name="login">Log in</string>
     <string name="signup">Sign up</string>
-    <string name="powered_by">Powered by</string>
-    <string name="parse">Parse</string>
     <string name="slogan">Because moments are around you</string>
     <string name="sign_up">Sign Up</string>
     <string name="action_logout">Log Out</string>
@@ -59,8 +57,6 @@
     <string name="about_pp">Privacy Policy</string>
     <string name="about_safety">Safety Guidelines</string>
     <string name="linku_website">getlinku.com</string>
-    <string name="first_run_dialog_title" />
-    <string name="first_run_content" />
     <string name="welcome_legal">By using this app, you agree to the &lt;a href="http://www.getlinku.com/terms-of-use.html">Terms of Service&lt;/a> and &lt;a href="http://www.getlinku.com/privacy.html">Privacy Policy&lt;/a>. &lt;br&lt;/> &lt;br&lt;/> We suggest you also take a look at the &lt;a href="http://www.getlinku.com/safety.html">Safety Guidelines&lt;/a> for tips on staying safe when going to events with strangers.
 </string>
     <string name="title_activity_welcome">WelcomeActivity</string>
@@ -69,4 +65,15 @@
     <string name="cancel">Cancel</string>
     <string name="current_event_title">CURRENT EVENT</string>
     <string name="scanning">Scanning for QR code</string>
+    <string name="title_activity_base">BaseActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+    <string name="message_checkedin">Checked in.</string>
 </resources>

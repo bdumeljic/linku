@@ -31,7 +31,8 @@
             android:text="@string/placeholder_events_item_name"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:textColor="@color/body_text_1" />
 
         <TextView
             android:layout_width="match_parent"

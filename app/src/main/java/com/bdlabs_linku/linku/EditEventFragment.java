@@ -133,7 +133,7 @@ public class EditEventFragment extends Fragment {
         });
 
         mCategorySpinner = (Spinner) view.findViewById(R.id.category);
-        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, (List) Event.CATEGORIES);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCategorySpinner.setAdapter(categoryAdapter);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -258,7 +258,7 @@ public class EditEventFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction();
+        void onFragmentInteraction();
     }
 
     @Override
@@ -469,9 +469,7 @@ public class EditEventFragment extends Fragment {
             Intent intent = intentBuilder.build(mActivity);
             startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-        } catch (GooglePlayServicesRepairableException e) {
-            // ...
-        } catch (GooglePlayServicesNotAvailableException e) {
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             // ...
         }
     }

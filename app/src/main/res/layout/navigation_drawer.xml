@@ -1,0 +1,79 @@
+<FrameLayout
+    android:background="#cccc"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navdrawer"
+    android:layout_width="@dimen/navigation_drawer_width"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    tools:context="com.bdlabs_linku.linku.BaseActivity" >
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/chosen_account_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/navdrawer_chosen_account_height"
+            android:background="@color/primary_dark">
+
+            <ImageView android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:id="@+id/profile_cover_image"
+                android:background="@drawable/background_navbar" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/keyline_1"
+                android:paddingRight="@dimen/keyline_1"
+                android:paddingTop="@dimen/keyline_1"
+                android:id="@+id/chosen_account_content_view">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="@dimen/navdrawer_profile_image_size"
+                    android:layout_height="@dimen/navdrawer_profile_image_size"
+                    android:src="@drawable/profile_picture_placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_above="@+id/profile_name_text" />
+
+                <TextView
+                    android:id="@+id/profile_name_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/profile_image"
+                    android:textSize="@dimen/text_size_large"
+                    android:textColor="@color/body_text_1_inverse"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_alignParentBottom="true"
+                    android:paddingBottom="@dimen/keyline_1"
+                    android:textIsSelectable="true"
+                    android:paddingTop="@dimen/keyline_1_minus_8dp" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <FrameLayout android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Drawer items -->
+            <LinearLayout
+                android:id="@+id/navdrawer_items_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"/>
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

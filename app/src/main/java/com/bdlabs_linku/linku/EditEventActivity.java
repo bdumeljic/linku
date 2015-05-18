@@ -1,20 +1,17 @@
 package com.bdlabs_linku.linku;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.util.Calendar;
 
 /**
  * Controlling activity for the {@link CreateNewEventFragment} that creates a new event from user input.
  */
-public class EditEventActivity extends ActionBarActivity implements EditEventFragment.OnFragmentInteractionListener {
+public class EditEventActivity extends AppCompatActivity implements EditEventFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,7 +11,6 @@ import com.bdlabs_linku.linku.R;
 import com.bdlabs_linku.linku.Utils.CircleTransform;
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseUser;
 
 import java.util.List;

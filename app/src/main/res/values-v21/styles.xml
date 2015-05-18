@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent_2</item>
+        <item name="android:textColorPrimary">@color/white85</item>
         <!-- Add logo to action bar -->
         <item name="android:logo">@drawable/linku_logo_white</item>
         <item name="android:displayOptions">useLogo|showHome</item>
