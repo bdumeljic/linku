@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -21,11 +22,17 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
+        Toolbar ab = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        //ab.setElevation(0);
+        ab.setTitle(R.string.title_activity_about);
+        //ab.setNavigationIcon(R.drawable.ic_back);
+        setSupportActionBar(ab);
         // Show up navigation button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().getThemedContext().setTheme(R.style.ActionBarDark);
         // Little tweak to remove shadow below actionbar
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle(R.string.title_activity_about);
+        //getSupportActionBar().setTitle(R.string.title_activity_about);
 
         PackageManager pm = getPackageManager();
         String packageName = getPackageName();

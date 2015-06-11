@@ -54,6 +54,7 @@ import java.util.TimeZone;
  * create an instance of this fragment.
  *
  */
+@Deprecated
 public class EditEventFragment extends Fragment {
     private static final String TAG = "EditEventFragment";
     private OnFragmentInteractionListener mListener ;

@@ -142,10 +142,10 @@ public class ViewEventActivity extends AppCompatActivity implements ObservableSc
         dialog.show();
 
         // Get the user's location
-        mUserLoc = getIntent().getParcelableExtra(EventsActivity.USER_LOC);
+        mUserLoc = getIntent().getParcelableExtra(BrowseEventsActivity.USER_LOC);
 
         // Setup the transparent ActionBar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.view_event_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_up);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

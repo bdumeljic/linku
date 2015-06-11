@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent_2</item>
-        <item name="android:textColorPrimary">@color/white85</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent_2</item>
+
+        <item name="android:colorControlNormal">@color/hint_light</item>
+        <item name="android:colorControlHighlight">@color/accent_2</item>
+
         <!-- Add logo to action bar -->
-        <item name="android:logo">@drawable/linku_logo_white</item>
+        <item name="android:logo">@drawable/ic_hedge</item>
         <item name="android:displayOptions">useLogo|showHome</item>
 
-        <item name="android:colorControlNormal">@color/edit_hint</item>
 
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
 
         <!-- specify enter and exit transitions -->
         <item name="android:windowEnterTransition">@android:transition/explode</item>
@@ -25,15 +28,24 @@
             @transition/change_image_transform</item>
     </style>
 
-    <style name="AppTheme.Dark" parent="AppTheme">
-        <item name="android:colorControlNormal">@color/divider_grey</item>
-        <item name="colorAccent">@color/accent</item>
+    <style name="AppTheme.Dark" parent="AppThemeNoActionBar">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorControlNormal">@color/hint_dark</item>
+        <item name="android:colorControlHighlight">@color/accent</item>
+
+        <item name="android:windowTranslucentStatus">false</item>
+
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent_2</item>
+
+        <item name="android:colorControlNormal">@color/hint_light</item>
+        <item name="android:colorControlHighlight">@color/accent_2</item>
 
         <item name="android:windowNoTitle">true</item>
         <!--We will be using the toolbar so no need to show ActionBar-->
@@ -42,7 +54,6 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_up</item>
 
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:colorControlNormal">@color/hint</item>
     </style>
 
 </resources>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
 import com.bdlabs_linku.linku.EventsFragment;
 import com.bdlabs_linku.linku.FragmentViewPager;
 import com.bdlabs_linku.linku.MapEventsFragment;
@@ -16,13 +16,13 @@ import java.util.Locale;
  * A {@link android.support.v4.app.FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class FragmentTabPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
 
     FragmentManager mFM;
     Context mContext;
     FragmentViewPager mViewPager;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm, FragmentViewPager viewPager) {
+    public FragmentTabPagerAdapter(Context context, FragmentManager fm, FragmentViewPager viewPager) {
         super(fm);
 
         this.mContext = context;

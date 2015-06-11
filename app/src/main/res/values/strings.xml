@@ -76,4 +76,8 @@
 
     <string name="action_example">Example action</string>
     <string name="message_checkedin">Checked in.</string>
+    <string name="title_activity_create_edit_event">CreateEditEventActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_save">Save</string>
 </resources>

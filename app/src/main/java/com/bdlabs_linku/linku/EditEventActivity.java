@@ -11,6 +11,7 @@ import java.util.Calendar;
 /**
  * Controlling activity for the {@link CreateNewEventFragment} that creates a new event from user input.
  */
+@Deprecated
 public class EditEventActivity extends AppCompatActivity implements EditEventFragment.OnFragmentInteractionListener {
 
     @Override
@@ -22,7 +23,7 @@ public class EditEventActivity extends AppCompatActivity implements EditEventFra
             Bundle bundle = new Bundle();
             bundle.putAll(getIntent().getExtras());
 
-            EditEventFragment fragment = new EditEventFragment();
+            EditEventFragment fragment = EditEventFragment.newInstance();
             fragment.setArguments(bundle);
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)

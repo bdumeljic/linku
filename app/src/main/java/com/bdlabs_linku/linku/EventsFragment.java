@@ -27,7 +27,7 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
     private static final String EDITED = "event_edited";
     private static final String EVENT_POS = "event_pos";
 
-    private EventsActivity mActivity;
+    private BrowseEventsActivity mActivity;
 
     private RecyclerView mList;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -71,7 +71,7 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mActivity = (EventsActivity) activity;
+        mActivity = (BrowseEventsActivity) activity;
 
         try {
             mListener = (OnFragmentInteractionListener) activity;
@@ -114,7 +114,7 @@ public class EventsFragment extends Fragment implements RecyclerView.OnItemTouch
             Intent intent = new Intent(getActivity(), ViewEventActivity.class);
             intent.putExtra(EVENT_POS, position);
             intent.putExtra(ViewEventActivity.EVENT_ID, mActivity.mEventsAdapter.getItem(position).getObjectId());
-            intent.putExtra(EventsActivity.USER_LOC, mActivity.getLastLocation());
+            intent.putExtra(BrowseEventsActivity.USER_LOC, mActivity.getLastLocation());
             startActivityForResult(intent, VIEW_EVENT);
 
             return super.onSingleTapConfirmed(e);

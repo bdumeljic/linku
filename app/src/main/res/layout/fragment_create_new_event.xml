@@ -70,7 +70,7 @@
                     android:textSize="@dimen/add_event_title"
                     android:gravity="bottom|left"
                     android:hint="@string/placeholder_events_item_title"
-                    android:textColorHint="@color/edit_hint"
+                    android:textColorHint="@color/hint_dark"
                     android:background="#00000000"
                     android:imeOptions="actionDone" />
 
@@ -96,7 +96,7 @@
                     android:textSize="@dimen/add_event_fields"
                     android:gravity="bottom|left"
                     android:hint="@string/placeholder_events_item_description"
-                    android:textColorHint="@color/edit_hint"
+                    android:textColorHint="@color/hint_dark"
                     android:background="#00000000"
                     android:imeOptions="actionDone" />
 
@@ -139,7 +139,7 @@
                             android:layout_height="@dimen/vertical_48dp_minus_8dp"
                             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
                             android:id="@+id/event_day_input"
-                            android:textColor="@color/edit_hint"
+                            android:textColor="@color/hint_dark"
                             android:textSize="@dimen/add_event_fields"
                             android:textAllCaps="false"
                             android:gravity="center_vertical|left"
@@ -166,7 +166,7 @@
                             android:layout_height="@dimen/vertical_48dp_minus_8dp"
                             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
                             android:id="@+id/event_time_input"
-                            android:textColor="@color/edit_hint"
+                            android:textColor="@color/hint_dark"
                             android:textSize="@dimen/add_event_fields"
                             android:text="@string/placeholder_events_item_time"
                             android:textAllCaps="false"

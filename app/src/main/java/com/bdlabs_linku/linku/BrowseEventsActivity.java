@@ -29,6 +29,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
@@ -36,8 +40,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Deprecated
-public class EventsActivity extends BaseActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class BrowseEventsActivity extends BaseActivity implements MapEventsFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, ActionBar.TabListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     public static final int CREATE_EVENT = 1;
@@ -46,7 +49,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
 
     static final String USER_LOC = "user_location";
 
-    private static final String TAG = "EventsActivity";
+    private static final String TAG = "BrowseEventsActivity";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -59,7 +62,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
     private FragmentTabPagerAdapter mFragmentTabPagerAdapter;
 
     /**
-     * The {@link android.support.v4.view.ViewPager} that will host the section contents.
+     * The {@link ViewPager} that will host the section contents.
      */
     private FragmentViewPager mViewPager;
 
@@ -285,17 +288,11 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
     private void refreshView() {
         setContentView(R.layout.activity_events);
         Toolbar toolbar = getActionBarToolbar();
-        toolbar.setTitle("");
-        toolbar.setLogo(R.drawable.ic_hedge);
-
-        // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), CreateNewEventActivity.class);
+                Intent intent = new Intent(getBaseContext(), CreateEditEventActivity.class);
                 startActivityForResult(intent, CREATE_EVENT);
             }
         });
@@ -308,27 +305,18 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
         mFragmentTabPagerAdapter = new FragmentTabPagerAdapter(this, getSupportFragmentManager(), mViewPager);
         mViewPager.setAdapter(mFragmentTabPagerAdapter);
 
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        // Give the SlidingTabLayout the ViewPager
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        // Center the tabs in the layout
+        slidingTabLayout.setDistributeEvenly(true);
+        slidingTabLayout.setViewPager(mViewPager);
+        slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.accent_2);
             }
         });
-
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mFragmentTabPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mFragmentTabPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }
 
         // Start loading events.
         mEventsAdapter = new EventsAdapter(this, null);
@@ -353,6 +341,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
                 }
             }
         });
+
         mEventsAdapter.getParseAdapter().loadObjects();
     }
 
@@ -410,7 +399,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
                 // Call the Parse log out method
                 ParseUser.logOut();
                 // Start and intent for the dispatch activity
-                Intent intent = new Intent(EventsActivity.this, DispatchActivity.class);
+                Intent intent = new Intent(BrowseEventsActivity.this, DispatchActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
@@ -418,7 +407,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
                 mEventsAdapter.getParseAdapter().loadObjects();
                 break;
             case R.id.action_about:
-                Intent intentAbout = new Intent(EventsActivity.this, AboutActivity.class);
+                Intent intentAbout = new Intent(BrowseEventsActivity.this, AboutActivity.class);
                 startActivity(intentAbout);
                 break;
             case R.id.action_scan:
@@ -464,16 +453,15 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
             } else {
                 //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 super.onActivityResult(requestCode, resultCode, data);
-                //showUserDialog(result.getContents());
+                showUserDialog(result.getContents());
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*
     private void showUserDialog(String userId) {
-        final UserDialog userDialog = new UserDialog(BrowseEventsActivity.class);
+        final UserDialog userDialog = new UserDialog(this);
         userDialog.show(getSupportFragmentManager(), "userdialog");
 
         ParseQuery<ParseUser> userParseQuery = ParseUser.getQuery();
@@ -507,7 +495,7 @@ public class EventsActivity extends BaseActivity implements MapEventsFragment.On
                 }
             }
         });
-    } */
+    }
 
     void showErrorDialog(int code) {
         GooglePlayServicesUtil.getErrorDialog(code, this,

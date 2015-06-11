@@ -53,7 +53,7 @@
             <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/hint"
+                    android:background="@color/hint_light"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
             <EditText
@@ -65,7 +65,7 @@
             <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/hint"
+                    android:background="@color/hint_light"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
             <Button

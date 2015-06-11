@@ -20,13 +20,13 @@ import java.util.Date;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
-    private EventsActivity mContext;
+    private BrowseEventsActivity mContext;
     private ParseQueryAdapter<Event> parseAdapter;
 
     private ViewGroup parseParent;
 
     public EventsAdapter(Context context, ViewGroup parentIn) {
-        this.mContext = (EventsActivity) context;
+        this.mContext = (BrowseEventsActivity) context;
         this.parseParent = parentIn;
         this.parseAdapter = new ParseQueryAdapter<>(context, new ParseQueryAdapter.QueryFactory<Event>() {
             @Override

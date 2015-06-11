@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -90,10 +91,11 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         // Show up navigation button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
         // Little tweak to remove shadow below actionbar
-        getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle(R.string.sign_up);
+        ab.setElevation(0);
+        ab.setTitle(R.string.sign_up);
     }
 
     private void signup() {

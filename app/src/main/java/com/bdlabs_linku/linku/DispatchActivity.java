@@ -8,7 +8,7 @@ import com.bdlabs_linku.linku.Utils.PrefUtils;
 import com.parse.ParseUser;
 
 /**
- * Activity which starts an intent for either the logged in {@link com.bdlabs_linku.linku.EventsActivity} or logged out
+ * Activity which starts an intent for either the logged in {@link com.bdlabs_linku.linku.BrowseEventsActivity} or logged out
  * {@link com.bdlabs_linku.linku.LoginActivity} activity.
  */
 public class DispatchActivity extends AppCompatActivity {
@@ -22,7 +22,7 @@ public class DispatchActivity extends AppCompatActivity {
     // Check if there is current user info
     if (ParseUser.getCurrentUser() != null && PrefUtils.isTosAccepted(this)) {
       // Start an intent for the logged in activity but tos not yet accepted
-      startActivity(new Intent(this, EventsActivity.class));
+      startActivity(new Intent(this, BrowseEventsActivity.class));
     } else if (ParseUser.getCurrentUser() != null) {
       startActivity(new Intent(this, WelcomeActivity.class));
     } else {

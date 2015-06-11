@@ -19,7 +19,7 @@
         style="@style/Base.TextAppearance.AppCompat.Body1"
         android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
@@ -28,5 +28,6 @@
         android:hint="@string/prompt_email"
         android:textSize="@dimen/hint"
         android:id="@+id/email"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:theme="@style/EditTextAccent1"/>
 </LinearLayout>

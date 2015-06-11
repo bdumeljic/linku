@@ -5,7 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
 /**
- * Used to hold the fragments shown in {@link com.bdlabs_linku.linku.EventsActivity}
+ * Used to hold the fragments shown in {@link com.bdlabs_linku.linku.BrowseEventsActivity}
  */
 public class FragmentViewPager extends ViewPager {
 

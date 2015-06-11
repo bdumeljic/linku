@@ -13,6 +13,7 @@ import java.util.Calendar;
 /**
  * Controlling activity for the {@link com.bdlabs_linku.linku.CreateNewEventFragment} that creates a new event from user input.
  */
+@Deprecated
 public class CreateNewEventActivity extends AppCompatActivity implements CreateNewEventFragment.OnFragmentInteractionListener {
 
     @Override
@@ -26,7 +27,7 @@ public class CreateNewEventActivity extends AppCompatActivity implements CreateN
         }
 
         // Show up navigation button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

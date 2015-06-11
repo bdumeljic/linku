@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     tools:context=".SignUpActivity"
-    tools:ignore="MergeRootFrame"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:background="@color/primary">
+    android:background="@color/primary"
+    android:theme="@style/AppTheme">
 
     <LinearLayout
         android:orientation="vertical"
@@ -60,7 +60,7 @@
                     android:inputType="textEmailAddress|textAutoCorrect"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColorHint="@color/hint"
+                    android:textColorHint="@color/hint_light"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/hint" />
 
@@ -72,7 +72,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColorHint="@color/hint"
+                    android:textColorHint="@color/hint_light"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/hint"
                     android:layout_marginTop="@dimen/login_form_margin" />
@@ -88,7 +88,7 @@
                     android:imeActionId="@+id/action_signup"
                     android:imeActionLabel="@string/signup"
                     android:imeOptions="actionUnspecified"
-                    android:textColorHint="@color/hint"
+                    android:textColorHint="@color/hint_light"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/hint"
                     android:layout_marginTop="@dimen/login_form_margin" />

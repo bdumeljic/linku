@@ -6,15 +6,20 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent_2</item>
-        <item name="android:textColorPrimary">@color/white85</item>
+        <item name="colorControlNormal">@color/hint_light</item>
+        <item name="colorControlHighlight">@color/accent_2</item>
 
         <!-- Add logo to action bar -->
-        <item name="android:logo">@drawable/linku_logo_white</item>
+        <item name="android:logo">@drawable/ic_hedge</item>
         <item name="android:displayOptions">useLogo|showHome</item>
     </style>
 
     <style name="AppTheme.Dark" parent="AppTheme">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="colorControlNormal">@color/hint_dark</item>
+        <item name="colorControlHighlight">@color/accent</item>
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -22,11 +27,14 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent_2</item>
 
+        <item name="colorControlNormal">@color/hint_light</item>
+        <item name="colorControlHighlight">@color/hint_light</item>
 
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="homeAsUpIndicator">@drawable/ic_up</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_up</item>
+
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
@@ -40,6 +48,24 @@
         <item name="android:textColorPrimary">#fff</item>
         <item name="colorControlNormal">@color/accent_2</item>
         <item name="colorControlHighlight">#3fff</item>
+    </style>
+
+    <style name="ActionBarDark" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/white85</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorControlNormal">@color/white85</item>
+        <item name="colorControlHighlight">#3fff</item>
+        <item name="colorControlActivated">#3fff</item>
+    </style>
+
+    <style name="EditTextAccent1" parent="AppTheme.Dark">
+        <item name="colorControlNormal">@color/hint_dark</item>
+        <item name="colorControlActivated">@color/accent</item>
+    </style>
+
+    <style name="EditTextAccent2" parent="AppTheme">
+        <item name="colorControlNormal">@color/hint_light</item>
+        <item name="colorControlActivated">@color/accent_2</item>
     </style>
 
     <style name="events_item_text_big">
@@ -109,7 +135,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:textColorHint">@color/hint_light</item>
         <item name="android:textSize">@dimen/hint</item>
         <item name="android:background">#00000000</item>
         <item name="android:paddingTop">@dimen/keyline_1_minus_8dp</item>

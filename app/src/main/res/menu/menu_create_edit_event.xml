@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bdlabs_linku.linku.CreateEditEventActivity">
+
+    <item android:id="@+id/action_confirm"
+        android:icon="@drawable/ic_confirm"
+        android:title="@string/action_confirm"
+        app:showAsAction="always"  />
+</menu>

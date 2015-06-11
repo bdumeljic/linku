@@ -4,12 +4,11 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -40,6 +39,7 @@ public class
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +54,12 @@ public class
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
+    }
 
-        // Set up the drawer.
-        //mNavigationDrawerFragment.setUp(
-          //      R.id.navigation_drawer,
-            //    (DrawerLayout) findViewById(R.id.drawer_layout));
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        getActionBarToolbar();
     }
 
     @Override
@@ -80,26 +81,18 @@ public class
             // TODO setup user part
         }
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
-           /* actionBar.setNavigationIcon(R.drawable.ic_drawer);
-            actionBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mDrawerLayout.openDrawer(Gravity.START);
-                }
-            });*/
-
-
+        mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
         mDrawerToggle = new ActionBarDrawerToggle(
-                this,                    /* host Activity */
+                this,                             /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -130,7 +123,7 @@ public class
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(Gravity.START);
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
 
         // Defer code dependent on restoration of previous instance state.
@@ -172,12 +165,12 @@ public class
             mDrawerListView.setItemChecked(position, true);
         }
         if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(Gravity.START);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
 
     public boolean isDrawerOpen() {
-        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.START);
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
     @Override
@@ -191,5 +184,20 @@ public class
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    protected android.support.v7.widget.Toolbar getActionBarToolbar() {
+        if (mActionBarToolbar == null) {
+            mActionBarToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_actionbar);
+            mActionBarToolbar.setNavigationIcon(R.drawable.ic_drawer);
+            mActionBarToolbar.setTitle("");
+            mActionBarToolbar.setLogo(R.drawable.ic_hedge);
+            mActionBarToolbar.setBackgroundColor(getResources().getColor(R.color.primary));
+
+            if (mActionBarToolbar != null) {
+                setSupportActionBar(mActionBarToolbar);
+            }
+        }
+        return mActionBarToolbar;
     }
 }

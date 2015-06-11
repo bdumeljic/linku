@@ -35,7 +35,7 @@ public class MapEventsFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = "MapEventsFragment";
 
-    private EventsActivity mActivity;
+    private BrowseEventsActivity mActivity;
 
     MapFragment mMapFragment;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -107,7 +107,7 @@ public class MapEventsFragment extends Fragment implements OnMapReadyCallback {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mActivity = (EventsActivity) activity;
+        mActivity = (BrowseEventsActivity) activity;
 
         try {
             mListener = (OnFragmentInteractionListener) activity;

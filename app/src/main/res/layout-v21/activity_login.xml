@@ -54,7 +54,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textColorHint="@color/hint"
+                android:textColorHint="@color/hint_light"
                 android:textSize="@dimen/hint" />
 
             <EditText
@@ -68,7 +68,7 @@
                 android:imeActionId="@+id/edittext_action_login"
                 android:imeActionLabel="@string/login"
                 android:textColor="@android:color/white"
-                android:textColorHint="@color/hint"
+                android:textColorHint="@color/hint_light"
                 android:textSize="@dimen/hint"
                 android:layout_marginTop="@dimen/login_form_margin" />
 

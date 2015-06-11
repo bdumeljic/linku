@@ -1,11 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             xmlns:fab="http://schemas.android.com/apk/res-auto"
-             tools:context=".SignUpActivity"
-             tools:ignore="MergeRootFrame"
-             android:layout_height="fill_parent"
-             android:layout_width="fill_parent"
-             android:background="@color/primary">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:background="@color/primary">
 
     <LinearLayout
             android:orientation="vertical"
@@ -60,7 +58,7 @@
             <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/hint"
+                    android:background="@color/hint_light"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
             <EditText
@@ -72,7 +70,7 @@
             <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/hint"
+                    android:background="@color/hint_light"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
             <EditText
@@ -87,7 +85,7 @@
             <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/hint"
+                    android:background="@color/hint_light"
                     android:layout_marginBottom="@dimen/keyline_1_minus_8dp" />
 
             <Button

@@ -51,6 +51,7 @@ import java.util.TimeZone;
  * create an instance of this fragment.
  *
  */
+@Deprecated
 public class CreateNewEventFragment extends Fragment {
     private static final String TAG = "CreateNewEventFragment";
     private OnFragmentInteractionListener mListener ;
@@ -114,7 +115,7 @@ public class CreateNewEventFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_create_new_event, container, false);
+        final View view = inflater.inflate(R.layout.fragment_create_new_event, container, true);
 
         dialog = new ProgressDialog(getActivity());
         dialog.setMessage(getString(R.string.progress_create_event));

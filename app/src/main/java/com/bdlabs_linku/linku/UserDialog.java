@@ -32,7 +32,7 @@ public class UserDialog extends DialogFragment {
 
     private Activity mActivity;
 
-    public UserDialog(EventsActivity eventsActivity) {
+    public UserDialog(BrowseEventsActivity eventsActivity) {
         mActivity = eventsActivity;
     }
 
